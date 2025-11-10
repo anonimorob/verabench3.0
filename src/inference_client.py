@@ -1,5 +1,5 @@
 """
-Client per l'inferenza dei modelli tramite Cerebras Cloud API.
+Client per l'inferenza dei modelli (Cerebras, OpenAI, OpenRouter).
 """
 import os
 import time
@@ -8,26 +8,42 @@ from openai import OpenAI
 
 
 class ModelInferenceClient:
-    """Gestisce le chiamate di inferenza ai modelli su Cerebras."""
+    """Gestisce le chiamate di inferenza ai modelli."""
     
-    def __init__(self, model_id: str, api_key: str = None):
+    def __init__(self, model_id: str, provider: str = "cerebras"):
         """
-        Inizializza il client di inferenza per Cerebras.
+        Inizializza il client di inferenza.
         
         Args:
-            model_id: ID del modello su Cerebras
-            api_key: API key di Cerebras (opzionale se settato in ENV)
+            model_id: ID del modello
+            provider: Provider del modello ("cerebras", "openai", o "openrouter")
         """
         self.model_id = model_id
-        self.api_key = api_key or os.getenv('CEREBRAS_API_KEY')
+        self.provider = provider
         
-        if not self.api_key:
-            raise ValueError("CEREBRAS_API_KEY non trovato. Settalo nel file .env o passa come parametro.")
-        
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url="https://api.cerebras.ai/v1"
-        )
+        if provider == "cerebras":
+            api_key = os.getenv('CEREBRAS_API_KEY')
+            if not api_key:
+                raise ValueError("CEREBRAS_API_KEY non trovato nel file .env")
+            self.client = OpenAI(
+                api_key=api_key,
+                base_url="https://api.cerebras.ai/v1"
+            )
+        elif provider == "openai":
+            api_key = os.getenv('OPENAI_API_KEY')
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY non trovato nel file .env")
+            self.client = OpenAI(api_key=api_key)
+        elif provider == "openrouter":
+            api_key = os.getenv('OPENROUTER_API_KEY')
+            if not api_key:
+                raise ValueError("OPENROUTER_API_KEY non trovato nel file .env")
+            self.client = OpenAI(
+                api_key=api_key,
+                base_url="https://openrouter.ai/api/v1"
+            )
+        else:
+            raise ValueError(f"Provider '{provider}' non supportato. Usa 'cerebras', 'openai', o 'openrouter'.")
     
     def generate(
         self,
@@ -71,7 +87,7 @@ class ModelInferenceClient:
             # Estrai la risposta e i token usage
             answer = response.choices[0].message.content.strip()
             
-            # Token usage da Cerebras
+            # Token usage
             token_usage = {
                 "prompt_tokens": response.usage.prompt_tokens if response.usage else 0,
                 "completion_tokens": response.usage.completion_tokens if response.usage else 0,
