@@ -1,0 +1,21 @@
+[project]
+name = "verabench"
+version = "0.1.0"
+description = "Benchmark for Vera AI agent routing models"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.0.0",
+    "wandb>=0.16.0",
+    "python-dotenv>=1.0.0",
+    "matplotlib>=3.7.0",
+]
+
+[dependency-groups]
+dev = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

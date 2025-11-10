@@ -1,0 +1,319 @@
+{
+  "dataset_info": {
+    "name": "vera_agent_router_v0.1",
+    "version": "0.1.0",
+    "description": "Test dataset for Vera AI agent routing benchmark",
+    "created_date": "2025-11-06",
+    "total_examples": 50,
+    "agent_types": [
+      "erp_agent",
+      "crm_agent",
+      "calendar_agent",
+      "database_agent",
+      "general_assistant"
+    ],
+    "complexity_levels": ["simple", "medium", "complex"]
+  },
+  "test_cases": [
+    {
+      "id": "001",
+      "user_request": "Mostrami le fatture di ottobre",
+      "correct_agent": "erp_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "002",
+      "user_request": "Crea una nuova fattura per il cliente Rossi",
+      "correct_agent": "erp_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "003",
+      "user_request": "Quali sono gli ordini aperti?",
+      "correct_agent": "erp_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "004",
+      "user_request": "Verifica lo stato del pagamento della fattura 2024/156",
+      "correct_agent": "erp_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "005",
+      "user_request": "Ho bisogno del report delle vendite del Q3",
+      "correct_agent": "erp_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "006",
+      "user_request": "Aggiorna il prezzo del prodotto SKU-12345",
+      "correct_agent": "erp_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "007",
+      "user_request": "Gestisci l'inventario e dimmi se ci sono articoli sotto scorta che hanno ordini pendenti",
+      "correct_agent": "erp_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "008",
+      "user_request": "Sincronizza i dati di magazzino con gli ordini cliente e avvisami se ci sono discrepanze",
+      "correct_agent": "erp_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "009",
+      "user_request": "Trova il cliente Mario Bianchi",
+      "correct_agent": "crm_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "010",
+      "user_request": "Aggiungi un nuovo contatto: Elena Verdi, email elena@example.com",
+      "correct_agent": "crm_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "011",
+      "user_request": "Quali clienti non hanno effettuato ordini negli ultimi 6 mesi?",
+      "correct_agent": "crm_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "012",
+      "user_request": "Mostrami tutti i lead assegnati a Marco",
+      "correct_agent": "crm_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "013",
+      "user_request": "Aggiorna lo stato del deal con TechCorp a 'negoziazione'",
+      "correct_agent": "crm_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "014",
+      "user_request": "Crea una campagna per i clienti che hanno acquistato prodotti premium",
+      "correct_agent": "crm_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "015",
+      "user_request": "Analizza il customer lifetime value dei nostri top 20 clienti e suggerisci azioni di retention",
+      "correct_agent": "crm_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "016",
+      "user_request": "Identifica i clienti a rischio churn basandosi su engagement e storico acquisti",
+      "correct_agent": "crm_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "017",
+      "user_request": "Ho un meeting domani?",
+      "correct_agent": "calendar_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "018",
+      "user_request": "Prenota una call con il team sales per giovedì alle 15:00",
+      "correct_agent": "calendar_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "019",
+      "user_request": "Cancella l'appuntamento delle 10",
+      "correct_agent": "calendar_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "020",
+      "user_request": "Quando è libero Giovanni la prossima settimana?",
+      "correct_agent": "calendar_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "021",
+      "user_request": "Sposta il meeting di martedì a mercoledì stesso orario",
+      "correct_agent": "calendar_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "022",
+      "user_request": "Trova uno slot di 2 ore per tutti i membri del team entro venerdì",
+      "correct_agent": "calendar_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "023",
+      "user_request": "Organizza una serie di meeting ricorrenti settimanali con i partner esterni evitando conflitti",
+      "correct_agent": "calendar_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "024",
+      "user_request": "Dammi la lista di tutti i prodotti nel database",
+      "correct_agent": "database_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "025",
+      "user_request": "Esegui una query per trovare tutti gli ordini superiori a 5000 euro",
+      "correct_agent": "database_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "026",
+      "user_request": "Quante righe ci sono nella tabella customers?",
+      "correct_agent": "database_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "027",
+      "user_request": "Confronta i dati di vendita tra Q1 e Q2 per categoria prodotto",
+      "correct_agent": "database_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "028",
+      "user_request": "Estrai i dati aggregati delle transazioni per regione e mese",
+      "correct_agent": "database_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "029",
+      "user_request": "Analizza la correlazione tra volume di ordini e stagionalità negli ultimi 3 anni",
+      "correct_agent": "database_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "030",
+      "user_request": "Crea un report personalizzato incrociando dati da sales, inventory e customer tables",
+      "correct_agent": "database_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "031",
+      "user_request": "Ciao, come stai?",
+      "correct_agent": "general_assistant",
+      "complexity": "simple"
+    },
+    {
+      "id": "032",
+      "user_request": "Spiegami cos'è un sistema ERP",
+      "correct_agent": "general_assistant",
+      "complexity": "simple"
+    },
+    {
+      "id": "033",
+      "user_request": "Quali sono le best practice per gestire un team di vendita?",
+      "correct_agent": "general_assistant",
+      "complexity": "medium"
+    },
+    {
+      "id": "034",
+      "user_request": "Aiutami a scrivere un'email professionale per un cliente",
+      "correct_agent": "general_assistant",
+      "complexity": "medium"
+    },
+    {
+      "id": "035",
+      "user_request": "Suggeriscimi delle strategie di pricing per prodotti B2B",
+      "correct_agent": "general_assistant",
+      "complexity": "medium"
+    },
+    {
+      "id": "036",
+      "user_request": "Come posso migliorare il processo di onboarding dei nuovi dipendenti?",
+      "correct_agent": "general_assistant",
+      "complexity": "complex"
+    },
+    {
+      "id": "037",
+      "user_request": "Cosa ne pensi dell'intelligenza artificiale nel business?",
+      "correct_agent": "general_assistant",
+      "complexity": "simple"
+    },
+    {
+      "id": "038",
+      "user_request": "Chi ha ordinato più prodotti questo mese?",
+      "correct_agent": "crm_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "039",
+      "user_request": "Dimmi il margine di profitto sui prodotti venduti in agosto",
+      "correct_agent": "erp_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "040",
+      "user_request": "Quali meeting ho questa settimana?",
+      "correct_agent": "calendar_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "041",
+      "user_request": "Trova tutti i record dove il campo status è 'pending'",
+      "correct_agent": "database_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "042",
+      "user_request": "Il cliente ha pagato la fattura di settembre?",
+      "correct_agent": "erp_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "043",
+      "user_request": "Invia un promemoria ai clienti con fatture scadute",
+      "correct_agent": "crm_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "044",
+      "user_request": "Prenota una sala meeting per 10 persone domani pomeriggio",
+      "correct_agent": "calendar_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "045",
+      "user_request": "Esporta tutti i dati dei clienti acquisiti nel 2024",
+      "correct_agent": "database_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "046",
+      "user_request": "Come funziona il vostro sistema di gestione ordini?",
+      "correct_agent": "general_assistant",
+      "complexity": "simple"
+    },
+    {
+      "id": "047",
+      "user_request": "Verifica se ci sono sovrapposizioni tra l'inventario fisico e quello registrato nel sistema",
+      "correct_agent": "erp_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "048",
+      "user_request": "Crea un segmento di clienti VIP basato su fatturato annuale e frequenza d'acquisto",
+      "correct_agent": "crm_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "049",
+      "user_request": "Coordina gli slot di disponibilità tra 5 persone per un workshop di 2 giorni",
+      "correct_agent": "calendar_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "050",
+      "user_request": "Genera un'analisi predittiva della domanda basata su dati storici multi-tabella",
+      "correct_agent": "database_agent",
+      "complexity": "complex"
+    }
+  ]
+}
