@@ -1,5 +1,5 @@
 """
-Rate limiter per rispettare i limiti di Cerebras.
+Rate limiter per rispettare i limiti di Cerebras e OpenRouter.
 """
 import time
 
