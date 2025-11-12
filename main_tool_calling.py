@@ -12,15 +12,15 @@ from src.model_config import get_model_config
 from src.inference_client import ModelInferenceClient
 from src.metrics import calculate_cost
 from src.logger import ResultLogger, WandBLogger
-from src.rate_limiter import RateLimiter
 from src.visualizer import BenchmarkVisualizer
 from tasks.tool_calling.metrics import ToolCallingMetricsCalculator
 
 
 # Modelli da testare per questa task
 MODELS_TO_TEST = [
-    "gpt-4o-mini",
-    "gpt-4o",
+    "gemma-3-12b",
+    #"gpt-4o-mini",
+    #"gpt-4o",
 ]
 
 
@@ -65,14 +65,6 @@ class ToolCallingBenchmarkRunner:
         client = ModelInferenceClient(model_id, provider=provider)
         metrics = ToolCallingMetricsCalculator()
         
-        # Rate limiter
-        if provider == "cerebras":
-            rate_limiter = RateLimiter(requests_per_minute=25)
-        elif provider == "openrouter":
-            rate_limiter = RateLimiter(requests_per_minute=20)
-        else:
-            rate_limiter = None
-        
         # Configura W&B
         config = {
             "task": "tool_calling",
@@ -88,9 +80,6 @@ class ToolCallingBenchmarkRunner:
         
         # Esegui inferenza
         for i, test_case in enumerate(self.test_cases, 1):
-            if rate_limiter:
-                rate_limiter.wait_if_needed()
-            
             try:
                 predicted_response, latency, token_usage = client.generate(
                     system_prompt=self.system_prompt,

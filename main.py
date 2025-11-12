@@ -10,7 +10,6 @@ from src.model_config import get_model_config, get_all_models
 from src.inference_client import ModelInferenceClient
 from src.metrics import MetricsCalculator, calculate_cost
 from src.logger import ResultLogger, WandBLogger
-from src.rate_limiter import RateLimiter
 from src.visualizer import BenchmarkVisualizer
 
 class BenchmarkRunner:
@@ -26,7 +25,7 @@ class BenchmarkRunner:
     ):
         load_dotenv()
         
-        # Imposta seed per riproducibilità
+        # seed per riproducibilità
         random.seed(seed)
         self.seed = seed
         
@@ -62,13 +61,6 @@ class BenchmarkRunner:
         # Inizializza
         client = ModelInferenceClient(model_id, provider=provider)
         metrics = MetricsCalculator()
-        # Rate limiter: 25 req/min per Cerebras, 20 req/min per OpenRouter, nessun limite per OpenAI
-        if provider == "cerebras":
-            rate_limiter = RateLimiter(requests_per_minute=25)
-        elif provider == "openrouter":
-            rate_limiter = RateLimiter(requests_per_minute=20)
-        else:
-            rate_limiter = None
         
         # Configura W&B
         config = {
@@ -83,10 +75,6 @@ class BenchmarkRunner:
         
         # Esegui inferenza
         for i, test_case in enumerate(self.test_cases, 1):
-            # Rispetta rate limit (solo per Cerebras)
-            if rate_limiter:
-                rate_limiter.wait_if_needed()
-            
             try:
                 predicted_agent, latency, token_usage = client.generate(
                     system_prompt=self.system_prompt,
