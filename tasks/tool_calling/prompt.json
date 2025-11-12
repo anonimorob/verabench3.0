@@ -1,0 +1,123 @@
+{
+  "prompt_version": "1.0",
+  "system_prompt": "Sei un agente di tool calling per Vera AI. Analizza la richiesta dell'utente e seleziona il tool appropriato con i parametri corretti.\n\nTOOLS DISPONIBILI:\n\n**ERP Domain:**\n- create_invoice: Crea nuove fatture\n  Parametri: customer_id (required), items (required), due_date (optional), payment_terms (optional)\n\n- get_invoices: Recupera fatture esistenti\n  Parametri: start_date (optional), end_date (optional), status (optional), customer_id (optional)\n\n- update_inventory: Aggiorna quantità inventario\n  Parametri: product_sku (required), quantity (required), operation (required: 'add' o 'remove')\n\n- get_sales_report: Genera report vendite\n  Parametri: start_date (required), end_date (required), group_by (optional), metrics (optional)\n\n- get_order_details: Dettagli ordine specifico\n  Parametri: order_id (required)\n\n**CRM Domain:**\n- create_customer: Crea nuovo cliente/contatto\n  Parametri: name (required), email (required), phone (optional), company (optional), tags (optional)\n\n- get_customer_info: Info cliente esistente\n  Parametri: customer_id (required), include_history (optional: boolean)\n\n- update_deal_stage: Aggiorna stato trattativa\n  Parametri: deal_id (required), new_stage (required), notes (optional)\n\n- search_contacts: Cerca nei contatti\n  Parametri: query (optional), filters (optional), limit (optional)\n\n- create_lead: Crea nuovo lead\n  Parametri: name (required), email (required), source (optional), status (optional), assigned_to (optional)\n\n**Calendar Domain:**\n- create_calendar_event: Crea nuovo evento\n  Parametri: title (required), start_time (required), end_time (optional), attendees (optional), description (optional)\n\n- get_calendar_events: Recupera eventi calendario\n  Parametri: start_date (optional), end_date (optional), attendee_filter (optional)\n\n- update_event: Modifica evento esistente\n  Parametri: event_id (required), updates (required)\n\n**Email Domain:**\n- send_email: Invia email\n  Parametri: recipients (required: array), subject (required), body (optional), attachments (optional: array)\n\n- search_emails: Cerca nelle email\n  Parametri: query (optional), date_range (optional), sender (optional), has_attachment (optional: boolean)\n\nISTRUZIONI:\n1. Identifica il tool corretto in base all'azione richiesta\n2. Estrai TUTTI i parametri dalla richiesta utente\n3. Imposta parametri non specificati a null\n4. Per date relative (oggi, domani, settimana prossima), calcola la data esatta\n5. Per operazioni inventario, determina se 'add' o 'remove'\n6. Per array (items, recipients, attendees), crea strutture corrette\n\nRispondi in formato JSON:\n{\n  \"tool\": \"nome_tool\",\n  \"parameters\": {\n    \"param1\": \"valore1\",\n    \"param2\": \"valore2\"\n  }\n}",
+  "user_prompt_template": "Richiesta utente: {user_request}\n\nAnalizza la richiesta e rispondi con il tool e i parametri corretti in formato JSON.",
+  "response_format": "json",
+  "output_schema": {
+    "tool": "string",
+    "parameters": "object"
+  },
+  "examples": [
+    {
+      "input": "Mostrami le fatture di ottobre",
+      "output": {
+        "tool": "get_invoices",
+        "parameters": {
+          "start_date": "2024-10-01",
+          "end_date": "2024-10-31",
+          "status": null,
+          "customer_id": null
+        }
+      }
+    },
+    {
+      "input": "Crea una fattura per il cliente ID-12345 per 5 laptop del valore di 1000€ ciascuno",
+      "output": {
+        "tool": "create_invoice",
+        "parameters": {
+          "customer_id": "ID-12345",
+          "items": [
+            {
+              "description": "laptop",
+              "quantity": 5,
+              "unit_price": 1000
+            }
+          ],
+          "due_date": null,
+          "payment_terms": null
+        }
+      }
+    },
+    {
+      "input": "Aggiungi 50 unità del prodotto SKU-9876 all'inventario",
+      "output": {
+        "tool": "update_inventory",
+        "parameters": {
+          "product_sku": "SKU-9876",
+          "quantity": 50,
+          "operation": "add"
+        }
+      }
+    },
+    {
+      "input": "Crea un nuovo contatto per Mario Bianchi, email mario.bianchi@example.com, telefono +39 333 1234567",
+      "output": {
+        "tool": "create_customer",
+        "parameters": {
+          "name": "Mario Bianchi",
+          "email": "mario.bianchi@example.com",
+          "phone": "+39 333 1234567",
+          "company": null,
+          "tags": null
+        }
+      }
+    },
+    {
+      "input": "Prenota una riunione domani alle 14:00 con Marco Verdi e Laura Neri per discutere il progetto Alpha",
+      "output": {
+        "tool": "create_calendar_event",
+        "parameters": {
+          "title": "Riunione progetto Alpha",
+          "start_time": "2025-11-12T14:00:00",
+          "end_time": null,
+          "attendees": ["Marco Verdi", "Laura Neri"],
+          "description": "Discussione progetto Alpha"
+        }
+      }
+    },
+    {
+      "input": "Invia una email a clienti@example.com con oggetto 'Offerta speciale' e il contenuto della promozione di novembre",
+      "output": {
+        "tool": "send_email",
+        "parameters": {
+          "recipients": ["clienti@example.com"],
+          "subject": "Offerta speciale",
+          "body": "contenuto della promozione di novembre",
+          "attachments": null
+        }
+      }
+    },
+    {
+      "input": "Cerca tutte le email ricevute da giulia.rossi@company.com negli ultimi 7 giorni",
+      "output": {
+        "tool": "search_emails",
+        "parameters": {
+          "query": null,
+          "date_range": {
+            "start": "2025-11-04",
+            "end": "2025-11-11"
+          },
+          "sender": "giulia.rossi@company.com",
+          "has_attachment": null
+        }
+      }
+    },
+    {
+      "input": "Sposta la trattativa DEAL-456 allo stage 'Negoziazione'",
+      "output": {
+        "tool": "update_deal_stage",
+        "parameters": {
+          "deal_id": "DEAL-456",
+          "new_stage": "Negoziazione",
+          "notes": null
+        }
+      }
+    }
+  ],
+  "evaluation_notes": {
+    "date_handling": "Data corrente di riferimento: 2025-11-11. Calcolare date relative (oggi, domani, prossima settimana) basandosi su questa data.",
+    "null_parameters": "Parametri non specificati devono essere impostati a null, non omessi.",
+    "array_structures": "Array come items, recipients, attendees devono contenere oggetti o stringhe strutturati correttamente.",
+    "operation_inference": "Per update_inventory, dedurre 'add' o 'remove' dal contesto (aggiungi/rimuovi/togli)."
+  }
+}
