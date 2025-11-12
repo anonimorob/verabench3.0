@@ -1,52 +1,54 @@
 """
-Orchestratore principale per eseguire i benchmark.
+Benchmark per la task di Tool Calling.
+
+Testa i modelli selezionati sulla capacità di selezionare tool e parametri corretti.
 """
 import random
 from datetime import datetime
 from typing import List, Dict, Any
 from dotenv import load_dotenv
 from src.data_loader import load_dataset, load_prompt
-from src.model_config import get_model_config, get_all_models
+from src.model_config import get_model_config
 from src.inference_client import ModelInferenceClient
-from src.metrics import MetricsCalculator, calculate_cost
+from src.metrics import calculate_cost
 from src.logger import ResultLogger, WandBLogger
 from src.rate_limiter import RateLimiter
 from src.visualizer import BenchmarkVisualizer
+from tasks.tool_calling.metrics import ToolCallingMetricsCalculator
 
-class BenchmarkRunner:
-    """Esegue il benchmark su uno o più modelli."""
+
+# Modelli da testare per questa task
+MODELS_TO_TEST = [
+    "gpt-4o-mini",
+    "gpt-4o",
+]
+
+
+class ToolCallingBenchmarkRunner:
+    """Esegue il benchmark per la task di Tool Calling."""
     
-    def __init__(
-        self,
-        dataset_path: str,
-        prompt_path: str,
-        results_dir: str = "results",
-        wandb_project: str = "verabench",
-        seed: int = 42,
-    ):
+    def __init__(self, seed: int = 42):
         load_dotenv()
-        
-        # Imposta seed per riproducibilità
         random.seed(seed)
         self.seed = seed
         
-        # Carica dataset e prompt (dataset già ordinato per ID)
-        self.test_cases = load_dataset(dataset_path)
-        self.system_prompt = load_prompt(prompt_path)
+        # Carica dataset e prompt dalla cartella task
+        self.test_cases = load_dataset("tasks/tool_calling/dataset.json")
+        self.system_prompt = load_prompt("tasks/tool_calling/prompt.json")
         
         # Setup logging
         run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.result_logger = ResultLogger(results_dir, run_timestamp)
-        self.wandb_logger = WandBLogger(wandb_project)
+        self.result_logger = ResultLogger("results/tool_calling", run_timestamp)
+        self.wandb_logger = WandBLogger("verabench-tool-calling")
         
-        print(f"Dataset caricato: {len(self.test_cases)} esempi")
-        print(f"Seed impostato: {seed}")
-        print(f"Ordine test: deterministico (ordinato per ID)")
+        print(f"Task: Tool Calling")
+        print(f"Dataset: {len(self.test_cases)} esempi")
+        print(f"Seed: {seed}\n")
     
     def run_single_model(
         self,
         model_key: str,
-        max_new_tokens: int = 50,
+        max_new_tokens: int = 200,
         temperature: float = 0.0,
     ) -> Dict[str, Any]:
         """Esegue il benchmark su un singolo modello."""
@@ -56,13 +58,14 @@ class BenchmarkRunner:
         provider = model_config['provider']
         
         print(f"\n{'='*60}")
-        print(f"Benchmark: {model_name} ({provider.upper()})")
+        print(f"Modello: {model_name} ({provider.upper()})")
         print(f"{'='*60}\n")
         
         # Inizializza
         client = ModelInferenceClient(model_id, provider=provider)
-        metrics = MetricsCalculator()
-        # Rate limiter: 25 req/min per Cerebras, 20 req/min per OpenRouter, nessun limite per OpenAI
+        metrics = ToolCallingMetricsCalculator()
+        
+        # Rate limiter
         if provider == "cerebras":
             rate_limiter = RateLimiter(requests_per_minute=25)
         elif provider == "openrouter":
@@ -72,23 +75,24 @@ class BenchmarkRunner:
         
         # Configura W&B
         config = {
+            "task": "tool_calling",
             "model_id": model_id,
             "model_name": model_name,
+            "provider": provider,
             "max_new_tokens": max_new_tokens,
             "temperature": temperature,
             "seed": self.seed,
             "total_examples": len(self.test_cases),
         }
-        self.wandb_logger.start_run(model_key, config)
+        self.wandb_logger.start_run(f"tool_calling_{model_key}", config)
         
         # Esegui inferenza
         for i, test_case in enumerate(self.test_cases, 1):
-            # Rispetta rate limit (solo per Cerebras)
             if rate_limiter:
                 rate_limiter.wait_if_needed()
             
             try:
-                predicted_agent, latency, token_usage = client.generate(
+                predicted_response, latency, token_usage = client.generate(
                     system_prompt=self.system_prompt,
                     user_prompt=test_case['user_request'],
                     max_new_tokens=max_new_tokens,
@@ -103,15 +107,16 @@ class BenchmarkRunner:
                 )
                 
                 metrics.add_prediction(
-                    predicted=predicted_agent,
-                    expected=test_case['correct_agent'],
+                    predicted_response=predicted_response,
+                    expected_tool=test_case['expected_tool'],
+                    expected_parameters=test_case['expected_parameters'],
                     latency=latency,
                     cost=cost,
                 )
                 
                 if i % 10 == 0:
                     current_metrics = metrics.get_metrics()
-                    print(f"Progresso: {i}/{len(self.test_cases)} | Accuracy: {current_metrics['accuracy']:.3f}")
+                    print(f"Progresso: {i}/{len(self.test_cases)} | Tool Acc: {current_metrics['tool_selection_accuracy']:.3f}")
                 
             except Exception as e:
                 print(f"ERRORE test {test_case['id']}: {str(e)}")
@@ -131,21 +136,22 @@ class BenchmarkRunner:
         # Stampa riepilogo
         print(f"\n{'='*60}")
         print(f"RISULTATI {model_name}:")
-        print(f"Accuracy: {final_metrics['accuracy']:.2%}")
-        print(f"Latenza media: {final_metrics['latency_mean']:.3f}s")
-        print(f"Costo totale: ${final_metrics['cost_total']:.6f}")
+        print(f"Tool Selection Accuracy: {final_metrics['tool_selection_accuracy']:.2%}")
+        print(f"Parameter Correctness: {final_metrics['parameter_correctness']:.2%}")
+        print(f"  - Name Accuracy: {final_metrics['parameter_name_accuracy']:.2%}")
+        print(f"  - Value Correctness: {final_metrics['parameter_value_correctness']:.2%}")
+        print(f"  - Type Accuracy: {final_metrics['parameter_type_accuracy']:.2%}")
+        print(f"Total Cost: ${final_metrics['total_cost']:.6f}")
+        print(f"Total Latency: {final_metrics['total_latency']:.3f}s")
         print(f"{'='*60}\n")
         
         return results
     
-    def run_all_models(self, model_keys: List[str] = None) -> Dict[str, Dict[str, Any]]:
+    def run_all_models(self) -> Dict[str, Dict[str, Any]]:
         """Esegue il benchmark su tutti i modelli configurati."""
-        if model_keys is None:
-            model_keys = get_all_models()
-        
         all_results = {}
         
-        for model_key in model_keys:
+        for model_key in MODELS_TO_TEST:
             try:
                 results = self.run_single_model(model_key)
                 all_results[model_key] = results
@@ -158,14 +164,11 @@ class BenchmarkRunner:
 
 def main():
     """Funzione principale."""
-    runner = BenchmarkRunner(
-        dataset_path="router_dataset_v0.1.json",
-        prompt_path="router_prompt.json",
-        results_dir="results",
-        wandb_project="verabench",
-    )
+    runner = ToolCallingBenchmarkRunner()
     
-    print("Inizio benchmark...\n")
+    print("="*60)
+    print("BENCHMARK: Tool Calling")
+    print("="*60 + "\n")
     
     all_results = runner.run_all_models()
     

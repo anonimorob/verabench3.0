@@ -30,8 +30,24 @@ class BenchmarkVisualizer:
         for model_key, result in results.items():
             metrics = result['metrics']
             model_names.append(result['config']['model_name'])
-            accuracies.append(metrics['accuracy'] * 100)
-            costs.append(metrics['cost_total'])
+            
+            # Supporta diversi nomi di accuracy in base alla task
+            if 'accuracy' in metrics:
+                accuracies.append(metrics['accuracy'] * 100)
+            elif 'routing_accuracy' in metrics:
+                accuracies.append(metrics['routing_accuracy'] * 100)
+            elif 'tool_selection_accuracy' in metrics:
+                accuracies.append(metrics['tool_selection_accuracy'] * 100)
+            else:
+                accuracies.append(0.0)
+            
+            # Costo totale
+            if 'cost_total' in metrics:
+                costs.append(metrics['cost_total'])
+            elif 'total_cost' in metrics:
+                costs.append(metrics['total_cost'])
+            else:
+                costs.append(0.0)
         
         fig, ax = plt.subplots(figsize=(10, 6))
         scatter = ax.scatter(costs, accuracies, s=200, alpha=0.6, c=range(len(model_names)), cmap='viridis')
@@ -69,9 +85,32 @@ class BenchmarkVisualizer:
         for model_key, result in results.items():
             metrics = result['metrics']
             model_names.append(result['config']['model_name'])
-            accuracies.append(metrics['accuracy'] * 100)
-            latencies.append(metrics['latency_mean'])
-            costs.append(metrics['cost_total'])
+            
+            # Supporta diversi nomi di accuracy
+            if 'accuracy' in metrics:
+                accuracies.append(metrics['accuracy'] * 100)
+            elif 'routing_accuracy' in metrics:
+                accuracies.append(metrics['routing_accuracy'] * 100)
+            elif 'tool_selection_accuracy' in metrics:
+                accuracies.append(metrics['tool_selection_accuracy'] * 100)
+            else:
+                accuracies.append(0.0)
+            
+            # Latenza
+            if 'latency_mean' in metrics:
+                latencies.append(metrics['latency_mean'])
+            elif 'total_latency' in metrics:
+                latencies.append(metrics['total_latency'] / metrics.get('total_examples', 1))
+            else:
+                latencies.append(0.0)
+            
+            # Costo
+            if 'cost_total' in metrics:
+                costs.append(metrics['cost_total'])
+            elif 'total_cost' in metrics:
+                costs.append(metrics['total_cost'])
+            else:
+                costs.append(0.0)
         
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
         

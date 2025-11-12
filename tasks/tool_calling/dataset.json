@@ -1,0 +1,706 @@
+{
+  "dataset_info": {
+    "name": "vera_tool_calling_benchmark_v0.1",
+    "version": "0.1.0",
+    "description": "Benchmark dataset for evaluating Vera AI tool calling agent - tool selection accuracy and parameter correctness",
+    "created_date": "2025-11-11",
+    "total_examples": 50,
+    "domains": ["erp", "crm", "calendar", "email"],
+    "complexity_levels": ["simple", "medium", "complex"],
+    "evaluation_metrics": [
+      "tool_selection_accuracy",
+      "parameter_correctness",
+      "parameter_completeness"
+    ]
+  },
+  "available_tools": [
+    {
+      "tool_name": "create_invoice",
+      "domain": "erp",
+      "parameters": ["customer_id", "items", "due_date", "payment_terms"]
+    },
+    {
+      "tool_name": "get_invoices",
+      "domain": "erp",
+      "parameters": ["start_date", "end_date", "status", "customer_id"]
+    },
+    {
+      "tool_name": "update_inventory",
+      "domain": "erp",
+      "parameters": ["product_sku", "quantity", "operation"]
+    },
+    {
+      "tool_name": "get_sales_report",
+      "domain": "erp",
+      "parameters": ["start_date", "end_date", "group_by", "metrics"]
+    },
+    {
+      "tool_name": "create_customer",
+      "domain": "crm",
+      "parameters": ["name", "email", "phone", "company", "tags"]
+    },
+    {
+      "tool_name": "get_customer_info",
+      "domain": "crm",
+      "parameters": ["customer_id", "include_history"]
+    },
+    {
+      "tool_name": "update_deal_stage",
+      "domain": "crm",
+      "parameters": ["deal_id", "new_stage", "notes"]
+    },
+    {
+      "tool_name": "search_contacts",
+      "domain": "crm",
+      "parameters": ["query", "filters", "limit"]
+    },
+    {
+      "tool_name": "create_calendar_event",
+      "domain": "calendar",
+      "parameters": ["title", "start_time", "end_time", "attendees", "description"]
+    },
+    {
+      "tool_name": "get_calendar_events",
+      "domain": "calendar",
+      "parameters": ["start_date", "end_date", "attendee_filter"]
+    },
+    {
+      "tool_name": "update_event",
+      "domain": "calendar",
+      "parameters": ["event_id", "updates"]
+    },
+    {
+      "tool_name": "send_email",
+      "domain": "email",
+      "parameters": ["recipients", "subject", "body", "attachments"]
+    },
+    {
+      "tool_name": "search_emails",
+      "domain": "email",
+      "parameters": ["query", "date_range", "sender", "has_attachment"]
+    },
+    {
+      "tool_name": "get_order_details",
+      "domain": "erp",
+      "parameters": ["order_id"]
+    },
+    {
+      "tool_name": "create_lead",
+      "domain": "crm",
+      "parameters": ["name", "email", "source", "status", "assigned_to"]
+    }
+  ],
+  "test_cases": [
+    {
+      "id": "001",
+      "user_request": "Mostrami le fatture di ottobre",
+      "complexity": "simple",
+      "expected_tool": "get_invoices",
+      "expected_parameters": {
+        "start_date": "2024-10-01",
+        "end_date": "2024-10-31",
+        "status": null,
+        "customer_id": null
+      }
+    },
+    {
+      "id": "002",
+      "user_request": "Crea una fattura per il cliente ID-12345 per 5 laptop del valore di 1000€ ciascuno",
+      "complexity": "medium",
+      "expected_tool": "create_invoice",
+      "expected_parameters": {
+        "customer_id": "ID-12345",
+        "items": [
+          {
+            "description": "laptop",
+            "quantity": 5,
+            "unit_price": 1000
+          }
+        ],
+        "due_date": null,
+        "payment_terms": null
+      }
+    },
+    {
+      "id": "003",
+      "user_request": "Dammi tutte le fatture non pagate del cliente Rossi",
+      "complexity": "medium",
+      "expected_tool": "get_invoices",
+      "expected_parameters": {
+        "start_date": null,
+        "end_date": null,
+        "status": "unpaid",
+        "customer_id": "Rossi"
+      }
+    },
+    {
+      "id": "004",
+      "user_request": "Aggiungi 50 unità del prodotto SKU-9876 all'inventario",
+      "complexity": "simple",
+      "expected_tool": "update_inventory",
+      "expected_parameters": {
+        "product_sku": "SKU-9876",
+        "quantity": 50,
+        "operation": "add"
+      }
+    },
+    {
+      "id": "005",
+      "user_request": "Genera un report delle vendite del terzo trimestre 2024 raggruppato per prodotto",
+      "complexity": "medium",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2024-07-01",
+        "end_date": "2024-09-30",
+        "group_by": "product",
+        "metrics": null
+      }
+    },
+    {
+      "id": "006",
+      "user_request": "Crea un nuovo contatto per Mario Bianchi, email mario.bianchi@example.com, telefono +39 333 1234567",
+      "complexity": "simple",
+      "expected_tool": "create_customer",
+      "expected_parameters": {
+        "name": "Mario Bianchi",
+        "email": "mario.bianchi@example.com",
+        "phone": "+39 333 1234567",
+        "company": null,
+        "tags": null
+      }
+    },
+    {
+      "id": "007",
+      "user_request": "Cerca tutti i clienti che lavorano in aziende del settore tecnologico",
+      "complexity": "medium",
+      "expected_tool": "search_contacts",
+      "expected_parameters": {
+        "query": "settore tecnologico",
+        "filters": {
+          "industry": "technology"
+        },
+        "limit": null
+      }
+    },
+    {
+      "id": "008",
+      "user_request": "Sposta la trattativa DEAL-456 allo stage 'Negoziazione'",
+      "complexity": "simple",
+      "expected_tool": "update_deal_stage",
+      "expected_parameters": {
+        "deal_id": "DEAL-456",
+        "new_stage": "Negoziazione",
+        "notes": null
+      }
+    },
+    {
+      "id": "009",
+      "user_request": "Fammi vedere lo storico completo del cliente ID-789",
+      "complexity": "simple",
+      "expected_tool": "get_customer_info",
+      "expected_parameters": {
+        "customer_id": "ID-789",
+        "include_history": true
+      }
+    },
+    {
+      "id": "010",
+      "user_request": "Prenota una riunione domani alle 14:00 con Marco Verdi e Laura Neri per discutere il progetto Alpha",
+      "complexity": "medium",
+      "expected_tool": "create_calendar_event",
+      "expected_parameters": {
+        "title": "Riunione progetto Alpha",
+        "start_time": "2025-11-12T14:00:00",
+        "end_time": null,
+        "attendees": ["Marco Verdi", "Laura Neri"],
+        "description": "Discussione progetto Alpha"
+      }
+    },
+    {
+      "id": "011",
+      "user_request": "Mostrami tutti gli appuntamenti della prossima settimana",
+      "complexity": "simple",
+      "expected_tool": "get_calendar_events",
+      "expected_parameters": {
+        "start_date": "2025-11-12",
+        "end_date": "2025-11-18",
+        "attendee_filter": null
+      }
+    },
+    {
+      "id": "012",
+      "user_request": "Invia una email a clienti@example.com con oggetto 'Offerta speciale' e il contenuto della promozione di novembre",
+      "complexity": "medium",
+      "expected_tool": "send_email",
+      "expected_parameters": {
+        "recipients": ["clienti@example.com"],
+        "subject": "Offerta speciale",
+        "body": "contenuto della promozione di novembre",
+        "attachments": null
+      }
+    },
+    {
+      "id": "013",
+      "user_request": "Cerca tutte le email ricevute da giulia.rossi@company.com negli ultimi 7 giorni",
+      "complexity": "medium",
+      "expected_tool": "search_emails",
+      "expected_parameters": {
+        "query": null,
+        "date_range": {
+          "start": "2025-11-04",
+          "end": "2025-11-11"
+        },
+        "sender": "giulia.rossi@company.com",
+        "has_attachment": null
+      }
+    },
+    {
+      "id": "014",
+      "user_request": "Dammi i dettagli dell'ordine ORD-2024-1234",
+      "complexity": "simple",
+      "expected_tool": "get_order_details",
+      "expected_parameters": {
+        "order_id": "ORD-2024-1234"
+      }
+    },
+    {
+      "id": "015",
+      "user_request": "Crea un nuovo lead per Sofia Ferrari, email sofia.ferrari@startup.it, proveniente da LinkedIn",
+      "complexity": "medium",
+      "expected_tool": "create_lead",
+      "expected_parameters": {
+        "name": "Sofia Ferrari",
+        "email": "sofia.ferrari@startup.it",
+        "source": "LinkedIn",
+        "status": null,
+        "assigned_to": null
+      }
+    },
+    {
+      "id": "016",
+      "user_request": "Rimuovi 25 unità del prodotto SKU-5555 dall'inventario",
+      "complexity": "simple",
+      "expected_tool": "update_inventory",
+      "expected_parameters": {
+        "product_sku": "SKU-5555",
+        "quantity": 25,
+        "operation": "remove"
+      }
+    },
+    {
+      "id": "017",
+      "user_request": "Genera report vendite di gennaio e febbraio 2024 con metriche di revenue e profit margin",
+      "complexity": "complex",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-02-29",
+        "group_by": null,
+        "metrics": ["revenue", "profit_margin"]
+      }
+    },
+    {
+      "id": "018",
+      "user_request": "Sposta il deal ID-999 a 'Vinto' e aggiungi la nota 'Contratto firmato il 10 novembre'",
+      "complexity": "medium",
+      "expected_tool": "update_deal_stage",
+      "expected_parameters": {
+        "deal_id": "ID-999",
+        "new_stage": "Vinto",
+        "notes": "Contratto firmato il 10 novembre"
+      }
+    },
+    {
+      "id": "019",
+      "user_request": "Cerca email con allegati ricevute questa settimana",
+      "complexity": "medium",
+      "expected_tool": "search_emails",
+      "expected_parameters": {
+        "query": null,
+        "date_range": {
+          "start": "2025-11-11",
+          "end": "2025-11-11"
+        },
+        "sender": null,
+        "has_attachment": true
+      }
+    },
+    {
+      "id": "020",
+      "user_request": "Crea un meeting lunedì 18 novembre dalle 10:00 alle 11:30 con il team di sviluppo per la sprint review",
+      "complexity": "complex",
+      "expected_tool": "create_calendar_event",
+      "expected_parameters": {
+        "title": "Sprint review",
+        "start_time": "2025-11-18T10:00:00",
+        "end_time": "2025-11-18T11:30:00",
+        "attendees": ["team di sviluppo"],
+        "description": "Sprint review"
+      }
+    },
+    {
+      "id": "021",
+      "user_request": "Aggiungi un nuovo cliente: TechCorp SRL, contatto Andrea Russo, email info@techcorp.it, tag 'enterprise'",
+      "complexity": "complex",
+      "expected_tool": "create_customer",
+      "expected_parameters": {
+        "name": "Andrea Russo",
+        "email": "info@techcorp.it",
+        "phone": null,
+        "company": "TechCorp SRL",
+        "tags": ["enterprise"]
+      }
+    },
+    {
+      "id": "022",
+      "user_request": "Mostrami le fatture pagate tra marzo e maggio 2024",
+      "complexity": "medium",
+      "expected_tool": "get_invoices",
+      "expected_parameters": {
+        "start_date": "2024-03-01",
+        "end_date": "2024-05-31",
+        "status": "paid",
+        "customer_id": null
+      }
+    },
+    {
+      "id": "023",
+      "user_request": "Cerca contatti con la parola 'manager' nel titolo e che siano nella regione Lombardia",
+      "complexity": "complex",
+      "expected_tool": "search_contacts",
+      "expected_parameters": {
+        "query": "manager",
+        "filters": {
+          "region": "Lombardia",
+          "title_contains": "manager"
+        },
+        "limit": null
+      }
+    },
+    {
+      "id": "024",
+      "user_request": "Trova tutti gli eventi del calendario dove partecipa anna.verdi@company.com",
+      "complexity": "medium",
+      "expected_tool": "get_calendar_events",
+      "expected_parameters": {
+        "start_date": null,
+        "end_date": null,
+        "attendee_filter": "anna.verdi@company.com"
+      }
+    },
+    {
+      "id": "025",
+      "user_request": "Manda una mail a fornitori@supplier.com e ordini@supplier.com con oggetto 'Richiesta preventivo' allegando il file specifiche.pdf",
+      "complexity": "complex",
+      "expected_tool": "send_email",
+      "expected_parameters": {
+        "recipients": ["fornitori@supplier.com", "ordini@supplier.com"],
+        "subject": "Richiesta preventivo",
+        "body": null,
+        "attachments": ["specifiche.pdf"]
+      }
+    },
+    {
+      "id": "026",
+      "user_request": "Crea lead per Paolo Martini, email p.martini@azienda.it, fonte fiera Milano, assegnalo a Giuseppe",
+      "complexity": "complex",
+      "expected_tool": "create_lead",
+      "expected_parameters": {
+        "name": "Paolo Martini",
+        "email": "p.martini@azienda.it",
+        "source": "fiera Milano",
+        "status": null,
+        "assigned_to": "Giuseppe"
+      }
+    },
+    {
+      "id": "027",
+      "user_request": "Genera report vendite dell'anno 2024 completo raggruppato per mese",
+      "complexity": "medium",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-12-31",
+        "group_by": "month",
+        "metrics": null
+      }
+    },
+    {
+      "id": "028",
+      "user_request": "Mostrami i dettagli del cliente CUST-456 senza lo storico",
+      "complexity": "simple",
+      "expected_tool": "get_customer_info",
+      "expected_parameters": {
+        "customer_id": "CUST-456",
+        "include_history": false
+      }
+    },
+    {
+      "id": "029",
+      "user_request": "Cerca tutte le email che contengono la parola 'fattura' degli ultimi 30 giorni",
+      "complexity": "medium",
+      "expected_tool": "search_emails",
+      "expected_parameters": {
+        "query": "fattura",
+        "date_range": {
+          "start": "2025-10-12",
+          "end": "2025-11-11"
+        },
+        "sender": null,
+        "has_attachment": null
+      }
+    },
+    {
+      "id": "030",
+      "user_request": "Aggiorna l'inventario: aggiungi 100 unità di SKU-LAPTOP-001",
+      "complexity": "simple",
+      "expected_tool": "update_inventory",
+      "expected_parameters": {
+        "product_sku": "SKU-LAPTOP-001",
+        "quantity": 100,
+        "operation": "add"
+      }
+    },
+    {
+      "id": "031",
+      "user_request": "Crea una fattura per cliente ID-888 con 3 licenze software a 500€ ciascuna, pagamento a 30 giorni, scadenza 15 dicembre",
+      "complexity": "complex",
+      "expected_tool": "create_invoice",
+      "expected_parameters": {
+        "customer_id": "ID-888",
+        "items": [
+          {
+            "description": "licenze software",
+            "quantity": 3,
+            "unit_price": 500
+          }
+        ],
+        "due_date": "2024-12-15",
+        "payment_terms": "30 giorni"
+      }
+    },
+    {
+      "id": "032",
+      "user_request": "Cerca contatti con email che finisce con @gmail.com, massimo 50 risultati",
+      "complexity": "medium",
+      "expected_tool": "search_contacts",
+      "expected_parameters": {
+        "query": "@gmail.com",
+        "filters": {
+          "email_domain": "gmail.com"
+        },
+        "limit": 50
+      }
+    },
+    {
+      "id": "033",
+      "user_request": "Mostrami tutti gli appuntamenti di oggi",
+      "complexity": "simple",
+      "expected_tool": "get_calendar_events",
+      "expected_parameters": {
+        "start_date": "2025-11-11",
+        "end_date": "2025-11-11",
+        "attendee_filter": null
+      }
+    },
+    {
+      "id": "034",
+      "user_request": "Sposta la trattativa DEAL-2024-789 a 'Perso'",
+      "complexity": "simple",
+      "expected_tool": "update_deal_stage",
+      "expected_parameters": {
+        "deal_id": "DEAL-2024-789",
+        "new_stage": "Perso",
+        "notes": null
+      }
+    },
+    {
+      "id": "035",
+      "user_request": "Invia email a team@mycompany.com con oggetto 'Meeting recap' e corpo 'Grazie per la partecipazione'",
+      "complexity": "medium",
+      "expected_tool": "send_email",
+      "expected_parameters": {
+        "recipients": ["team@mycompany.com"],
+        "subject": "Meeting recap",
+        "body": "Grazie per la partecipazione",
+        "attachments": null
+      }
+    },
+    {
+      "id": "036",
+      "user_request": "Dammi le info dell'ordine numero 2024-567",
+      "complexity": "simple",
+      "expected_tool": "get_order_details",
+      "expected_parameters": {
+        "order_id": "2024-567"
+      }
+    },
+    {
+      "id": "037",
+      "user_request": "Crea un nuovo lead: Francesca Colombo, email f.colombo@startup.com, fonte Google Ads, status 'qualificato', assegnato a Maria",
+      "complexity": "complex",
+      "expected_tool": "create_lead",
+      "expected_parameters": {
+        "name": "Francesca Colombo",
+        "email": "f.colombo@startup.com",
+        "source": "Google Ads",
+        "status": "qualificato",
+        "assigned_to": "Maria"
+      }
+    },
+    {
+      "id": "038",
+      "user_request": "Genera report vendite settimanale dal 4 all'11 novembre con metriche revenue, units_sold e conversion_rate",
+      "complexity": "complex",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2025-11-04",
+        "end_date": "2025-11-11",
+        "group_by": null,
+        "metrics": ["revenue", "units_sold", "conversion_rate"]
+      }
+    },
+    {
+      "id": "039",
+      "user_request": "Rimuovi 15 pezzi di SKU-MOUSE-202 dall'inventario",
+      "complexity": "simple",
+      "expected_tool": "update_inventory",
+      "expected_parameters": {
+        "product_sku": "SKU-MOUSE-202",
+        "quantity": 15,
+        "operation": "remove"
+      }
+    },
+    {
+      "id": "040",
+      "user_request": "Trova tutte le fatture del cliente ID-2024-ABC",
+      "complexity": "simple",
+      "expected_tool": "get_invoices",
+      "expected_parameters": {
+        "start_date": null,
+        "end_date": null,
+        "status": null,
+        "customer_id": "ID-2024-ABC"
+      }
+    },
+    {
+      "id": "041",
+      "user_request": "Aggiungi cliente: Nome Elena Ricci, Società DesignLab, email e.ricci@designlab.it, telefono +39 347 9876543, tag 'design' e 'SMB'",
+      "complexity": "complex",
+      "expected_tool": "create_customer",
+      "expected_parameters": {
+        "name": "Elena Ricci",
+        "email": "e.ricci@designlab.it",
+        "phone": "+39 347 9876543",
+        "company": "DesignLab",
+        "tags": ["design", "SMB"]
+      }
+    },
+    {
+      "id": "042",
+      "user_request": "Cerca email da marco.leone@partner.com che hanno allegati",
+      "complexity": "medium",
+      "expected_tool": "search_emails",
+      "expected_parameters": {
+        "query": null,
+        "date_range": null,
+        "sender": "marco.leone@partner.com",
+        "has_attachment": true
+      }
+    },
+    {
+      "id": "043",
+      "user_request": "Programma evento giovedì prossimo alle 15:00, titolo 'Demo prodotto', invita cliente@prospect.com e sales@mycompany.com",
+      "complexity": "complex",
+      "expected_tool": "create_calendar_event",
+      "expected_parameters": {
+        "title": "Demo prodotto",
+        "start_time": "2025-11-14T15:00:00",
+        "end_time": null,
+        "attendees": ["cliente@prospect.com", "sales@mycompany.com"],
+        "description": null
+      }
+    },
+    {
+      "id": "044",
+      "user_request": "Mostra fatture scadute (unpaid) di settembre 2024",
+      "complexity": "medium",
+      "expected_tool": "get_invoices",
+      "expected_parameters": {
+        "start_date": "2024-09-01",
+        "end_date": "2024-09-30",
+        "status": "unpaid",
+        "customer_id": null
+      }
+    },
+    {
+      "id": "045",
+      "user_request": "Cerca contatti che hanno tag 'VIP' o 'enterprise', limite 20",
+      "complexity": "complex",
+      "expected_tool": "search_contacts",
+      "expected_parameters": {
+        "query": null,
+        "filters": {
+          "tags": ["VIP", "enterprise"]
+        },
+        "limit": 20
+      }
+    },
+    {
+      "id": "046",
+      "user_request": "Sposta deal DEAL-567 in 'Proposta inviata' con nota 'Proposta inviata via email il 11/11'",
+      "complexity": "medium",
+      "expected_tool": "update_deal_stage",
+      "expected_parameters": {
+        "deal_id": "DEAL-567",
+        "new_stage": "Proposta inviata",
+        "notes": "Proposta inviata via email il 11/11"
+      }
+    },
+    {
+      "id": "047",
+      "user_request": "Cerca gli appuntamenti di dicembre 2024",
+      "complexity": "simple",
+      "expected_tool": "get_calendar_events",
+      "expected_parameters": {
+        "start_date": "2024-12-01",
+        "end_date": "2024-12-31",
+        "attendee_filter": null
+      }
+    },
+    {
+      "id": "048",
+      "user_request": "Manda mail a supporto@vendor.com e ceo@vendor.com, oggetto 'Urgente: problema sistema', allegare log_errors.txt e screenshot.png",
+      "complexity": "complex",
+      "expected_tool": "send_email",
+      "expected_parameters": {
+        "recipients": ["supporto@vendor.com", "ceo@vendor.com"],
+        "subject": "Urgente: problema sistema",
+        "body": null,
+        "attachments": ["log_errors.txt", "screenshot.png"]
+      }
+    },
+    {
+      "id": "049",
+      "user_request": "Visualizza info complete con storico del cliente CUST-2024-999",
+      "complexity": "simple",
+      "expected_tool": "get_customer_info",
+      "expected_parameters": {
+        "customer_id": "CUST-2024-999",
+        "include_history": true
+      }
+    },
+    {
+      "id": "050",
+      "user_request": "Report vendite Q4 2024 (ottobre-dicembre) raggruppato per categoria prodotto con metriche revenue e average_order_value",
+      "complexity": "complex",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2024-10-01",
+        "end_date": "2024-12-31",
+        "group_by": "product_category",
+        "metrics": ["revenue", "average_order_value"]
+      }
+    }
+  ]
+}
