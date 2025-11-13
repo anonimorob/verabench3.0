@@ -38,6 +38,10 @@ class BenchmarkVisualizer:
                 accuracies.append(metrics['routing_accuracy'] * 100)
             elif 'tool_selection_accuracy' in metrics:
                 accuracies.append(metrics['tool_selection_accuracy'] * 100)
+            elif 'judgment_accuracy' in metrics:
+                accuracies.append(metrics['judgment_accuracy'] * 100)
+            elif 'retrieval_accuracy' in metrics:
+                accuracies.append(metrics['retrieval_accuracy'] * 100)
             else:
                 accuracies.append(0.0)
             
@@ -93,6 +97,10 @@ class BenchmarkVisualizer:
                 accuracies.append(metrics['routing_accuracy'] * 100)
             elif 'tool_selection_accuracy' in metrics:
                 accuracies.append(metrics['tool_selection_accuracy'] * 100)
+            elif 'judgment_accuracy' in metrics:
+                accuracies.append(metrics['judgment_accuracy'] * 100)
+            elif 'retrieval_accuracy' in metrics:
+                accuracies.append(metrics['retrieval_accuracy'] * 100)
             else:
                 accuracies.append(0.0)
             

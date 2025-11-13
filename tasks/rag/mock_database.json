@@ -1,0 +1,259 @@
+{
+  "users": [
+    {
+      "phone_number": "+971501234567",
+      "user_id": "user_001",
+      "name": "Ahmed Al-Mansoori",
+      "company_id": "company_alpha",
+      "role": "Sales Manager",
+      "department": "Sales",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": false,
+          "modules": ["sales", "inventory", "orders"]
+        },
+        "crm": {
+          "read": true,
+          "write": true,
+          "modules": ["contacts", "opportunities", "deals"]
+        },
+        "hr": {
+          "read": false,
+          "write": false,
+          "modules": []
+        }
+      },
+      "preferences": {
+        "language": "en",
+        "timezone": "Asia/Dubai",
+        "output_format": "table",
+        "notifications": true,
+        "currency": "AED"
+      },
+      "rate_limit": 100,
+      "last_login": "2025-11-13T08:30:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2025-11-12T14:20:00Z",
+          "message": "Show me sales for October",
+          "entities": ["sales", "october"],
+          "intent": "query_sales_data"
+        },
+        {
+          "timestamp": "2025-11-12T14:22:00Z",
+          "message": "What about September?",
+          "entities": ["september"],
+          "intent": "query_sales_data",
+          "context_reference": "sales"
+        },
+        {
+          "timestamp": "2025-11-12T15:10:00Z",
+          "message": "Send report to my email",
+          "entities": ["report", "email"],
+          "intent": "export_data"
+        }
+      ]
+    },
+    {
+      "phone_number": "+971509876543",
+      "user_id": "user_002",
+      "name": "Fatima Hassan",
+      "company_id": "company_alpha",
+      "role": "HR Director",
+      "department": "Human Resources",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": false,
+          "modules": ["purchases"]
+        },
+        "crm": {
+          "read": true,
+          "write": false,
+          "modules": ["contacts"]
+        },
+        "hr": {
+          "read": true,
+          "write": true,
+          "modules": ["employees", "payroll", "attendance"]
+        }
+      },
+      "preferences": {
+        "language": "ar",
+        "timezone": "Asia/Dubai",
+        "output_format": "list",
+        "notifications": false,
+        "currency": "AED"
+      },
+      "rate_limit": 150,
+      "last_login": "2025-11-13T09:15:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2025-11-11T10:00:00Z",
+          "message": "عرض حضور الموظفين",
+          "entities": ["attendance", "employees"],
+          "intent": "query_hr_data"
+        },
+        {
+          "timestamp": "2025-11-11T10:05:00Z",
+          "message": "كم موظف غائب اليوم؟",
+          "entities": ["absent", "today"],
+          "intent": "query_hr_data"
+        }
+      ]
+    },
+    {
+      "phone_number": "+971502345678",
+      "user_id": "user_003",
+      "name": "Marco Rossi",
+      "company_id": "company_alpha",
+      "role": "Inventory Analyst",
+      "department": "Operations",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": true,
+          "modules": ["inventory", "orders", "suppliers"]
+        },
+        "crm": {
+          "read": false,
+          "write": false,
+          "modules": []
+        },
+        "hr": {
+          "read": false,
+          "write": false,
+          "modules": []
+        }
+      },
+      "preferences": {
+        "language": "it",
+        "timezone": "Europe/Rome",
+        "output_format": "table",
+        "notifications": true,
+        "currency": "EUR"
+      },
+      "rate_limit": 200,
+      "last_login": "2025-11-13T07:00:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2025-11-13T07:15:00Z",
+          "message": "Mostrami lo stock di prodotto SKU-12345",
+          "entities": ["stock", "SKU-12345"],
+          "intent": "query_inventory"
+        },
+        {
+          "timestamp": "2025-11-13T07:20:00Z",
+          "message": "Aggiorna quantità a 500",
+          "entities": ["update", "quantity", "500"],
+          "intent": "update_inventory"
+        }
+      ]
+    },
+    {
+      "phone_number": "+971507654321",
+      "user_id": "user_004",
+      "name": "Sarah Johnson",
+      "company_id": "company_beta",
+      "role": "CEO",
+      "department": "Executive",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": true,
+          "modules": ["sales", "inventory", "orders", "purchases", "finance"]
+        },
+        "crm": {
+          "read": true,
+          "write": true,
+          "modules": ["contacts", "opportunities", "deals", "reports"]
+        },
+        "hr": {
+          "read": true,
+          "write": true,
+          "modules": ["employees", "payroll", "attendance", "recruitment"]
+        }
+      },
+      "preferences": {
+        "language": "en",
+        "timezone": "America/New_York",
+        "output_format": "chart",
+        "notifications": true,
+        "currency": "USD"
+      },
+      "rate_limit": 500,
+      "last_login": "2025-11-13T06:00:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2025-11-12T16:00:00Z",
+          "message": "Dashboard overview",
+          "entities": ["dashboard", "overview"],
+          "intent": "executive_summary"
+        },
+        {
+          "timestamp": "2025-11-12T16:10:00Z",
+          "message": "Q4 revenue comparison",
+          "entities": ["Q4", "revenue", "comparison"],
+          "intent": "financial_analysis"
+        }
+      ]
+    },
+    {
+      "phone_number": "+971503456789",
+      "user_id": "user_005",
+      "name": "Ali Bin Khalid",
+      "company_id": "company_alpha",
+      "role": "Junior Sales Rep",
+      "department": "Sales",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": false,
+          "modules": ["sales"]
+        },
+        "crm": {
+          "read": true,
+          "write": false,
+          "modules": ["contacts"]
+        },
+        "hr": {
+          "read": false,
+          "write": false,
+          "modules": []
+        }
+      },
+      "preferences": {
+        "language": "ar",
+        "timezone": "Asia/Dubai",
+        "output_format": "list",
+        "notifications": true,
+        "currency": "AED"
+      },
+      "rate_limit": 50,
+      "last_login": "2025-11-13T09:00:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2025-11-13T09:05:00Z",
+          "message": "عملاء جدد هذا الأسبوع",
+          "entities": ["new", "customers", "this week"],
+          "intent": "query_crm_data"
+        }
+      ]
+    }
+  ],
+  "companies": [
+    {
+      "company_id": "company_alpha",
+      "name": "Alpha Trading LLC",
+      "industry": "Retail",
+      "location": "Dubai, UAE"
+    },
+    {
+      "company_id": "company_beta",
+      "name": "Beta Enterprises Inc",
+      "industry": "Technology",
+      "location": "New York, USA"
+    }
+  ]
+}
