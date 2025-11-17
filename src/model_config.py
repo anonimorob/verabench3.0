@@ -1,5 +1,5 @@
 """
-Configurazione dei modelli disponibili (Cerebras, OpenAI, OpenRouter).
+Configurazione dei modelli disponibili (Cerebras, OpenAI, OpenRouter, Google AI Studio, NVIDIA).
 
 Cerebras Free Tier:
 - 30 requests/minute, 60K tokens/minute
@@ -12,6 +12,14 @@ OpenRouter Free Tier:
 - 20 requests/minute
 - 50 requests/day (1000 requests/day con $10 lifetime topup)
 - Richiede OPENROUTER_API_KEY in .env
+
+Google AI Studio:
+- Free tier: 15 requests/minute, 1M tokens/minute
+- Richiede GOOGLE_API_KEY in .env
+
+NVIDIA NIM:
+- Free tier per development  max 40 req per min
+- Richiede NVIDIA_API_KEY in .env
 """
 
 MODELS = {
@@ -72,6 +80,90 @@ MODELS = {
         "input_price_per_1m": 0.09,
         "output_price_per_1m": 0.16,
     },
+ 
+    # Modelli Google AI Studio
+    "gemini-2.5-flash-lite": {
+        "id": "gemini-2.5-flash-lite",
+        "name": "Gemini 2.5 Flash-Lite",
+        "params": "Unknown",
+        "provider": "google",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "gemini-2.5-flash": {
+        "id": "gemini-2.5-flash",
+        "name": "Gemini 2.5 Flash",
+        "params": "Unknown",
+        "provider": "google",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    # Modelli NVIDIA NIM
+    "deepseek-r1-distill-llama-8b": {
+        "id": "deepseek-ai/deepseek-r1-distill-llama-8b",
+        "name": "DeepSeek R1 Distill Llama 8B",
+        "params": "8B",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "gpt-oss-20b": {
+        "id": "openai/gpt-oss-20b",
+        "name": "OpenAI GPT-OSS 20B",
+        "params": "20B (MoE)",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "gpt-oss-120b": {
+        "id": "openai/gpt-oss-120b",
+        "name": "OpenAI GPT-OSS 120B",
+        "params": "120B (MoE)",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "phi-4-mini": {
+        "id": "microsoft/phi-4-mini-instruct",
+        "name": "Phi-4 Mini Instruct",
+        "params": "14B",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "phi-4-mini-flash-reasoning": {
+        "id": "microsoft/phi-4-mini-flash-reasoning",
+        "name": "Phi-4 Mini Flash Reasoning",
+        "params": "14B",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "mistral-nemo": {
+        "id": "mistralai/mistral-nemotron",
+        "name": "Mistral Nemotron",
+        "params": "12B",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
+    "qwen3-next-80b": {
+        "id": "qwen/qwen3-next-80b-a3b-instruct",
+        "name": "Qwen3 Next 80B A3B Instruct",
+        "params": "80B (MoE)",
+        "provider": "nvidia",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+    },
+
  
 }
 

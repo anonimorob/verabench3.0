@@ -1,0 +1,973 @@
+{
+  "_dataset_metadata": {
+    "name": "Vera AI - Response Generation Benchmark Dataset",
+    "version": "1.0",
+    "created_date": "2025-11-13",
+    "description": "30 test cases per valutare response generation agent su faithfulness, answer relevancy e conciseness",
+    "total_test_cases": 30,
+    
+    "test_distribution": {
+      "by_category": {
+        "permission_responses": 8,
+        "data_retrieval_responses": 8,
+        "preference_responses": 5,
+        "conversation_history_responses": 4,
+        "error_responses": 5
+      },
+      "by_language": {
+        "english": 18,
+        "italian": 7,
+        "arabic": 5
+      },
+      "by_complexity": {
+        "simple": 12,
+        "medium": 12,
+        "complex": 6
+      }
+    },
+    
+    "evaluation_metrics": {
+      "faithfulness": "DeepEval - verifica fedeltà ai fatti",
+      "answer_relevancy": "DeepEval - verifica pertinenza risposta",
+      "conciseness": "Rule-based - max 500 chars, 10 lines"
+    }
+  },
+
+  "test_cases": [
+    {
+      "id": "resp_001",
+      "category": "permission_responses",
+      "user_query": "Can I write to the ERP sales module?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "can_read": true,
+          "can_write": false,
+          "modules": ["sales", "inventory", "orders"]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["read-only", "cannot write", "sales"],
+        "must_not_include": ["you can modify", "write access granted"],
+        "tone": "informative",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_002",
+      "category": "permission_responses",
+      "user_query": "What systems can I access?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "list",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "erp": {
+            "read": true,
+            "write": false,
+            "modules": ["sales", "inventory"]
+          },
+          "crm": {
+            "read": true,
+            "write": true,
+            "modules": ["contacts", "opportunities"]
+          },
+          "hr": {
+            "read": false,
+            "write": false
+          }
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["ERP", "CRM", "read", "write"],
+        "must_not_include": ["HR access"],
+        "tone": "informative",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_003",
+      "category": "permission_responses",
+      "user_query": "Do I have full admin access?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "America/New_York"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "role": "CEO",
+          "all_systems_access": true,
+          "erp": {"read": true, "write": true},
+          "crm": {"read": true, "write": true},
+          "hr": {"read": true, "write": true}
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["full access", "all systems", "CEO"],
+        "tone": "affirmative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_004",
+      "category": "permission_responses",
+      "user_query": "Posso modificare i livelli di inventario?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "can_write": true,
+          "system": "erp",
+          "modules": ["inventory", "orders"]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["sì", "puoi modificare", "inventario"],
+        "language": "it",
+        "tone": "affirmative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_005",
+      "category": "permission_responses",
+      "user_query": "What's my API rate limit?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "rate_limit": 100,
+          "period": "per hour"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["100", "per hour"],
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_006",
+      "category": "permission_responses",
+      "user_query": "هل يمكنني الوصول إلى بيانات CRM؟",
+      "user_preferences": {
+        "language": "ar",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "can_read": true,
+          "can_write": false,
+          "system": "crm",
+          "modules": ["contacts"]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["نعم", "قراءة فقط", "CRM"],
+        "language": "ar",
+        "tone": "informative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_007",
+      "category": "permission_responses",
+      "user_query": "Which ERP modules can I access?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "list",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "system": "erp",
+          "modules": ["inventory", "orders", "suppliers"],
+          "read": true,
+          "write": true
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["inventory", "orders", "suppliers", "read", "write"],
+        "tone": "informative",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_008",
+      "category": "permission_responses",
+      "user_query": "What's my role in the company?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "role": "Sales Manager",
+          "department": "Sales",
+          "company": "Alpha Trading LLC"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["Sales Manager", "Sales department"],
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_009",
+      "category": "data_retrieval_responses",
+      "user_query": "Mostrami le vendite di ottobre",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "table",
+        "timezone": "Europe/Rome",
+        "currency": "EUR"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_sales_data",
+        "tool_result": {
+          "total_sales": 45000.00,
+          "currency": "EUR",
+          "period": "October 2024",
+          "transactions": 127,
+          "average_transaction": 354.33
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["45000", "EUR", "127", "ottobre"],
+        "language": "it",
+        "tone": "informative",
+        "format": "structured",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 500,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_010",
+      "category": "data_retrieval_responses",
+      "user_query": "Show me today's attendance",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_attendance",
+        "tool_result": {
+          "total_employees": 45,
+          "present": 42,
+          "absent": 3,
+          "date": "2025-11-13"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["42 present", "3 absent", "45 total"],
+        "tone": "informative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_011",
+      "category": "data_retrieval_responses",
+      "user_query": "عرض مبيعات الأسبوع الماضي",
+      "user_preferences": {
+        "language": "ar",
+        "output_format": "list",
+        "timezone": "Asia/Dubai",
+        "currency": "AED"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_sales_data",
+        "tool_result": {
+          "total_sales": 125000.00,
+          "currency": "AED",
+          "period": "Week 45, 2024",
+          "daily_breakdown": [
+            {"day": "Monday", "amount": 25000},
+            {"day": "Tuesday", "amount": 30000},
+            {"day": "Wednesday", "amount": 20000},
+            {"day": "Thursday", "amount": 28000},
+            {"day": "Friday", "amount": 22000}
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["125000", "AED", "أسبوع"],
+        "language": "ar",
+        "tone": "informative",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 500,
+        "max_lines": 12
+      }
+    },
+    {
+      "id": "resp_012",
+      "category": "data_retrieval_responses",
+      "user_query": "How many open opportunities do we have?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "America/New_York"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_crm_opportunities",
+        "tool_result": {
+          "total_open": 23,
+          "total_value": 450000.00,
+          "currency": "USD",
+          "by_stage": {
+            "prospecting": 8,
+            "qualification": 10,
+            "proposal": 5
+          }
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["23 opportunities", "450000", "USD"],
+        "tone": "informative",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_013",
+      "category": "data_retrieval_responses",
+      "user_query": "What's the current inventory level for SKU-12345?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_inventory",
+        "tool_result": {
+          "sku": "SKU-12345",
+          "product_name": "Widget Pro",
+          "current_stock": 500,
+          "unit": "pieces",
+          "warehouse": "Dubai Main",
+          "last_updated": "2025-11-13T07:30:00Z"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["500", "SKU-12345", "Widget Pro"],
+        "tone": "informative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_014",
+      "category": "data_retrieval_responses",
+      "user_query": "Quanti clienti nuovi abbiamo questo mese?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_new_customers",
+        "tool_result": {
+          "new_customers": 12,
+          "period": "November 2024",
+          "total_value": 28000.00,
+          "currency": "EUR"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["12", "novembre", "clienti"],
+        "language": "it",
+        "tone": "informative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_015",
+      "category": "data_retrieval_responses",
+      "user_query": "Show me Q4 revenue comparison",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "chart",
+        "timezone": "America/New_York",
+        "currency": "USD"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_revenue_comparison",
+        "tool_result": {
+          "q4_2024": 1250000.00,
+          "q4_2023": 980000.00,
+          "growth_percentage": 27.55,
+          "currency": "USD"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["1,250,000", "980,000", "27.55%", "growth"],
+        "tone": "informative",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_016",
+      "category": "data_retrieval_responses",
+      "user_query": "كم عدد الموظفين الغائبين اليوم؟",
+      "user_preferences": {
+        "language": "ar",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "tool_calling_agent",
+        "tool_name": "get_attendance",
+        "tool_result": {
+          "absent_count": 3,
+          "absent_names": ["Ali Ahmed", "Sara Mohamed", "Omar Hassan"],
+          "date": "2025-11-13"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["3", "موظفين", "غائبين"],
+        "language": "ar",
+        "tone": "informative",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 300,
+        "max_lines": 6
+      }
+    },
+    {
+      "id": "resp_017",
+      "category": "preference_responses",
+      "user_query": "What language should responses be in?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "language": "en"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["English"],
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_018",
+      "category": "preference_responses",
+      "user_query": "Show me all my preferences",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "list",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "language": "en",
+          "timezone": "Asia/Dubai",
+          "output_format": "table",
+          "notifications": true,
+          "currency": "AED"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["English", "Asia/Dubai", "table", "AED", "notifications on"],
+        "tone": "informative",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_019",
+      "category": "preference_responses",
+      "user_query": "In che fuso orario sono?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "timezone": "Europe/Rome"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["Europe/Rome", "Roma"],
+        "language": "it",
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_020",
+      "category": "preference_responses",
+      "user_query": "Am I receiving notifications?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "notifications": false
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["no", "notifications off", "disabled"],
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_021",
+      "category": "preference_responses",
+      "user_query": "What currency do I use?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "currency": "EUR"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["EUR", "Euro"],
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_022",
+      "category": "conversation_history_responses",
+      "user_query": "What did I ask about last time?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "last_query": "Send report to my email",
+          "timestamp": "2025-11-12T15:10:00Z",
+          "entities": ["report", "email"],
+          "intent": "export_data"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["last time", "report", "email"],
+        "tone": "conversational",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_023",
+      "category": "conversation_history_responses",
+      "user_query": "Quando è stata la mia ultima conversazione?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "last_conversation_time": "2025-11-13T07:20:00Z",
+          "last_message": "Aggiorna quantità a 500"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["ultima", "conversazione", "oggi"],
+        "language": "it",
+        "tone": "conversational",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_024",
+      "category": "conversation_history_responses",
+      "user_query": "Have I ever asked about inventory before?",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "has_asked": true,
+          "related_conversations": [
+            {
+              "timestamp": "2025-11-13T07:15:00Z",
+              "message": "Mostrami lo stock di prodotto SKU-12345"
+            }
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["yes", "inventory", "SKU-12345"],
+        "tone": "conversational",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_025",
+      "category": "conversation_history_responses",
+      "user_query": "ماذا ناقشنا أمس؟",
+      "user_preferences": {
+        "language": "ar",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "conversations_yesterday": [
+            {
+              "timestamp": "2025-11-11T10:00:00Z",
+              "message": "عرض حضور الموظفين"
+            },
+            {
+              "timestamp": "2025-11-11T10:05:00Z",
+              "message": "كم موظف غائب اليوم؟"
+            }
+          ],
+          "date": "2025-11-11"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["أمس", "حضور", "موظفين"],
+        "language": "ar",
+        "tone": "conversational",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_026",
+      "category": "error_responses",
+      "user_query": "Show me HR payroll data",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "access_granted": false,
+          "error": "insufficient_permissions",
+          "missing_permission": "hr.read"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["don't have permission", "HR", "access"],
+        "must_not_include": ["payroll data", "salary information"],
+        "tone": "polite_rejection",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_027",
+      "category": "error_responses",
+      "user_query": "Update my manager's permissions",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "access_granted": false,
+          "error": "insufficient_permissions",
+          "reason": "user_cannot_modify_other_users"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["cannot modify", "other users", "admin"],
+        "tone": "polite_rejection",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_028",
+      "category": "error_responses",
+      "user_query": "Mostra tutti gli utenti del sistema",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "list",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "access_granted": false,
+          "error": "insufficient_permissions",
+          "reason": "requires_admin_access"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["non hai permesso", "admin", "amministratore"],
+        "language": "it",
+        "tone": "polite_rejection",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_029",
+      "category": "error_responses",
+      "user_query": "Get user data for another employee",
+      "user_preferences": {
+        "language": "en",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "access_granted": false,
+          "error": "unauthorized_access_to_other_user"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["cannot access", "other user", "privacy"],
+        "tone": "polite_rejection",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_030",
+      "category": "error_responses",
+      "user_query": "احذف بيانات العميل",
+      "user_preferences": {
+        "language": "ar",
+        "output_format": "concise",
+        "timezone": "Asia/Dubai"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "access_granted": false,
+          "error": "insufficient_permissions",
+          "reason": "delete_operation_requires_special_permission"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": ["لا يمكن", "حذف", "صلاحيات"],
+        "language": "ar",
+        "tone": "polite_rejection",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    }
+  ]
+}

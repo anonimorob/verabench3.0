@@ -42,6 +42,8 @@ class BenchmarkVisualizer:
                 accuracies.append(metrics['judgment_accuracy'] * 100)
             elif 'retrieval_accuracy' in metrics:
                 accuracies.append(metrics['retrieval_accuracy'] * 100)
+            elif 'overall_quality' in metrics:
+                accuracies.append(metrics['overall_quality'] * 100)
             else:
                 accuracies.append(0.0)
             
@@ -61,7 +63,8 @@ class BenchmarkVisualizer:
                        xytext=(5, 5), textcoords='offset points',
                        fontsize=9, alpha=0.8)
         
-        if max(costs) / min(costs) > 10:
+        # Usa scala logaritmica solo se i costi variano di almeno 10x E non sono tutti zero
+        if min(costs) > 0 and max(costs) / min(costs) > 10:
             ax.set_xscale('log')
         
         ax.set_xlabel('Costo Totale (USD)', fontsize=12)
@@ -101,6 +104,8 @@ class BenchmarkVisualizer:
                 accuracies.append(metrics['judgment_accuracy'] * 100)
             elif 'retrieval_accuracy' in metrics:
                 accuracies.append(metrics['retrieval_accuracy'] * 100)
+            elif 'overall_quality' in metrics:
+                accuracies.append(metrics['overall_quality'] * 100)
             else:
                 accuracies.append(0.0)
             
@@ -140,7 +145,8 @@ class BenchmarkVisualizer:
         axes[2].tick_params(axis='x', rotation=45)
         axes[2].grid(True, alpha=0.3, axis='y')
         
-        if max(costs) / min(costs) > 10:
+        # Usa scala logaritmica solo se i costi variano di almeno 10x E non sono tutti zero
+        if min(costs) > 0 and max(costs) / min(costs) > 10:
             axes[2].set_yscale('log')
         
         # Salva il grafico

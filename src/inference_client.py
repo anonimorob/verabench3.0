@@ -1,22 +1,20 @@
 """
-Client per l'inferenza dei modelli (Cerebras, OpenAI, OpenRouter).
+Client per l'inferenza dei modelli (Cerebras, OpenAI, OpenRouter, Google AI Studio, NVIDIA NIM).
 """
 import os
 import time
 from typing import Dict, Tuple
 from openai import OpenAI
+import google.generativeai as genai
 
 
 class ModelInferenceClient:
-    """Gestisce le chiamate di inferenza ai modelli."""
     
     def __init__(self, model_id: str, provider: str = "cerebras"):
-        """
-        Inizializza il client di inferenza.
-        
+        """        
         Args:
             model_id: ID del modello
-            provider: Provider del modello ("cerebras", "openai", o "openrouter")
+            provider: Provider del modello ("cerebras", "openai", "openrouter", "google", o "nvidia")
         """
         self.model_id = model_id
         self.provider = provider
@@ -42,8 +40,22 @@ class ModelInferenceClient:
                 api_key=api_key,
                 base_url="https://openrouter.ai/api/v1"
             )
+        elif provider == "nvidia":
+            api_key = os.getenv('NVIDIA_API_KEY')
+            if not api_key:
+                raise ValueError("NVIDIA_API_KEY non trovato nel file .env")
+            self.client = OpenAI(
+                api_key=api_key,
+                base_url="https://integrate.api.nvidia.com/v1"
+            )
+        elif provider == "google":
+            api_key = os.getenv('GOOGLE_API_KEY')
+            if not api_key:
+                raise ValueError("GOOGLE_API_KEY non trovato nel file .env")
+            genai.configure(api_key=api_key)
+            self.client = None  # Google usa API diversa
         else:
-            raise ValueError(f"Provider '{provider}' non supportato. Usa 'cerebras', 'openai', o 'openrouter'.")
+            raise ValueError(f"Provider '{provider}' non supportato. Usa 'cerebras', 'openai', 'openrouter', 'nvidia', o 'google'.")
     
     def generate(
         self,
@@ -66,12 +78,49 @@ class ModelInferenceClient:
         Returns:
             Tupla (risposta, latenza_in_secondi, token_usage)
         """
+        start_time = time.time()
+        
+        # Google AI Studio usa API diversa
+        if self.provider == "google":
+            try:
+                # Combina system e user prompt per Google
+                full_prompt = f"{system_prompt}\n\n{user_prompt}"
+                
+                # Crea modello Gemini
+                model = genai.GenerativeModel(self.model_id)
+                
+                # Genera risposta
+                response = model.generate_content(
+                    full_prompt,
+                    generation_config=genai.GenerationConfig(
+                        max_output_tokens=max_new_tokens,
+                        temperature=temperature,
+                        top_p=top_p,
+                    )
+                )
+                
+                latency = time.time() - start_time
+                
+                # Estrai risposta
+                answer = response.text.strip()
+                
+                # Token usage (Google fornisce metadata)
+                token_usage = {
+                    "prompt_tokens": response.usage_metadata.prompt_token_count if hasattr(response, 'usage_metadata') else 0,
+                    "completion_tokens": response.usage_metadata.candidates_token_count if hasattr(response, 'usage_metadata') else 0,
+                    "total_tokens": response.usage_metadata.total_token_count if hasattr(response, 'usage_metadata') else 0,
+                }
+                
+                return answer, latency, token_usage
+                
+            except Exception as e:
+                raise RuntimeError(f"Errore durante la generazione con Google AI Studio: {str(e)}")
+        
+        # OpenAI-compatible providers (Cerebras, OpenAI, OpenRouter, NVIDIA)
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
-        
-        start_time = time.time()
         
         try:
             response = self.client.chat.completions.create(
