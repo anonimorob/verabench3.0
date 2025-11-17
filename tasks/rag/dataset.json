@@ -68,12 +68,7 @@
       "accuracy": "rule_based_exact_match"
     },
     
-    "min_passing_scores": {
-      "security_critical_tests": 1.0,
-      "completeness_high_priority": 0.85,
-      "completeness_medium_priority": 0.8,
-      "completeness_low_priority": 0.7
-    },
+  
     
     "notes": [
       "Security tests sono sempre rule-based per garantire determinismo",

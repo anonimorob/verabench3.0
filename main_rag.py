@@ -21,8 +21,13 @@ from tasks.rag.metrics import RAGMetricsCalculator
 # Modelli da testare per questa task
 MODELS_TO_TEST = [
     "gpt-4o-mini",
-    #"gpt-4o",
-    #"gemma-3-12b",
+    "gpt-4o",
+    "llama-3.3-70b",
+    "llama3.1-8b",
+    "gemma-3-12b",
+    "gemma-3-27b",
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash"
 ]
 
 

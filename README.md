@@ -1,4 +1,4 @@
-# VERABENCH# VERABENCH# VERABENCH
+# VERABENCH# VERABENCH# VERABENCH# VERABENCH
 
 
 
@@ -6,15 +6,15 @@ Sistema modulare di benchmark per testare modelli LLM su task specifiche degli a
 
 
 
-## OverviewSistema modulare di benchmark per testare modelli LLM su task specifiche degli agenti Vera AI.Sistema di benchmark per testare modelli LLM sul routing degli agenti Vera AI.
+## OverviewSistema modulare di benchmark per testare modelli LLM su task specifiche degli agenti Vera AI.
 
 
 
-VERABENCH è un framework per valutare le performance di LLM su 4 task critiche:
+VERABENCH è un framework per valutare le performance di LLM su 5 task critiche:
 
 
 
-1. **Routing**: Selezionare l'agente corretto per una richiesta utente## Overview## Caratteristiche
+1. **Routing**: Selezionare l'agente corretto per una richiesta utente## OverviewSistema modulare di benchmark per testare modelli LLM su task specifiche degli agenti Vera AI.Sistema di benchmark per testare modelli LLM sul routing degli agenti Vera AI.
 
 2. **Tool Calling**: Scegliere il tool giusto con parametri corretti
 
@@ -22,313 +22,644 @@ VERABENCH è un framework per valutare le performance di LLM su 4 task critiche:
 
 4. **RAG**: Recuperare dati dal database interno verificando permessi e completeness
 
-VERABENCH è un framework per valutare le performance di LLM su 3 task critiche:- Test di modelli LLM su dataset di routing degli agenti
+5. **Final Answer**: Generare risposte user-friendly per WhatsApp da dati upstreamVERABENCH è un framework per valutare le performance di LLM su 4 task critiche:
+
+
 
 Ogni task ha dataset dedicato, metriche specifiche e script indipendente.
 
-- Supporto per inference tramite Cerebras Cloud 
 
----
 
-1. **Routing**: Selezionare l'agente corretto per una richiesta utente- Metriche: accuratezza, latenza, costo
+---1. **Routing**: Selezionare l'agente corretto per una richiesta utente## Overview## Caratteristiche
 
-## Architettura
 
-2. **Tool Calling**: Scegliere il tool giusto con parametri corretti  - Logging locale (JSON) e su Weights & Biases
 
-```
+## Architettura2. **Tool Calling**: Scegliere il tool giusto con parametri corretti
 
-tasks/3. **Judge**: Validare output prima di inviarli all'utente (quality gate)- Sistema riproducibile con seed configurabile
 
-  routing/          → Dataset, prompt, metriche routing
 
-  tool_calling/     → Dataset, prompt, metriche tool calling- Test a parità di condizioni (temperatura = 0.0)
+```3. **Judge**: Validare output prima di inviarli all'utente (quality gate)
 
-  judge/            → Dataset, prompt, metriche judge
+tasks/
 
-  rag/              → Dataset, prompt, metriche RAG, mock databaseOgni task ha dataset dedicato, metriche specifiche e script indipendente.
+  routing/          → Dataset, prompt, metriche routing4. **RAG**: Recuperare dati dal database interno verificando permessi e completeness
+
+  tool_calling/     → Dataset, prompt, metriche tool calling
+
+  judge/            → Dataset, prompt, metriche judgeVERABENCH è un framework per valutare le performance di LLM su 3 task critiche:- Test di modelli LLM su dataset di routing degli agenti
+
+  rag/              → Dataset, prompt, metriche RAG, mock database
+
+  final_answer/     → Dataset, prompt, metriche final answer (DeepEval)Ogni task ha dataset dedicato, metriche specifiche e script indipendente.
 
   
 
-main_routing.py     → Benchmark routing## Limiti Cerebras Free Tier
+main_routing.py         → Benchmark routing- Supporto per inference tramite Cerebras Cloud 
 
-main_tool_calling.py → Benchmark tool calling  
+main_tool_calling.py    → Benchmark tool calling  
 
-main_judge.py       → Benchmark judge---
+main_judge.py           → Benchmark judge---
 
-main_rag.py         → Benchmark RAG
+main_rag.py             → Benchmark RAG
 
-```- **30 requests/minute**, 60K tokens/minute
+main_final_answer.py    → Benchmark final answer1. **Routing**: Selezionare l'agente corretto per una richiesta utente- Metriche: accuratezza, latenza, costo
 
+```
 
+## Architettura
 
-### Inference Providers## Architettura- 
+### Inference Providers
 
-
+2. **Tool Calling**: Scegliere il tool giusto con parametri corretti  - Logging locale (JSON) e su Weights & Biases
 
 Chiamiamo direttamente i provider con SDK OpenAI:
 
+```
+
+- **Cerebras**: `base_url="https://api.cerebras.ai/v1"` (free tier)
+
+- **OpenAI**: base_url default (proprietario)tasks/3. **Judge**: Validare output prima di inviarli all'utente (quality gate)- Sistema riproducibile con seed configurabile
+
+- **OpenRouter**: `base_url="https://openrouter.ai/api/v1"` (gateway multi-modello)
+
+  routing/          → Dataset, prompt, metriche routing
+
+Stesso SDK, cambia solo `base_url`.
+
+  tool_calling/     → Dataset, prompt, metriche tool calling- Test a parità di condizioni (temperatura = 0.0)
+
+---
+
+  judge/            → Dataset, prompt, metriche judge
+
+## Setup
+
+  rag/              → Dataset, prompt, metriche RAG, mock databaseOgni task ha dataset dedicato, metriche specifiche e script indipendente.
+
+### 1. Installazione
+
+  
+
+```powershell
+
+# Installa uvmain_routing.py     → Benchmark routing## Limiti Cerebras Free Tier
+
+pip install uv
+
+main_tool_calling.py → Benchmark tool calling  
+
+# Sincronizza dipendenze (include DeepEval)
+
+uv syncmain_judge.py       → Benchmark judge---
+
+```
+
+main_rag.py         → Benchmark RAG
+
+### 2. Configurazione delle API Keys
+
+```- **30 requests/minute**, 60K tokens/minute
+
+Crea un file `.env` nella root del progetto:
 
 
-- **Cerebras**: `base_url="https://api.cerebras.ai/v1"` (free tier)```
 
-- **OpenAI**: base_url default (proprietario)
+```bash
 
-- **OpenRouter**: `base_url="https://openrouter.ai/api/v1"` (gateway multi-modello)tasks/Con 50 test cases e 4 modelli (200 requests totali), benchmark eseguibile ~72 volte al giorno
-
-
-
-Stesso SDK, cambia solo `base_url`.  routing/          → Dataset, prompt, metriche routing
-
-
-
----  tool_calling/     → Dataset, prompt, metriche tool calling
-
-
-
-## Setup  judge/            → Dataset, prompt, metriche judge## Setup
-
-
-
-### 1. Installazione  
-
-
-
-```powershellmain_routing.py     → Benchmark routing### 1. Installazione con uv
-
-# Installa uv
-
-pip install uvmain_tool_calling.py → Benchmark tool calling  
-
-
-
-# Sincronizza dipendenzemain_judge.py       → Benchmark judgeAssicurati di avere `uv` installato:
-
-uv sync
-
-``````
-
-
-
-### 2. Configurazione delle API Keys```powershell
-
-
-
-Crea un file `.env` nella root del progetto:### Inference Providers
-
-
-
-```bashpip install uv
-
-# Cerebras (free tier)Chiamiamo direttamente i provider con SDK OpenAI:```
+# Cerebras (free tier)### Inference Providers## Architettura- 
 
 CEREBRAS_API_KEY=your_cerebras_api_key_here
 
 
 
-# OpenAI (proprietario)- **Cerebras**: `base_url="https://api.cerebras.ai/v1"` (free tier)
+# OpenAI (proprietario + DeepEval judge)
 
-OPENAI_API_KEY=your_openai_api_key_here### 2. Crea e attiva l'ambiente virtuale
+OPENAI_API_KEY=your_openai_api_key_hereChiamiamo direttamente i provider con SDK OpenAI:
 
 
 
-# OpenRouter (gateway)- **OpenAI**: base_url default (proprietario)
+# OpenRouter (gateway)
 
 OPENROUTER_API_KEY=your_openrouter_api_key_here
 
-- **OpenRouter**: `base_url="https://openrouter.ai/api/v1"` (gateway multi-modello)```powershell
+- **Cerebras**: `base_url="https://api.cerebras.ai/v1"` (free tier)```
 
 # Weights & Biases (opzionale)
 
-WANDB_API_KEY=your_wandb_api_key_here
+WANDB_API_KEY=your_wandb_api_key_here- **OpenAI**: base_url default (proprietario)
 
 ```
 
-Stesso SDK, cambia solo `base_url`.uv sync
+- **OpenRouter**: `base_url="https://openrouter.ai/api/v1"` (gateway multi-modello)tasks/Con 50 test cases e 4 modelli (200 requests totali), benchmark eseguibile ~72 volte al giorno
+
+**Nota**: DeepEval (task Final Answer) richiede `OPENAI_API_KEY` per LLM-as-a-Judge.
+
+
 
 ---
 
-```
+Stesso SDK, cambia solo `base_url`.  routing/          → Dataset, prompt, metriche routing
 
 ## Task 1: Routing
 
----
+
 
 **Obiettivo**: Testare la capacità del modello di selezionare l'agente corretto per ogni richiesta utente.
 
-### 3. Configurazione delle API Keys
+---  tool_calling/     → Dataset, prompt, metriche tool calling
 
 **Dataset**: 50 test cases in `tasks/routing/dataset.json`  
 
-**Script**: `main_routing.py`## Setup
+**Script**: `main_routing.py`
 
 
 
-### MetricheCrea un file `.env` nella root del progetto:
+### Metriche## Setup  judge/            → Dataset, prompt, metriche judge## Setup
 
 - **routing_accuracy**: % agenti corretti selezionati
 
-- **total_cost**: Costo totale in USD### 1. Installazione
+- **total_cost**: Costo totale in USD
 
 - **total_latency**: Latenza totale in secondi
 
-```powershell
+### 1. Installazione  
 
 ### Esecuzione
 
-```powershell```bashCopy-Item .env.example .env
+```powershell
 
 uv run python main_routing.py
 
-```# Installa uv```
+``````powershellmain_routing.py     → Benchmark routing### 1. Installazione con uv
 
 
 
----pip install uv
+---# Installa uv
 
 
 
-## Task 2: Tool CallingModifica `.env` e aggiungi le tue API keys:
+## Task 2: Tool Callingpip install uvmain_tool_calling.py → Benchmark tool calling  
 
 
 
-**Obiettivo**: Testare la capacità del modello di selezionare il tool corretto e specificare i parametri giusti.# Sincronizza dipendenze
+**Obiettivo**: Testare la capacità del modello di selezionare il tool corretto e specificare i parametri giusti.
 
 
 
-**Dataset**: 50 test cases in `tasks/tool_calling/dataset.json`  uv sync```env
+**Dataset**: 50 test cases in `tasks/tool_calling/dataset.json`  # Sincronizza dipendenzemain_judge.py       → Benchmark judgeAssicurati di avere `uv` installato:
 
 **Script**: `main_tool_calling.py`
 
-```CEREBRAS_API_KEY=your_cerebras_api_key_here
+uv sync
 
 ### Metriche
 
-- **tool_selection_accuracy**: % tool correttiWANDB_API_KEY=your_wandb_api_key_here
+- **tool_selection_accuracy**: % tool corretti``````
 
 - **parameter_name_accuracy**: % nomi parametri corretti
 
-- **parameter_value_correctness**: % valori parametri corretti### 2. Configurazione API Keys```
+- **parameter_value_correctness**: % valori parametri corretti
 
 - **parameter_type_accuracy**: % tipi parametri corretti
 
-- **parameter_correctness**: Media delle 3 metriche parametri
-
-- **total_cost**: Costo totale
-
-- **total_latency**: Latenza totale```bash**Come ottenere le API keys:**
-
-
-
-### Esecuzione# Copia template
-
-```powershell
-
-uv run python main_tool_calling.pycp .env.example .env- **Cerebras API Key**: 
-
-```
-
-  1. Vai su https://cloud.cerebras.ai/
-
-### Note Tecniche
-
-- Rimuove automaticamente markdown code blocks (```json...```) prima del parsing# Modifica .env con le tue keys  2. Crea un account gratuito
-
-- GPT-4o tende a rispondere con markdown, pulizia automatica garantisce compatibilità
-
-```  3. Vai su API Keys e crea una nuova chiave
-
----
-
-
-
-## Task 3: Judge
-
-File `.env`:- **Weights & Biases API Key**: 
-
-**Obiettivo**: Validare output degli agenti prima dell'invio all'utente (quality gate).
-
-```env  1. Vai su https://wandb.ai/settings
-
-**Dataset**: 70 test cases in `tasks/judge/dataset.json`
-
-- 62 test normaliCEREBRAS_API_KEY=your_key_here  2. Copia la tua API key dalla sezione "Danger Zone"
-
-- 8 test di consistency (eseguiti 5 volte ciascuno)
-
-OPENAI_API_KEY=your_key_here  
-
-**Script**: `main_judge.py`
-
-OPENROUTER_API_KEY=your_key_here## Utilizzo
-
-### Metriche
-
-- **judgment_accuracy**: % decisioni corrette (approve/reject)WANDB_API_KEY=your_key_here
-
-- **false_positive_rate**: % approva quando dovrebbe rifiutare (**CRITICO - target <10%**)
-
-- **false_negative_rate**: % rifiuta quando dovrebbe approvare```### Eseguire il benchmark completo
-
-- **consistency_score**: % consistency su test ripetuti (target ≥90%)
+- **parameter_correctness**: Media delle 3 metriche parametri### 2. Configurazione delle API Keys```powershell
 
 - **total_cost**: Costo totale
 
 - **total_latency**: Latenza totale
 
-**Dove ottenere le keys:**```powershell
-
-### Consistency Tests
-
-8 test vengono eseguiti 5 volte ciascuno per verificare consistenza delle decisioni:- Cerebras: https://cloud.cerebras.ai/ (free tier)uv run python main.py
-
-- Ogni test deve produrre la stessa decisione (approve/reject) in tutte le 5 run
-
-- Consistency score = media delle % di consistency per gli 8 test- OpenAI: https://platform.openai.com/api-keys```
-
-- Identifica non-determinismo anche con temperature=0.0
-
-- OpenRouter: https://openrouter.ai/keys
-
-### Perché FPR è Critico?
-
-- **False Positive**: Approva dati errati → cliente riceve info sbagliate → rischio finanziario- W&B: https://wandb.ai/settingsQuesto eseguirà il benchmark su tutti i 4 modelli configurati.
-
-- **False Negative**: Rifiuta dati corretti → cliente bloccato → disagio ma no rischio finanziario
 
 
+### EsecuzioneCrea un file `.env` nella root del progetto:### Inference Providers
 
-### Esecuzione
+```powershell
 
-```powershell---### Struttura dei risultati
-
-uv run python main_judge.py
+uv run python main_tool_calling.py
 
 ```
 
+```bashpip install uv
+
+---
+
+# Cerebras (free tier)Chiamiamo direttamente i provider con SDK OpenAI:```
+
+## Task 3: Judge
+
+CEREBRAS_API_KEY=your_cerebras_api_key_here
+
+**Obiettivo**: Validare output degli agenti prima dell'invio all'utente (quality gate).
 
 
----## Task 1: RoutingI risultati vengono salvati in due formati:
+
+**Dataset**: 70 test cases in `tasks/judge/dataset.json`
+
+- 62 test normali# OpenAI (proprietario)- **Cerebras**: `base_url="https://api.cerebras.ai/v1"` (free tier)
+
+- 8 test di consistency (eseguiti 5 volte ciascuno)
+
+OPENAI_API_KEY=your_openai_api_key_here### 2. Crea e attiva l'ambiente virtuale
+
+**Script**: `main_judge.py`
 
 
 
-## Task 4: RAG (Retrieval Augmented Generation)
+### Metriche
+
+- **judgment_accuracy**: % decisioni corrette (approve/reject)# OpenRouter (gateway)- **OpenAI**: base_url default (proprietario)
+
+- **false_positive_rate**: % approva quando dovrebbe rifiutare (**CRITICO - target <10%**)
+
+- **false_negative_rate**: % rifiuta quando dovrebbe approvareOPENROUTER_API_KEY=your_openrouter_api_key_here
+
+- **consistency_score**: % consistency su test ripetuti (target ≥90%)
+
+- **total_cost**: Costo totale- **OpenRouter**: `base_url="https://openrouter.ai/api/v1"` (gateway multi-modello)```powershell
+
+- **total_latency**: Latenza totale
+
+# Weights & Biases (opzionale)
+
+### Esecuzione
+
+```powershellWANDB_API_KEY=your_wandb_api_key_here
+
+uv run python main_judge.py
+
+``````
 
 
 
-**Obiettivo**: Testare la capacità del modello di recuperare dati dal database interno di Vera AI verificando permessi, completeness e accuracy.**Obiettivo:** Dato un messaggio utente, selezionare l'agente giusto.1. **File JSON locali** nella directory `results/`:
+---Stesso SDK, cambia solo `base_url`.uv sync
 
 
 
-**Dataset**: 25 test cases in `tasks/rag/dataset.json`   - `{model_key}_{timestamp}.json` - Metriche aggregate
+## Task 4: RAG (Retrieval Augmented Generation)---
+
+
+
+**Obiettivo**: Testare la capacità del modello di recuperare dati dal database interno di Vera AI verificando permessi, completeness e accuracy.```
+
+
+
+**Dataset**: 25 test cases in `tasks/rag/dataset.json`## Task 1: Routing
 
 - 9 test su permission retrieval
 
-- 7 test su security (access control)### Come funziona   - `{model_key}_{timestamp}_predictions.json` - Predizioni dettagliate
+- 7 test su security (access control)---
 
 - 6 test su user preferences
 
-- 5 test su conversation history
+- 5 test su conversation history**Obiettivo**: Testare la capacità del modello di selezionare l'agente corretto per ogni richiesta utente.
+
+
+
+**Mock Database**: `tasks/rag/mock_database.json`### 3. Configurazione delle API Keys
+
+- 5 utenti con diversi ruoli e permessi
+
+- 2 companies**Dataset**: 50 test cases in `tasks/routing/dataset.json`  
+
+
+
+**Script**: `main_rag.py`**Script**: `main_routing.py`## Setup
+
+
+
+### Metriche
+
+- **security_score**: Score binario 0.0-1.0 (**CRITICO - target 1.0**)
+
+- **retrieval_accuracy**: % accuratezza dati recuperati (exact match)### MetricheCrea un file `.env` nella root del progetto:
+
+- **completeness_score**: % completezza risposta
+
+- **total_cost**: Costo totale- **routing_accuracy**: % agenti corretti selezionati
+
+- **total_latency**: Latenza totale
+
+- **total_cost**: Costo totale in USD### 1. Installazione
+
+### Esecuzione
+
+```powershell- **total_latency**: Latenza totale in secondi
+
+uv run python main_rag.py
+
+``````powershell
+
+
+
+---### Esecuzione
+
+
+
+## Task 5: Final Answer (Response Generation)```powershell```bashCopy-Item .env.example .env
+
+
+
+**Obiettivo**: Testare la capacità del modello di generare risposte user-friendly per WhatsApp partendo da dati degli agenti upstream (retrieval, tool calling).uv run python main_routing.py
+
+
+
+**Dataset**: 30 test cases in `tasks/final_answer/dataset.json````# Installa uv```
+
+- 8 permission responses
+
+- 8 data retrieval responses
+
+- 5 preference responses
+
+- 4 conversation history responses---pip install uv
+
+- 5 error responses
+
+
+
+**Script**: `main_final_answer.py`
+
+## Task 2: Tool CallingModifica `.env` e aggiungi le tue API keys:
+
+### Metriche
+
+
+
+**1. Faithfulness (Fedeltà ai Fatti) - DeepEval**
+
+- Usa `FaithfulnessMetric` con LLM-as-a-Judge (gpt-4o-mini)**Obiettivo**: Testare la capacità del modello di selezionare il tool corretto e specificare i parametri giusti.# Sincronizza dipendenze
+
+- Verifica che ogni claim nella risposta sia supportato dal context
+
+- Score 0.0-1.0 (1.0 = completamente fedele, no allucinazioni)
+
+
+
+**2. Answer Relevancy (Pertinenza) - DeepEval****Dataset**: 50 test cases in `tasks/tool_calling/dataset.json`  uv sync```env
+
+- Usa `AnswerRelevancyMetric` con LLM-as-a-Judge
+
+- Verifica che la risposta affronti direttamente la domanda**Script**: `main_tool_calling.py`
+
+- Score 0.0-1.0 (1.0 = perfettamente rilevante)
+
+```CEREBRAS_API_KEY=your_cerebras_api_key_here
+
+**3. Conciseness (Concisione per WhatsApp) - Rule-Based**
+
+- Max 500 caratteri (300 per semplici, 500 per complesse)### Metriche
+
+- Max 10 linee di testo
+
+- Score 0.0-1.0 basato su % di eccesso- **tool_selection_accuracy**: % tool correttiWANDB_API_KEY=your_wandb_api_key_here
+
+
+
+**4. Overall Quality**- **parameter_name_accuracy**: % nomi parametri corretti
+
+- Media di Faithfulness + Relevancy + Conciseness
+
+- **parameter_value_correctness**: % valori parametri corretti### 2. Configurazione API Keys```
+
+**5. Cost & Latency**
+
+- Include costo delle chiamate LLM judge (DeepEval)- **parameter_type_accuracy**: % tipi parametri corretti
+
+
+
+### Perché DeepEval?- **parameter_correctness**: Media delle 3 metriche parametri
+
+- **Faithfulness** e **Answer Relevancy** sono metriche semantiche complesse
+
+- Rule-based non può catturare allucinazioni sottili o divagazioni- **total_cost**: Costo totale
+
+- LLM-as-a-Judge fornisce valutazioni più accurate e human-like
+
+- **total_latency**: Latenza totale```bash**Come ottenere le API keys:**
+
+### Esecuzione
+
+```powershell
+
+uv run python main_final_answer.py
+
+```### Esecuzione# Copia template
+
+
+
+**Nota**: La task Final Answer è più lenta perché ogni risposta viene valutata da gpt-4o-mini (judge LLM). Il costo include sia il modello testato che il judge.```powershell
+
+
+
+---uv run python main_tool_calling.pycp .env.example .env- **Cerebras API Key**: 
+
+
+
+## Modelli Configurati```
+
+
+
+In `src/model_config.py`:  1. Vai su https://cloud.cerebras.ai/
+
+
+
+```python### Note Tecniche
+
+MODELS = {
+
+    "llama-3.3-70b": {- Rimuove automaticamente markdown code blocks (```json...```) prima del parsing# Modifica .env con le tue keys  2. Crea un account gratuito
+
+        "name": "Llama 3.3 70B",
+
+        "id": "meta-llama/Llama-3.3-70B-Instruct",- GPT-4o tende a rispondere con markdown, pulizia automatica garantisce compatibilità
+
+        "provider": "cerebras",
+
+        "input_price_per_1m": 0.0,```  3. Vai su API Keys e crea una nuova chiave
+
+        "output_price_per_1m": 0.0,
+
+    },---
+
+    "gpt-4o-mini": {
+
+        "name": "GPT-4o mini",
+
+        "id": "gpt-4o-mini",
+
+        "provider": "openai",## Task 3: Judge
+
+        "input_price_per_1m": 0.15,
+
+        "output_price_per_1m": 0.60,File `.env`:- **Weights & Biases API Key**: 
+
+    },
+
+    "gpt-4o": {**Obiettivo**: Validare output degli agenti prima dell'invio all'utente (quality gate).
+
+        "name": "GPT-4o",
+
+        "id": "gpt-4o",```env  1. Vai su https://wandb.ai/settings
+
+        "provider": "openai",
+
+        "input_price_per_1m": 2.50,**Dataset**: 70 test cases in `tasks/judge/dataset.json`
+
+        "output_price_per_1m": 10.00,
+
+    },- 62 test normaliCEREBRAS_API_KEY=your_key_here  2. Copia la tua API key dalla sezione "Danger Zone"
+
+    # ... altri modelli
+
+}- 8 test di consistency (eseguiti 5 volte ciascuno)
+
+```
+
+OPENAI_API_KEY=your_key_here  
+
+---
+
+**Script**: `main_judge.py`
+
+## Riproducibilità
+
+OPENROUTER_API_KEY=your_key_here## Utilizzo
+
+- **Seed**: 42 (configurabile)
+
+- **Temperature**: 0.0 (deterministica)### Metriche
+
+- **Ordinamento**: Dataset ordinato per ID test case
+
+- **judgment_accuracy**: % decisioni corrette (approve/reject)WANDB_API_KEY=your_key_here
+
+---
+
+- **false_positive_rate**: % approva quando dovrebbe rifiutare (**CRITICO - target <10%**)
+
+## Logging
+
+- **false_negative_rate**: % rifiuta quando dovrebbe approvare```### Eseguire il benchmark completo
+
+### Locale (JSON)
+
+Risultati salvati in:- **consistency_score**: % consistency su test ripetuti (target ≥90%)
+
+```
+
+results/- **total_cost**: Costo totale
+
+  routing/YYYYMMDD_HHMMSS/
+
+  tool_calling/YYYYMMDD_HHMMSS/- **total_latency**: Latenza totale
+
+  judge/YYYYMMDD_HHMMSS/
+
+  rag/YYYYMMDD_HHMMSS/**Dove ottenere le keys:**```powershell
+
+  final_answer/YYYYMMDD_HHMMSS/
+
+```### Consistency Tests
+
+
+
+### Weights & Biases8 test vengono eseguiti 5 volte ciascuno per verificare consistenza delle decisioni:- Cerebras: https://cloud.cerebras.ai/ (free tier)uv run python main.py
+
+Run automatici con config e metriche per ogni modello.
+
+- Ogni test deve produrre la stessa decisione (approve/reject) in tutte le 5 run
+
+---
+
+- Consistency score = media delle % di consistency per gli 8 test- OpenAI: https://platform.openai.com/api-keys```
+
+## Visualizzazioni
+
+- Identifica non-determinismo anche con temperature=0.0
+
+Grafici generati automaticamente in `results/task_name/timestamp/`:
+
+- OpenRouter: https://openrouter.ai/keys
+
+- `accuracy_vs_cost.png`: Scatter plot accuracy vs costo
+
+- `comparison_bars.png`: Bar chart con accuracy, latenza, costo### Perché FPR è Critico?
+
+
+
+Il visualizzatore supporta automaticamente tutte e 5 le task con fallback per nomi metriche diversi.- **False Positive**: Approva dati errati → cliente riceve info sbagliate → rischio finanziario- W&B: https://wandb.ai/settingsQuesto eseguirà il benchmark su tutti i 4 modelli configurati.
+
+
+
+---- **False Negative**: Rifiuta dati corretti → cliente bloccato → disagio ma no rischio finanziario
+
+
+
+## Note Tecniche
+
+
+
+### DeepEval (Task Final Answer)### Esecuzione
+
+- Richiede `OPENAI_API_KEY`
+
+- Judge model configurabile (default: gpt-4o-mini)```powershell---### Struttura dei risultati
+
+- Metriche: `FaithfulnessMetric`, `AnswerRelevancyMetric`
+
+- Costo aggiuntivo per chiamate judge (~$0.0001 per valutazione)uv run python main_judge.py
+
+
+
+### Markdown Cleanup (GPT-4o)```
+
+GPT-4o risponde spesso con markdown code blocks. Tutti i metrics calculator rimuovono automaticamente ` ```json` e ` ``` ` prima del parsing.
+
+
+
+### Rate Limiting
+
+Rimosso completamente da tutte le task. Gestione errori HTTP 429 delegata al client.---## Task 1: RoutingI risultati vengono salvati in due formati:
+
+
+
+### Provider Selection
+
+Il client sceglie il `base_url` in base al campo `provider` nel model config.
+
+## Task 4: RAG (Retrieval Augmented Generation)
+
+---
+
+
+
+## Aggiungere Nuove Task
+
+**Obiettivo**: Testare la capacità del modello di recuperare dati dal database interno di Vera AI verificando permessi, completeness e accuracy.**Obiettivo:** Dato un messaggio utente, selezionare l'agente giusto.1. **File JSON locali** nella directory `results/`:
+
+1. Crea cartella `tasks/nuova_task/`
+
+2. Aggiungi `dataset.json` e `prompt.json`
+
+3. Crea `metrics.py` con classe `NuovaTaskMetricsCalculator`
+
+4. Crea `main_nuova_task.py` basandoti sui template esistenti**Dataset**: 25 test cases in `tasks/rag/dataset.json`   - `{model_key}_{timestamp}.json` - Metriche aggregate
+
+5. Aggiorna `src/visualizer.py` per supportare nuove metriche (fallback)
+
+6. Aggiorna `README.md`- 9 test su permission retrieval
+
+
+
+---- 7 test su security (access control)### Come funziona   - `{model_key}_{timestamp}_predictions.json` - Predizioni dettagliate
+
+
+
+## License- 6 test su user preferences
+
+
+
+MIT- 5 test su conversation history
+
 
 
 

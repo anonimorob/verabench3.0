@@ -18,9 +18,13 @@ from tasks.routing.metrics import RoutingMetricsCalculator
 
 # Modelli da testare per questa task
 MODELS_TO_TEST = [
-    "gemma-3-12b",
-    #"gpt-4o-mini",
-    #"gpt-4o",
+    "deepseek-r1-distill-llama-8b",
+    "gpt-oss-20b",
+    "gpt-oss-120b",
+    "phi-4-mini",
+    "phi-4-mini-flash-reasoning",
+    "mistral-nemo",
+    "qwen3-next-80b"
 ]
 
 

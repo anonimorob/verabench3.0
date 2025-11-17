@@ -21,6 +21,12 @@ from tasks.judge.metrics import JudgeMetricsCalculator
 MODELS_TO_TEST = [
     "gpt-4o-mini",
     "gpt-4o",
+    "llama-3.3-70b",
+    "llama3.1-8b",
+    "gemma-3-12b",
+    "gemma-3-27b",
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash"
 ]
 
 # Numero di run per consistency tests

@@ -8,6 +8,8 @@ dependencies = [
     "wandb>=0.16.0",
     "python-dotenv>=1.0.0",
     "matplotlib>=3.7.0",
+    "deepeval>=0.21.0",
+    "google-generativeai>=0.8.5",
 ]
 
 [dependency-groups]
