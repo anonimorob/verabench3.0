@@ -20,14 +20,20 @@ from tasks.final_answer.metrics import FinalAnswerMetricsCalculator
 
 # Modelli da testare per questa task
 MODELS_TO_TEST = [
-    "gpt-4o-mini",
-    "gpt-4o",
-    "llama-3.3-70b",
-    "llama3.1-8b",
+    "phi-4-mini",
+    "phi-4-mini-flash-reasoning",
+
     "gemma-3-12b",
     "gemma-3-27b",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash"
+
+    "llama3.1-8b",
+    "llama-3.3-70b",
+
+    "mistral-nemo",
+
+    "gpt-4o-mini",
+    "gpt-4o"
+
 ]
 
 LLM_JUDGE_MODEL = "gpt-4o-mini"
@@ -134,8 +140,13 @@ class FinalAnswerBenchmarkRunner:
                     model_config['output_price_per_1m'],
                 )
                 
+                # Print risposta modello
+                print(f"\n[{i}/{len(self.test_cases)}] Query: {test_case['user_query'][:60]}...")
+                print(f"    Category: {test_case['category']}")
+                print(f"    Model Response:\n{predicted_response[:200]}{'...' if len(predicted_response) > 200 else ''}")
+                print(f"    Evaluating with DeepEval...", end=" ")
+                
                 # Aggiungi predizione (include chiamate DeepEval)
-                print(f"[{i}/{len(self.test_cases)}] Evaluating {test_case['id']}...", end=" ")
                 metrics.add_prediction(
                     predicted_response=predicted_response,
                     test_case=test_case,
@@ -148,7 +159,7 @@ class FinalAnswerBenchmarkRunner:
                     current_metrics = metrics.get_metrics()
                     print(f"  → Faithfulness: {current_metrics['faithfulness_score']:.3f} | "
                           f"Relevancy: {current_metrics['answer_relevancy_score']:.3f} | "
-                          f"Conciseness: {current_metrics['conciseness_score']:.3f}")
+                          f"Conciseness: {current_metrics['conciseness_score']:.3f}\n")
                 
             except Exception as e:
                 print(f"✗ ERRORE test {test_case['id']}: {str(e)}")

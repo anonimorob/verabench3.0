@@ -18,16 +18,16 @@ from src.visualizer import BenchmarkVisualizer
 from tasks.rag.metrics import RAGMetricsCalculator
 
 
-# Modelli da testare per questa task
 MODELS_TO_TEST = [
+    "phi-4-mini", 
+    "phi-4-mini-flash-reasoning",   
     "gpt-4o-mini",
     "gpt-4o",
     "llama-3.3-70b",
     "llama3.1-8b",
     "gemma-3-12b",
     "gemma-3-27b",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash"
+
 ]
 
 
@@ -131,6 +131,11 @@ class RAGBenchmarkRunner:
                     model_config['output_price_per_1m'],
                 )
                 
+                # Print risposta modello
+                print(f"\n[{i}/{len(self.test_cases)}] Query: {test_case['user_query'][:60]}...")
+                print(f"    Category: {test_case['category']}")
+                print(f"    Model Response:\n{predicted_response[:250]}{'...' if len(predicted_response) > 250 else ''}")
+                
                 metrics.add_prediction(
                     predicted_response=predicted_response,
                     test_case=test_case,
@@ -140,9 +145,7 @@ class RAGBenchmarkRunner:
                 
                 if i % 5 == 0:
                     current_metrics = metrics.get_metrics()
-                    print(f"Progresso: {i}/{len(self.test_cases)} | "
-                          f"Security: {current_metrics['security_score']:.3f} | "
-                          f"Accuracy: {current_metrics['retrieval_accuracy']:.3f}")
+                    print(f"  → Accuracy: {current_metrics['retrieval_accuracy']:.3f} | Completeness: {current_metrics['completeness_score']:.3f}\n")
                 
             except Exception as e:
                 print(f"ERRORE test {test_case['id']}: {str(e)}")

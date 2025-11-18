@@ -23,8 +23,9 @@ MODELS_TO_TEST = [
     "llama3.1-8b",
     "gemma-3-12b",
     "gemma-3-27b",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash"
+    "mistral-nemo",
+    "gpt-oss-20b",
+    "phi-4-mini", 
 ]
 
 
@@ -99,6 +100,11 @@ class ToolCallingBenchmarkRunner:
                     model_config['output_price_per_1m'],
                 )
                 
+                # Print risposta modello
+                print(f"\n[{i}/{len(self.test_cases)}] Request: {test_case['user_request'][:60]}...")
+                print(f"    Expected Tool: {test_case['expected_tool']}")
+                print(f"    Model Response:\n{predicted_response[:200]}{'...' if len(predicted_response) > 200 else ''}")
+                
                 metrics.add_prediction(
                     predicted_response=predicted_response,
                     expected_tool=test_case['expected_tool'],
@@ -109,7 +115,7 @@ class ToolCallingBenchmarkRunner:
                 
                 if i % 10 == 0:
                     current_metrics = metrics.get_metrics()
-                    print(f"Progresso: {i}/{len(self.test_cases)} | Tool Acc: {current_metrics['tool_selection_accuracy']:.3f}")
+                    print(f"  → Tool Acc: {current_metrics['tool_selection_accuracy']:.3f} | Param Correct: {current_metrics['parameter_correctness']:.3f}\n")
                 
             except Exception as e:
                 print(f"ERRORE test {test_case['id']}: {str(e)}")
