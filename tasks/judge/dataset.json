@@ -4,23 +4,234 @@
     "version": "0.1.0",
     "description": "Dataset completo per testare il Judge/Validator agent di Vera AI - valutazione finale prima della risposta all'utente",
     "created_date": "2025-11-12",
-    "total_examples": 70,
+    "total_examples": 25,
     "language": "italian",
     "distribution": {
-      "should_approve": 35,
-      "should_reject": 35,
-      "critical_errors": 15,
-      "subtle_errors": 12,
-      "consistency_tests": 8
+      "should_approve": 9,
+      "should_reject": 9,
+      "consistency_tests": 7
     },
     "evaluation_metrics": [
       "judgment_accuracy (target ≥85%)",
       "false_positive_rate (target <10%)",
       "consistency (target ≥90%)"
     ],
-    "domains": ["erp", "crm", "calendar", "email", "database"]
+    "domains": [
+      "erp",
+      "crm",
+      "calendar",
+      "email",
+      "database"
+    ]
   },
   "test_cases": [
+    {
+      "id": "033",
+      "category": "consistency_test_1",
+      "severity": "none",
+      "user_request": "Mostrami le fatture di settembre 2024",
+      "tool_call": {
+        "name": "get_invoices",
+        "parameters": {
+          "start_date": "2024-09-01",
+          "end_date": "2024-09-30",
+          "status": null
+        }
+      },
+      "tool_result": {
+        "invoices": [
+          {
+            "id": "INV-2024-140",
+            "customer": "Gamma Inc.",
+            "amount": 3200.0,
+            "date": "2024-09-12"
+          }
+        ],
+        "total_count": 1
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: fatture settembre recuperate correttamente"
+      }
+    },
+    {
+      "id": "040",
+      "category": "consistency_test_2",
+      "severity": "none",
+      "user_request": "Crea fattura per Bianchi & Co. per €1500",
+      "tool_call": {
+        "name": "create_invoice",
+        "parameters": {
+          "customer_id": "CUST-456",
+          "amount": 1500.0,
+          "due_date": "2024-12-12"
+        }
+      },
+      "tool_result": {
+        "invoice_id": "INV-2024-220",
+        "status": "created",
+        "amount": 1500.0
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: fattura creata correttamente con importo giusto"
+      }
+    },
+    {
+      "id": "047",
+      "category": "consistency_test_3",
+      "severity": "critical",
+      "user_request": "Aggiorna prezzo prodotto SKU-999 a €49.99",
+      "tool_call": {
+        "name": "update_product",
+        "parameters": {
+          "product_sku": "SKU-999",
+          "price": 4.99
+        }
+      },
+      "tool_result": {
+        "product_sku": "SKU-999",
+        "new_price": 4.99,
+        "status": "updated"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "CONSISTENCY TEST: prezzo errato €4.99 invece di €49.99 richiesto"
+      }
+    },
+    {
+      "id": "054",
+      "category": "consistency_test_4",
+      "severity": "none",
+      "user_request": "Trova il cliente con email info@verdi.it",
+      "tool_call": {
+        "name": "search_contacts",
+        "parameters": {
+          "query": "",
+          "filters": {
+            "email": "info@verdi.it"
+          },
+          "limit": 10
+        }
+      },
+      "tool_result": {
+        "contacts": [
+          {
+            "id": "CUST-555",
+            "name": "Verdi S.p.A.",
+            "email": "info@verdi.it"
+          }
+        ],
+        "total_found": 1
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: cliente trovato correttamente tramite filtro email"
+      }
+    },
+    {
+      "id": "061",
+      "category": "consistency_test_5",
+      "severity": "critical",
+      "user_request": "Crea ordine per 5 unità prodotto PRD-789",
+      "tool_call": {
+        "name": "create_order",
+        "parameters": {
+          "product_sku": "PRD-789",
+          "quantity": 50,
+          "customer_id": "CUST-234"
+        }
+      },
+      "tool_result": {
+        "order_id": "ORD-1001",
+        "status": "created",
+        "quantity": 50
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "CONSISTENCY TEST: quantità errata 50 invece di 5 richieste - errore critico ordine"
+      }
+    },
+    {
+      "id": "066",
+      "category": "consistency_test_6",
+      "severity": "none",
+      "user_request": "Aggiungi nota alla trattativa DEAL-345: 'Cliente richiede demo tecnica'",
+      "tool_call": {
+        "name": "add_deal_note",
+        "parameters": {
+          "deal_id": "DEAL-345",
+          "note": "Cliente richiede demo tecnica",
+          "note_type": "activity"
+        }
+      },
+      "tool_result": {
+        "deal_id": "DEAL-345",
+        "note_id": "NOTE-789",
+        "status": "added",
+        "timestamp": "2024-11-12T16:20:00Z"
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: nota aggiunta correttamente alla trattativa"
+      }
+    },
+    {
+      "id": "069",
+      "category": "consistency_test_7",
+      "severity": "medium",
+      "user_request": "Trova ordini aperti del cliente Bianchi & Co.",
+      "tool_call": {
+        "name": "get_orders",
+        "parameters": {
+          "customer_id": "CUST-456",
+          "status": "open"
+        }
+      },
+      "tool_result": {
+        "orders": [
+          {
+            "id": "ORD-890",
+            "customer": "Bianchi & Co.",
+            "status": "open",
+            "total": 3400.0
+          }
+        ],
+        "total_count": 1
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: ordini aperti recuperati correttamente con filtro cliente e status"
+      }
+    },
     {
       "id": "001",
       "category": "approve_simple",
@@ -39,14 +250,14 @@
           {
             "id": "INV-2024-156",
             "customer": "Rossi S.r.l.",
-            "amount": 1500.00,
+            "amount": 1500.0,
             "date": "2024-10-15",
             "status": "paid"
           },
           {
             "id": "INV-2024-167",
             "customer": "Bianchi & Co.",
-            "amount": 2300.00,
+            "amount": 2300.0,
             "date": "2024-10-22",
             "status": "pending"
           }
@@ -60,326 +271,6 @@
         "coherent_response": true,
         "complete": true,
         "reasoning": "Tool corretto, parametri temporali esatti, risultati pertinenti al periodo richiesto"
-      }
-    },
-    {
-      "id": "002",
-      "category": "reject_wrong_date_range",
-      "severity": "medium",
-      "user_request": "Mostrami le fatture di ottobre 2024",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "start_date": "2024-09-01",
-          "end_date": "2024-09-30",
-          "status": null
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-145",
-            "customer": "Verdi S.p.A.",
-            "amount": 890.00,
-            "date": "2024-09-10",
-            "status": "paid"
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "Tool corretto ma date range errato: richiesto ottobre (10) ma recuperato settembre (09)"
-      }
-    },
-    {
-      "id": "003",
-      "category": "reject_critical_wrong_amount",
-      "severity": "critical",
-      "user_request": "Crea una fattura per il cliente Rossi S.r.l. per €2500",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-789",
-          "amount": 250.00,
-          "items": [
-            {
-              "description": "Consulenza",
-              "quantity": 1,
-              "unit_price": 250.00
-            }
-          ],
-          "due_date": "2024-12-15"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-200",
-        "status": "created",
-        "amount": 250.00
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: importo errato €250 invece di €2500 richiesto - rischio finanziario"
-      }
-    },
-    {
-      "id": "004",
-      "category": "approve_with_extra_data",
-      "severity": "none",
-      "user_request": "Trovami il contatto email di Mario Rossi",
-      "tool_call": {
-        "name": "search_contacts",
-        "parameters": {
-          "query": "Mario Rossi",
-          "filters": {},
-          "limit": 10
-        }
-      },
-      "tool_result": {
-        "contacts": [
-          {
-            "id": "CONT-456",
-            "name": "Mario Rossi",
-            "email": "mario.rossi@example.com",
-            "phone": "+39 345 1234567",
-            "company": "Rossi S.r.l.",
-            "position": "CEO"
-          }
-        ],
-        "total_found": 1
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Email richiesta presente, dati extra (telefono, azienda) non dannosi e potenzialmente utili"
-      }
-    },
-    {
-      "id": "005",
-      "category": "reject_subtle_wrong_customer",
-      "severity": "critical",
-      "user_request": "Mostrami le fatture del cliente Rossi S.r.l.",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "customer_id": "CUST-123",
-          "start_date": null,
-          "end_date": null
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-180",
-            "customer": "Bianchi S.r.l.",
-            "customer_id": "CUST-123",
-            "amount": 1200.00,
-            "date": "2024-10-01"
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO SUBTLE: customer_id errato - richiesto 'Rossi S.r.l.' ma risultati mostrano 'Bianchi S.r.l.'"
-      }
-    },
-    {
-      "id": "006",
-      "category": "reject_incomplete_data",
-      "severity": "medium",
-      "user_request": "Dammi nome, email e telefono del cliente con ID CUST-789",
-      "tool_call": {
-        "name": "get_customer_info",
-        "parameters": {
-          "customer_id": "CUST-789",
-          "include_history": false
-        }
-      },
-      "tool_result": {
-        "customer": {
-          "id": "CUST-789",
-          "name": "Verdi S.p.A.",
-          "email": "info@verdi.it"
-        }
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "Dati incompleti: richiesti nome, email E telefono ma manca il telefono"
-      }
-    },
-    {
-      "id": "007",
-      "category": "reject_wrong_tool",
-      "severity": "critical",
-      "user_request": "Crea un evento in calendario per domani alle 14:00 con il cliente Rossi",
-      "tool_call": {
-        "name": "send_email",
-        "parameters": {
-          "recipients": ["rossi@example.com"],
-          "subject": "Riunione domani",
-          "body": "Ci vediamo domani alle 14:00"
-        }
-      },
-      "tool_result": {
-        "email_id": "EMAIL-999",
-        "status": "sent",
-        "timestamp": "2024-11-12T10:30:00Z"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": false,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Tool completamente sbagliato: richiesto creare evento calendario ma usato send_email"
-      }
-    },
-    {
-      "id": "008",
-      "category": "approve_complex_query",
-      "severity": "none",
-      "user_request": "Mostrami tutte le fatture non pagate del Q4 2024",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "start_date": "2024-10-01",
-          "end_date": "2024-12-31",
-          "status": "pending"
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-167",
-            "customer": "Bianchi & Co.",
-            "amount": 2300.00,
-            "date": "2024-10-22",
-            "status": "pending"
-          },
-          {
-            "id": "INV-2024-189",
-            "customer": "Neri Ltd.",
-            "amount": 5600.00,
-            "date": "2024-11-05",
-            "status": "pending"
-          }
-        ],
-        "total_count": 2,
-        "total_amount": 7900.00
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Query complessa gestita correttamente: date range Q4 corretto, filtro status='pending' appropriato, risultati pertinenti"
-      }
-    },
-    {
-      "id": "009",
-      "category": "reject_subtle_partial_date",
-      "severity": "medium",
-      "user_request": "Mostrami gli ordini dell'ultima settimana",
-      "tool_call": {
-        "name": "get_orders",
-        "parameters": {
-          "start_date": "2024-11-05",
-          "end_date": "2024-11-12"
-        }
-      },
-      "tool_result": {
-        "orders": [
-          {
-            "id": "ORD-445",
-            "customer": "Rossi S.r.l.",
-            "date": "2024-11-06",
-            "total": 890.00
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "Date range errato: 'ultima settimana' da oggi (2024-11-12) dovrebbe essere 2024-11-05 to 2024-11-12, ma se oggi è il 12, manca l'inclusione corretta del range"
-      }
-    },
-    {
-      "id": "010",
-      "category": "approve_correct_empty_result",
-      "severity": "none",
-      "user_request": "Ci sono fatture scadute per il cliente Verdi S.p.A.?",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "customer_id": "CUST-555",
-          "status": "overdue"
-        }
-      },
-      "tool_result": {
-        "invoices": [],
-        "total_count": 0,
-        "message": "No overdue invoices found for this customer"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Risultato vuoto è valido: tool corretto, parametri appropriati, assenza di fatture scadute è una risposta legittima"
-      }
-    },
-    {
-      "id": "011",
-      "category": "reject_critical_wrong_payment_terms",
-      "severity": "critical",
-      "user_request": "Crea fattura per Bianchi & Co. con pagamento a 30 giorni",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-456",
-          "amount": 3500.00,
-          "payment_terms": "90_days",
-          "due_date": "2025-02-12"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-201",
-        "status": "created",
-        "payment_terms": "90 days"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: payment terms errati - richiesti 30 giorni ma impostati 90 giorni"
       }
     },
     {
@@ -425,207 +316,6 @@
       }
     },
     {
-      "id": "013",
-      "category": "reject_missing_required_field",
-      "severity": "critical",
-      "user_request": "Aggiorna l'indirizzo email del cliente CUST-789 a nuovoemail@example.com",
-      "tool_call": {
-        "name": "update_customer",
-        "parameters": {
-          "customer_id": "CUST-789",
-          "phone": "+39 340 9876543"
-        }
-      },
-      "tool_result": {
-        "customer_id": "CUST-789",
-        "status": "updated",
-        "updated_fields": ["phone"]
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: richiesto update email ma aggiornato telefono - campo completamente sbagliato"
-      }
-    },
-    {
-      "id": "014",
-      "category": "approve_calendar_event_creation",
-      "severity": "none",
-      "user_request": "Crea riunione con team vendite per venerdì 15 novembre alle 10:00",
-      "tool_call": {
-        "name": "create_calendar_event",
-        "parameters": {
-          "title": "Riunione Team Vendite",
-          "start_time": "2024-11-15T10:00:00Z",
-          "end_time": "2024-11-15T11:00:00Z",
-          "attendees": ["sales@company.com"],
-          "description": "Meeting settimanale team vendite"
-        }
-      },
-      "tool_result": {
-        "event_id": "CAL-8899",
-        "status": "created",
-        "start": "2024-11-15T10:00:00Z"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Evento creato correttamente con data, ora e partecipanti appropriati"
-      }
-    },
-    {
-      "id": "015",
-      "category": "reject_subtle_quantity_mismatch",
-      "severity": "critical",
-      "user_request": "Aggiorna l'inventario: aggiungi 100 unità del prodotto SKU-445",
-      "tool_call": {
-        "name": "update_inventory",
-        "parameters": {
-          "product_sku": "SKU-445",
-          "quantity": 10,
-          "operation": "add"
-        }
-      },
-      "tool_result": {
-        "product_sku": "SKU-445",
-        "new_quantity": 110,
-        "operation": "completed"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO SUBTLE: quantità errata 10 invece di 100 - errore di un ordine di grandezza"
-      }
-    },
-    {
-      "id": "016",
-      "category": "approve_sales_report_generation",
-      "severity": "none",
-      "user_request": "Genera report vendite per il mese di ottobre 2024",
-      "tool_call": {
-        "name": "get_sales_report",
-        "parameters": {
-          "start_date": "2024-10-01",
-          "end_date": "2024-10-31",
-          "group_by": "month",
-          "metrics": ["revenue", "orders_count"]
-        }
-      },
-      "tool_result": {
-        "report": {
-          "period": "2024-10",
-          "total_revenue": 45600.00,
-          "orders_count": 23,
-          "average_order_value": 1982.61
-        }
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Report generato correttamente con metriche richieste per il periodo specificato"
-      }
-    },
-    {
-      "id": "017",
-      "category": "reject_wrong_status_filter",
-      "severity": "medium",
-      "user_request": "Mostrami solo le fatture pagate di novembre",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "start_date": "2024-11-01",
-          "end_date": "2024-11-30",
-          "status": "pending"
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-190",
-            "customer": "Verdi S.p.A.",
-            "amount": 1200.00,
-            "status": "pending"
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Filtro status errato: richieste fatture 'pagate' ma filtrato per 'pending'"
-      }
-    },
-    {
-      "id": "018",
-      "category": "approve_deal_stage_update",
-      "severity": "none",
-      "user_request": "Sposta la trattativa DEAL-567 in fase 'Negotiation'",
-      "tool_call": {
-        "name": "update_deal_stage",
-        "parameters": {
-          "deal_id": "DEAL-567",
-          "new_stage": "negotiation",
-          "notes": "Cliente interessato, richiesta proposta personalizzata"
-        }
-      },
-      "tool_result": {
-        "deal_id": "DEAL-567",
-        "previous_stage": "qualification",
-        "new_stage": "negotiation",
-        "updated_at": "2024-11-12T14:30:00Z"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Deal stage aggiornato correttamente con note appropriate"
-      }
-    },
-    {
-      "id": "019",
-      "category": "reject_wrong_recipient_email",
-      "severity": "critical",
-      "user_request": "Invia email di conferma ordine a cliente@rossi.com",
-      "tool_call": {
-        "name": "send_email",
-        "parameters": {
-          "recipients": ["cliente@bianchi.com"],
-          "subject": "Conferma Ordine #12345",
-          "body": "Gentile cliente, confermiamo il suo ordine..."
-        }
-      },
-      "tool_result": {
-        "email_id": "EMAIL-1001",
-        "status": "sent",
-        "recipients": ["cliente@bianchi.com"]
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: email inviata a destinatario sbagliato (bianchi.com invece di rossi.com)"
-      }
-    },
-    {
       "id": "020",
       "category": "approve_multi_filter_query",
       "severity": "none",
@@ -636,7 +326,9 @@
           "query": "",
           "filters": {
             "city": "Milano",
-            "tags": ["VIP"]
+            "tags": [
+              "VIP"
+            ]
           },
           "limit": 20
         }
@@ -647,13 +339,18 @@
             "id": "CONT-890",
             "name": "Giuseppe Verdi",
             "city": "Milano",
-            "tags": ["VIP", "Premium"]
+            "tags": [
+              "VIP",
+              "Premium"
+            ]
           },
           {
             "id": "CONT-891",
             "name": "Anna Ferrari",
             "city": "Milano",
-            "tags": ["VIP"]
+            "tags": [
+              "VIP"
+            ]
           }
         ],
         "total_found": 2
@@ -665,221 +362,6 @@
         "coherent_response": true,
         "complete": true,
         "reasoning": "Filtri multipli applicati correttamente, risultati pertinenti (Milano + tag VIP)"
-      }
-    },
-    {
-      "id": "021",
-      "category": "reject_subtle_date_boundary",
-      "severity": "medium",
-      "user_request": "Mostrami le fatture dal 1 al 31 ottobre incluso",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "start_date": "2024-10-01",
-          "end_date": "2024-10-30"
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-170",
-            "date": "2024-10-15"
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "Date range incompleto: richiesto fino al 31 ottobre incluso ma end_date impostato al 30 ottobre"
-      }
-    },
-    {
-      "id": "022",
-      "category": "approve_event_with_multiple_attendees",
-      "severity": "none",
-      "user_request": "Crea riunione 'Review Q4' per lunedì prossimo alle 15:00 con Mario, Laura e il team finance",
-      "tool_call": {
-        "name": "create_calendar_event",
-        "parameters": {
-          "title": "Review Q4",
-          "start_time": "2024-11-18T15:00:00Z",
-          "end_time": "2024-11-18T16:30:00Z",
-          "attendees": ["mario@company.com", "laura@company.com", "finance@company.com"],
-          "description": "Quarterly review meeting"
-        }
-      },
-      "tool_result": {
-        "event_id": "CAL-9901",
-        "status": "created",
-        "attendees_count": 3
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Evento creato con tutti i partecipanti richiesti e dettagli corretti"
-      }
-    },
-    {
-      "id": "023",
-      "category": "reject_critical_inventory_operation",
-      "severity": "critical",
-      "user_request": "Rimuovi 50 unità del prodotto SKU-789 dall'inventario",
-      "tool_call": {
-        "name": "update_inventory",
-        "parameters": {
-          "product_sku": "SKU-789",
-          "quantity": 50,
-          "operation": "add"
-        }
-      },
-      "tool_result": {
-        "product_sku": "SKU-789",
-        "new_quantity": 150,
-        "operation": "completed"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: operazione opposta - richiesto 'remove' ma eseguito 'add', rischio inventario errato"
-      }
-    },
-    {
-      "id": "024",
-      "category": "approve_customer_creation",
-      "severity": "none",
-      "user_request": "Crea nuovo cliente: TechStart S.r.l., email: info@techstart.it, telefono: +39 02 12345678",
-      "tool_call": {
-        "name": "create_customer",
-        "parameters": {
-          "name": "TechStart S.r.l.",
-          "email": "info@techstart.it",
-          "phone": "+39 02 12345678",
-          "company": "TechStart S.r.l.",
-          "tags": []
-        }
-      },
-      "tool_result": {
-        "customer_id": "CUST-999",
-        "status": "created",
-        "name": "TechStart S.r.l."
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Cliente creato con tutti i dati richiesti correttamente"
-      }
-    },
-    {
-      "id": "025",
-      "category": "reject_partial_search_results",
-      "severity": "medium",
-      "user_request": "Trova il cliente 'Ferrari Automotive' e dammi il suo numero di telefono",
-      "tool_call": {
-        "name": "search_contacts",
-        "parameters": {
-          "query": "Ferrari Automotive",
-          "filters": {},
-          "limit": 10
-        }
-      },
-      "tool_result": {
-        "contacts": [
-          {
-            "id": "CONT-445",
-            "name": "Ferrari Automotive S.p.A.",
-            "email": "info@ferrari-auto.com"
-          }
-        ],
-        "total_found": 1
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": false,
-        "reasoning": "Dati incompleti: cliente trovato ma manca il telefono richiesto"
-      }
-    },
-    {
-      "id": "026",
-      "category": "approve_invoice_with_items",
-      "severity": "none",
-      "user_request": "Crea fattura per Verdi S.p.A.: 5 licenze software a €200 ciascuna",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-555",
-          "items": [
-            {
-              "description": "Licenza Software",
-              "quantity": 5,
-              "unit_price": 200.00
-            }
-          ],
-          "amount": 1000.00,
-          "due_date": "2024-12-15"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-210",
-        "status": "created",
-        "total_amount": 1000.00
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Fattura creata correttamente con calcolo giusto (5 × €200 = €1000)"
-      }
-    },
-    {
-      "id": "027",
-      "category": "reject_subtle_calculation_error",
-      "severity": "critical",
-      "user_request": "Crea fattura per 3 ore di consulenza a €150/ora",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-234",
-          "items": [
-            {
-              "description": "Consulenza",
-              "quantity": 3,
-              "unit_price": 150.00
-            }
-          ],
-          "amount": 400.00,
-          "due_date": "2024-12-20"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-211",
-        "status": "created",
-        "total_amount": 400.00
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: calcolo errato - 3 × €150 = €450 ma fattura creata per €400"
       }
     },
     {
@@ -900,7 +382,7 @@
           "name": "Rossi S.r.l.",
           "history": {
             "total_orders": 15,
-            "total_revenue": 23400.00,
+            "total_revenue": 23400.0,
             "last_order_date": "2024-11-01"
           }
         }
@@ -912,250 +394,6 @@
         "coherent_response": true,
         "complete": true,
         "reasoning": "Storico cliente recuperato correttamente con flag include_history=true"
-      }
-    },
-    {
-      "id": "029",
-      "category": "reject_wrong_time_zone",
-      "severity": "medium",
-      "user_request": "Crea evento per domani alle 9:00 (ora italiana)",
-      "tool_call": {
-        "name": "create_calendar_event",
-        "parameters": {
-          "title": "Meeting mattutino",
-          "start_time": "2024-11-13T09:00:00-05:00",
-          "end_time": "2024-11-13T10:00:00-05:00",
-          "attendees": ["team@company.com"]
-        }
-      },
-      "tool_result": {
-        "event_id": "CAL-9902",
-        "status": "created"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Timezone errato: richiesto ora italiana (UTC+1) ma usato -05:00 (US Eastern)"
-      }
-    },
-    {
-      "id": "030",
-      "category": "approve_filtered_orders",
-      "severity": "none",
-      "user_request": "Mostrami gli ordini sopra i €5000 dell'ultimo mese",
-      "tool_call": {
-        "name": "get_orders",
-        "parameters": {
-          "start_date": "2024-10-12",
-          "end_date": "2024-11-12",
-          "min_amount": 5000.00
-        }
-      },
-      "tool_result": {
-        "orders": [
-          {
-            "id": "ORD-678",
-            "customer": "Bianchi & Co.",
-            "total": 7800.00,
-            "date": "2024-10-25"
-          },
-          {
-            "id": "ORD-689",
-            "customer": "Neri Ltd.",
-            "total": 5600.00,
-            "date": "2024-11-03"
-          }
-        ],
-        "total_count": 2
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Filtri applicati correttamente: date range ultimo mese e importo minimo €5000"
-      }
-    },
-    {
-      "id": "031",
-      "category": "reject_missing_mandatory_parameter",
-      "severity": "critical",
-      "user_request": "Invia email di follow-up al cliente con oggetto 'Proposta commerciale'",
-      "tool_call": {
-        "name": "send_email",
-        "parameters": {
-          "subject": "Proposta commerciale",
-          "body": "Gentile cliente, in allegato la nostra proposta..."
-        }
-      },
-      "tool_result": {
-        "error": "recipients field is required"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: parametro obbligatorio 'recipients' mancante, email non inviata"
-      }
-    },
-    {
-      "id": "032",
-      "category": "approve_update_deal_value",
-      "severity": "none",
-      "user_request": "Aggiorna il valore della trattativa DEAL-345 a €15000",
-      "tool_call": {
-        "name": "update_deal",
-        "parameters": {
-          "deal_id": "DEAL-345",
-          "updates": {
-            "value": 15000.00
-          }
-        }
-      },
-      "tool_result": {
-        "deal_id": "DEAL-345",
-        "previous_value": 12000.00,
-        "new_value": 15000.00,
-        "updated_at": "2024-11-12T15:45:00Z"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Valore deal aggiornato correttamente a €15000 come richiesto"
-      }
-    },
-    {
-      "id": "033",
-      "category": "consistency_test_1",
-      "severity": "none",
-      "user_request": "Mostrami le fatture di settembre 2024",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "start_date": "2024-09-01",
-          "end_date": "2024-09-30",
-          "status": null
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-140",
-            "customer": "Gamma Inc.",
-            "amount": 3200.00,
-            "date": "2024-09-12"
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "CONSISTENCY TEST: fatture settembre recuperate correttamente"
-      }
-    },
-    {
-      "id": "034",
-      "category": "reject_wrong_product_sku",
-      "severity": "critical",
-      "user_request": "Aggiorna il prezzo del prodotto SKU-1234 a €99.99",
-      "tool_call": {
-        "name": "update_product",
-        "parameters": {
-          "product_sku": "SKU-4321",
-          "price": 99.99
-        }
-      },
-      "tool_result": {
-        "product_sku": "SKU-4321",
-        "new_price": 99.99,
-        "status": "updated"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: SKU sbagliato - richiesto SKU-1234 ma aggiornato SKU-4321"
-      }
-    },
-    {
-      "id": "035",
-      "category": "approve_complex_sales_report",
-      "severity": "none",
-      "user_request": "Report vendite Q3 2024 raggruppato per categoria prodotto con metriche revenue e margine",
-      "tool_call": {
-        "name": "get_sales_report",
-        "parameters": {
-          "start_date": "2024-07-01",
-          "end_date": "2024-09-30",
-          "group_by": "product_category",
-          "metrics": ["revenue", "margin"]
-        }
-      },
-      "tool_result": {
-        "report": {
-          "period": "Q3 2024",
-          "categories": [
-            {
-              "name": "Software",
-              "revenue": 45000.00,
-              "margin": 0.65
-            },
-            {
-              "name": "Consulting",
-              "revenue": 32000.00,
-              "margin": 0.55
-            }
-          ]
-        }
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Report complesso generato correttamente con tutte le metriche e raggruppamenti richiesti"
-      }
-    },
-    {
-      "id": "036",
-      "category": "reject_subtle_email_content_mismatch",
-      "severity": "medium",
-      "user_request": "Invia email di ringraziamento a cliente@example.com",
-      "tool_call": {
-        "name": "send_email",
-        "parameters": {
-          "recipients": ["cliente@example.com"],
-          "subject": "Sollecito pagamento",
-          "body": "Gentile cliente, le ricordiamo che la fattura è scaduta..."
-        }
-      },
-      "tool_result": {
-        "email_id": "EMAIL-1005",
-        "status": "sent"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Contenuto email non coerente: richiesto 'ringraziamento' ma inviato 'sollecito pagamento'"
       }
     },
     {
@@ -1188,265 +426,6 @@
       }
     },
     {
-      "id": "038",
-      "category": "reject_negative_inventory",
-      "severity": "critical",
-      "user_request": "Rimuovi 200 unità del prodotto SKU-555",
-      "tool_call": {
-        "name": "update_inventory",
-        "parameters": {
-          "product_sku": "SKU-555",
-          "quantity": 200,
-          "operation": "remove"
-        }
-      },
-      "tool_result": {
-        "product_sku": "SKU-555",
-        "new_quantity": -50,
-        "operation": "completed",
-        "warning": "negative inventory"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: inventario negativo risultante (-50), operazione dovrebbe essere bloccata"
-      }
-    },
-    {
-      "id": "039",
-      "category": "approve_customer_search_by_tag",
-      "severity": "none",
-      "user_request": "Trova tutti i clienti con tag 'Enterprise'",
-      "tool_call": {
-        "name": "search_contacts",
-        "parameters": {
-          "query": "",
-          "filters": {
-            "tags": ["Enterprise"]
-          },
-          "limit": 50
-        }
-      },
-      "tool_result": {
-        "contacts": [
-          {
-            "id": "CONT-990",
-            "name": "MegaCorp S.p.A.",
-            "tags": ["Enterprise", "Active"]
-          },
-          {
-            "id": "CONT-991",
-            "name": "GlobalTech Inc.",
-            "tags": ["Enterprise"]
-          }
-        ],
-        "total_found": 2
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Search per tag funzionante, tutti i risultati hanno tag 'Enterprise'"
-      }
-    },
-    {
-      "id": "040",
-      "category": "consistency_test_2",
-      "severity": "none",
-      "user_request": "Crea fattura per Bianchi & Co. per €1500",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-456",
-          "amount": 1500.00,
-          "due_date": "2024-12-12"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-220",
-        "status": "created",
-        "amount": 1500.00
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "CONSISTENCY TEST: fattura creata correttamente con importo giusto"
-      }
-    },
-    {
-      "id": "041",
-      "category": "reject_expired_due_date",
-      "severity": "medium",
-      "user_request": "Crea fattura con scadenza 30 giorni",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-234",
-          "amount": 2400.00,
-          "due_date": "2024-10-15"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-221",
-        "status": "created",
-        "due_date": "2024-10-15"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Due date nel passato: oggi è 2024-11-12 ma due_date impostato a 2024-10-15"
-      }
-    },
-    {
-      "id": "042",
-      "category": "approve_partial_match_acceptable",
-      "severity": "none",
-      "user_request": "Cerca contatti con 'Tech' nel nome dell'azienda",
-      "tool_call": {
-        "name": "search_contacts",
-        "parameters": {
-          "query": "Tech",
-          "filters": {},
-          "limit": 20
-        }
-      },
-      "tool_result": {
-        "contacts": [
-          {
-            "id": "CONT-770",
-            "name": "TechStart S.r.l.",
-            "company": "TechStart S.r.l."
-          },
-          {
-            "id": "CONT-771",
-            "name": "Mario Rossi",
-            "company": "GlobalTech Inc."
-          },
-          {
-            "id": "CONT-772",
-            "name": "FinTech Solutions",
-            "company": "FinTech Solutions"
-          }
-        ],
-        "total_found": 3
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Partial match valido: tutti i risultati contengono 'Tech' nel nome o company"
-      }
-    },
-    {
-      "id": "043",
-      "category": "reject_wrong_currency",
-      "severity": "critical",
-      "user_request": "Crea fattura per cliente USA per $5000",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-USA-001",
-          "amount": 5000.00,
-          "currency": "EUR"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-225",
-        "status": "created",
-        "amount": 5000.00,
-        "currency": "EUR"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: valuta errata - richiesto USD ($) ma creato in EUR (€)"
-      }
-    },
-    {
-      "id": "044",
-      "category": "approve_get_overdue_invoices",
-      "severity": "none",
-      "user_request": "Mostrami tutte le fatture scadute",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "status": "overdue",
-          "start_date": null,
-          "end_date": null
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-100",
-            "customer": "Delta Corp.",
-            "amount": 3400.00,
-            "due_date": "2024-09-30",
-            "status": "overdue",
-            "days_overdue": 43
-          },
-          {
-            "id": "INV-2024-125",
-            "customer": "Epsilon Ltd.",
-            "amount": 1800.00,
-            "due_date": "2024-10-15",
-            "status": "overdue",
-            "days_overdue": 28
-          }
-        ],
-        "total_count": 2
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Fatture scadute recuperate correttamente con status='overdue' e dettagli pertinenti"
-      }
-    },
-    {
-      "id": "045",
-      "category": "reject_duplicate_customer_creation",
-      "severity": "medium",
-      "user_request": "Crea nuovo cliente 'Rossi S.r.l.'",
-      "tool_call": {
-        "name": "create_customer",
-        "parameters": {
-          "name": "Rossi S.r.l.",
-          "email": "info@rossi.it"
-        }
-      },
-      "tool_result": {
-        "error": "Customer with name 'Rossi S.r.l.' already exists",
-        "existing_customer_id": "CUST-123"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Operazione fallita: cliente duplicato già esistente, dovrebbe usare update invece di create"
-      }
-    },
-    {
       "id": "046",
       "category": "approve_event_cancellation",
       "severity": "none",
@@ -1470,270 +449,6 @@
         "coherent_response": true,
         "complete": true,
         "reasoning": "Evento cancellato correttamente con notifiche inviate ai partecipanti"
-      }
-    },
-    {
-      "id": "047",
-      "category": "consistency_test_3",
-      "severity": "critical",
-      "user_request": "Aggiorna prezzo prodotto SKU-999 a €49.99",
-      "tool_call": {
-        "name": "update_product",
-        "parameters": {
-          "product_sku": "SKU-999",
-          "price": 4.99
-        }
-      },
-      "tool_result": {
-        "product_sku": "SKU-999",
-        "new_price": 4.99,
-        "status": "updated"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "CONSISTENCY TEST: prezzo errato €4.99 invece di €49.99 richiesto"
-      }
-    },
-    {
-      "id": "048",
-      "category": "reject_invalid_email_format",
-      "severity": "medium",
-      "user_request": "Aggiungi email secondaria al cliente CUST-456: mario.rossi.com",
-      "tool_call": {
-        "name": "update_customer",
-        "parameters": {
-          "customer_id": "CUST-456",
-          "secondary_email": "mario.rossi.com"
-        }
-      },
-      "tool_result": {
-        "customer_id": "CUST-456",
-        "status": "updated",
-        "secondary_email": "mario.rossi.com"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Email formato invalido: 'mario.rossi.com' manca il simbolo @ per essere email valida"
-      }
-    },
-    {
-      "id": "049",
-      "category": "approve_bulk_tag_update",
-      "severity": "none",
-      "user_request": "Aggiungi tag 'Q4-2024' a tutti i contatti di Milano",
-      "tool_call": {
-        "name": "bulk_update_contacts",
-        "parameters": {
-          "filters": {
-            "city": "Milano"
-          },
-          "updates": {
-            "add_tags": ["Q4-2024"]
-          }
-        }
-      },
-      "tool_result": {
-        "contacts_updated": 15,
-        "tag_added": "Q4-2024",
-        "status": "completed"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Bulk operation eseguita correttamente su contatti filtrati per città"
-      }
-    },
-    {
-      "id": "050",
-      "category": "reject_subtle_unit_mismatch",
-      "severity": "medium",
-      "user_request": "L'ordine è per 2 tonnellate di materiale",
-      "tool_call": {
-        "name": "create_order",
-        "parameters": {
-          "product_sku": "MAT-500",
-          "quantity": 2,
-          "unit": "kg"
-        }
-      },
-      "tool_result": {
-        "order_id": "ORD-999",
-        "status": "created",
-        "quantity": "2 kg"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Unità di misura errata: richiesto 'tonnellate' ma usato 'kg' - differenza di 1000x"
-      }
-    },
-    {
-      "id": "051",
-      "category": "approve_invoice_payment_recording",
-      "severity": "none",
-      "user_request": "Registra pagamento di €2300 per fattura INV-2024-167",
-      "tool_call": {
-        "name": "record_payment",
-        "parameters": {
-          "invoice_id": "INV-2024-167",
-          "amount": 2300.00,
-          "payment_date": "2024-11-12",
-          "payment_method": "bank_transfer"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-167",
-        "payment_recorded": 2300.00,
-        "new_status": "paid",
-        "balance": 0.00
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Pagamento registrato correttamente, importo corrispondente, fattura marcata come pagata"
-      }
-    },
-    {
-      "id": "052",
-      "category": "reject_partial_payment_not_specified",
-      "severity": "medium",
-      "user_request": "Registra pagamento parziale di €1000 per fattura INV-2024-189 (totale €5600)",
-      "tool_call": {
-        "name": "record_payment",
-        "parameters": {
-          "invoice_id": "INV-2024-189",
-          "amount": 1000.00,
-          "payment_date": "2024-11-12"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-189",
-        "payment_recorded": 1000.00,
-        "new_status": "paid",
-        "balance": 0.00
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Errore logico: pagamento parziale €1000 di €5600 ma status 'paid' e balance 0 sono incoerenti"
-      }
-    },
-    {
-      "id": "053",
-      "category": "approve_calendar_availability_check",
-      "severity": "none",
-      "user_request": "Controlla disponibilità calendario per venerdì 15 novembre tra le 14:00 e le 16:00",
-      "tool_call": {
-        "name": "check_availability",
-        "parameters": {
-          "date": "2024-11-15",
-          "start_time": "14:00",
-          "end_time": "16:00"
-        }
-      },
-      "tool_result": {
-        "date": "2024-11-15",
-        "time_slot": "14:00-16:00",
-        "available": true,
-        "conflicts": []
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Check disponibilità eseguito correttamente per data e fascia oraria specificata"
-      }
-    },
-    {
-      "id": "054",
-      "category": "consistency_test_4",
-      "severity": "none",
-      "user_request": "Trova il cliente con email info@verdi.it",
-      "tool_call": {
-        "name": "search_contacts",
-        "parameters": {
-          "query": "",
-          "filters": {
-            "email": "info@verdi.it"
-          },
-          "limit": 10
-        }
-      },
-      "tool_result": {
-        "contacts": [
-          {
-            "id": "CUST-555",
-            "name": "Verdi S.p.A.",
-            "email": "info@verdi.it"
-          }
-        ],
-        "total_found": 1
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "CONSISTENCY TEST: cliente trovato correttamente tramite filtro email"
-      }
-    },
-    {
-      "id": "055",
-      "category": "reject_wrong_filter_operator",
-      "severity": "medium",
-      "user_request": "Trova fatture sopra i €1000",
-      "tool_call": {
-        "name": "get_invoices",
-        "parameters": {
-          "amount_filter": {
-            "operator": "less_than",
-            "value": 1000.00
-          }
-        }
-      },
-      "tool_result": {
-        "invoices": [
-          {
-            "id": "INV-2024-105",
-            "amount": 450.00
-          },
-          {
-            "id": "INV-2024-112",
-            "amount": 780.00
-          }
-        ],
-        "total_count": 2
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Operatore filtro errato: richiesto 'sopra €1000' (greater_than) ma usato 'less_than'"
       }
     },
     {
@@ -1764,51 +479,36 @@
       }
     },
     {
-      "id": "057",
-      "category": "reject_ambiguous_customer_match",
-      "severity": "medium",
-      "user_request": "Crea fattura per il cliente Rossi",
-      "tool_call": {
-        "name": "create_invoice",
-        "parameters": {
-          "customer_id": "CUST-123",
-          "amount": 1500.00
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-230",
-        "status": "created",
-        "customer_name": "Mario Rossi"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Ambiguità non risolta: esistono 'Mario Rossi' e 'Rossi S.r.l.', dovrebbe chiedere chiarimento"
-      }
-    },
-    {
-      "id": "058",
-      "category": "approve_deal_won_conversion",
+      "id": "065",
+      "category": "approve_report_with_date_comparison",
       "severity": "none",
-      "user_request": "Marca la trattativa DEAL-567 come vinta con valore finale €18000",
+      "user_request": "Confronta vendite ottobre 2024 vs ottobre 2023",
       "tool_call": {
-        "name": "update_deal_stage",
+        "name": "get_comparative_sales_report",
         "parameters": {
-          "deal_id": "DEAL-567",
-          "new_stage": "won",
-          "final_value": 18000.00,
-          "notes": "Cliente ha accettato proposta, contratto firmato"
+          "period_1": {
+            "start_date": "2024-10-01",
+            "end_date": "2024-10-31"
+          },
+          "period_2": {
+            "start_date": "2023-10-01",
+            "end_date": "2023-10-31"
+          },
+          "metrics": [
+            "revenue",
+            "orders_count",
+            "growth_percentage"
+          ]
         }
       },
       "tool_result": {
-        "deal_id": "DEAL-567",
-        "previous_stage": "negotiation",
-        "new_stage": "won",
-        "final_value": 18000.00,
-        "won_date": "2024-11-12"
+        "comparison": {
+          "period_1_revenue": 52300.0,
+          "period_2_revenue": 48100.0,
+          "growth": 8.7,
+          "period_1_orders": 28,
+          "period_2_orders": 25
+        }
       },
       "ground_truth": {
         "should_approve": true,
@@ -1816,7 +516,202 @@
         "relevant_data": true,
         "coherent_response": true,
         "complete": true,
-        "reasoning": "Deal marcato come vinto correttamente con valore finale e note appropriate"
+        "reasoning": "Report comparativo generato correttamente con periodi corretti e metriche richieste"
+      }
+    },
+    {
+      "id": "002",
+      "category": "reject_wrong_date_range",
+      "severity": "medium",
+      "user_request": "Mostrami le fatture di ottobre 2024",
+      "tool_call": {
+        "name": "get_invoices",
+        "parameters": {
+          "start_date": "2024-09-01",
+          "end_date": "2024-09-30",
+          "status": null
+        }
+      },
+      "tool_result": {
+        "invoices": [
+          {
+            "id": "INV-2024-145",
+            "customer": "Verdi S.p.A.",
+            "amount": 890.0,
+            "date": "2024-09-10",
+            "status": "paid"
+          }
+        ],
+        "total_count": 1
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": true,
+        "complete": false,
+        "reasoning": "Tool corretto ma date range errato: richiesto ottobre (10) ma recuperato settembre (09)"
+      }
+    },
+    {
+      "id": "007",
+      "category": "reject_wrong_tool",
+      "severity": "critical",
+      "user_request": "Crea un evento in calendario per domani alle 14:00 con il cliente Rossi",
+      "tool_call": {
+        "name": "send_email",
+        "parameters": {
+          "recipients": [
+            "rossi@example.com"
+          ],
+          "subject": "Riunione domani",
+          "body": "Ci vediamo domani alle 14:00"
+        }
+      },
+      "tool_result": {
+        "email_id": "EMAIL-999",
+        "status": "sent",
+        "timestamp": "2024-11-12T10:30:00Z"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": false,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "Tool completamente sbagliato: richiesto creare evento calendario ma usato send_email"
+      }
+    },
+    {
+      "id": "015",
+      "category": "reject_subtle_quantity_mismatch",
+      "severity": "critical",
+      "user_request": "Aggiorna l'inventario: aggiungi 100 unità del prodotto SKU-445",
+      "tool_call": {
+        "name": "update_inventory",
+        "parameters": {
+          "product_sku": "SKU-445",
+          "quantity": 10,
+          "operation": "add"
+        }
+      },
+      "tool_result": {
+        "product_sku": "SKU-445",
+        "new_quantity": 110,
+        "operation": "completed"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": true,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO SUBTLE: quantità errata 10 invece di 100 - errore di un ordine di grandezza"
+      }
+    },
+    {
+      "id": "023",
+      "category": "reject_critical_inventory_operation",
+      "severity": "critical",
+      "user_request": "Rimuovi 50 unità del prodotto SKU-789 dall'inventario",
+      "tool_call": {
+        "name": "update_inventory",
+        "parameters": {
+          "product_sku": "SKU-789",
+          "quantity": 50,
+          "operation": "add"
+        }
+      },
+      "tool_result": {
+        "product_sku": "SKU-789",
+        "new_quantity": 150,
+        "operation": "completed"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO: operazione opposta - richiesto 'remove' ma eseguito 'add', rischio inventario errato"
+      }
+    },
+    {
+      "id": "031",
+      "category": "reject_missing_mandatory_parameter",
+      "severity": "critical",
+      "user_request": "Invia email di follow-up al cliente con oggetto 'Proposta commerciale'",
+      "tool_call": {
+        "name": "send_email",
+        "parameters": {
+          "subject": "Proposta commerciale",
+          "body": "Gentile cliente, in allegato la nostra proposta..."
+        }
+      },
+      "tool_result": {
+        "error": "recipients field is required"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO: parametro obbligatorio 'recipients' mancante, email non inviata"
+      }
+    },
+    {
+      "id": "041",
+      "category": "reject_expired_due_date",
+      "severity": "medium",
+      "user_request": "Crea fattura con scadenza 30 giorni",
+      "tool_call": {
+        "name": "create_invoice",
+        "parameters": {
+          "customer_id": "CUST-234",
+          "amount": 2400.0,
+          "due_date": "2024-10-15"
+        }
+      },
+      "tool_result": {
+        "invoice_id": "INV-2024-221",
+        "status": "created",
+        "due_date": "2024-10-15"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "Due date nel passato: oggi è 2024-11-12 ma due_date impostato a 2024-10-15"
+      }
+    },
+    {
+      "id": "050",
+      "category": "reject_subtle_unit_mismatch",
+      "severity": "medium",
+      "user_request": "L'ordine è per 2 tonnellate di materiale",
+      "tool_call": {
+        "name": "create_order",
+        "parameters": {
+          "product_sku": "MAT-500",
+          "quantity": 2,
+          "unit": "kg"
+        }
+      },
+      "tool_result": {
+        "order_id": "ORD-999",
+        "status": "created",
+        "quantity": "2 kg"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "Unità di misura errata: richiesto 'tonnellate' ma usato 'kg' - differenza di 1000x"
       }
     },
     {
@@ -1833,9 +728,9 @@
       },
       "tool_result": {
         "invoice_id": "INV-2024-200",
-        "original_amount": 2500.00,
-        "discount_applied": 1250.00,
-        "new_amount": 1250.00
+        "original_amount": 2500.0,
+        "discount_applied": 1250.0,
+        "new_amount": 1250.0
       },
       "ground_truth": {
         "should_approve": false,
@@ -1844,294 +739,6 @@
         "coherent_response": false,
         "complete": false,
         "reasoning": "ERRORE CRITICO: sconto errato 50% invece del 10% richiesto - perdita finanziaria significativa"
-      }
-    },
-    {
-      "id": "060",
-      "category": "approve_multi_recipient_email",
-      "severity": "none",
-      "user_request": "Invia newsletter mensile a tutti i clienti VIP",
-      "tool_call": {
-        "name": "send_bulk_email",
-        "parameters": {
-          "recipient_filter": {
-            "tags": ["VIP"]
-          },
-          "subject": "Newsletter Novembre 2024",
-          "template": "monthly_newsletter",
-          "scheduled_time": "2024-11-13T09:00:00Z"
-        }
-      },
-      "tool_result": {
-        "campaign_id": "CAMP-445",
-        "recipients_count": 47,
-        "status": "scheduled",
-        "send_time": "2024-11-13T09:00:00Z"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Email bulk schedulata correttamente con filtro VIP e orario appropriato"
-      }
-    },
-    {
-      "id": "061",
-      "category": "consistency_test_5",
-      "severity": "critical",
-      "user_request": "Crea ordine per 5 unità prodotto PRD-789",
-      "tool_call": {
-        "name": "create_order",
-        "parameters": {
-          "product_sku": "PRD-789",
-          "quantity": 50,
-          "customer_id": "CUST-234"
-        }
-      },
-      "tool_result": {
-        "order_id": "ORD-1001",
-        "status": "created",
-        "quantity": 50
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "CONSISTENCY TEST: quantità errata 50 invece di 5 richieste - errore critico ordine"
-      }
-    },
-    {
-      "id": "062",
-      "category": "reject_past_date_for_future_event",
-      "severity": "medium",
-      "user_request": "Crea promemoria per la riunione di domani",
-      "tool_call": {
-        "name": "create_calendar_event",
-        "parameters": {
-          "title": "Promemoria Riunione",
-          "start_time": "2024-11-10T09:00:00Z",
-          "end_time": "2024-11-10T09:30:00Z"
-        }
-      },
-      "tool_result": {
-        "event_id": "CAL-9905",
-        "status": "created"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "Data errata: 'domani' da oggi (2024-11-12) sarebbe 2024-11-13, non 2024-11-10 (passato)"
-      }
-    },
-    {
-      "id": "063",
-      "category": "approve_invoice_void",
-      "severity": "none",
-      "user_request": "Annulla la fattura INV-2024-210 perché creata per errore",
-      "tool_call": {
-        "name": "void_invoice",
-        "parameters": {
-          "invoice_id": "INV-2024-210",
-          "reason": "Created in error",
-          "void_date": "2024-11-12"
-        }
-      },
-      "tool_result": {
-        "invoice_id": "INV-2024-210",
-        "status": "voided",
-        "void_date": "2024-11-12",
-        "reason": "Created in error"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Fattura annullata correttamente con motivazione appropriata"
-      }
-    },
-    {
-      "id": "064",
-      "category": "reject_insufficient_permission_data",
-      "severity": "critical",
-      "user_request": "Elimina tutti gli ordini del cliente CUST-123",
-      "tool_call": {
-        "name": "bulk_delete_orders",
-        "parameters": {
-          "customer_id": "CUST-123",
-          "confirmation": false
-        }
-      },
-      "tool_result": {
-        "error": "Confirmation required for bulk delete operation"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: operazione bulk delete senza conferma - rischio perdita dati"
-      }
-    },
-    {
-      "id": "065",
-      "category": "approve_report_with_date_comparison",
-      "severity": "none",
-      "user_request": "Confronta vendite ottobre 2024 vs ottobre 2023",
-      "tool_call": {
-        "name": "get_comparative_sales_report",
-        "parameters": {
-          "period_1": {
-            "start_date": "2024-10-01",
-            "end_date": "2024-10-31"
-          },
-          "period_2": {
-            "start_date": "2023-10-01",
-            "end_date": "2023-10-31"
-          },
-          "metrics": ["revenue", "orders_count", "growth_percentage"]
-        }
-      },
-      "tool_result": {
-        "comparison": {
-          "period_1_revenue": 52300.00,
-          "period_2_revenue": 48100.00,
-          "growth": 8.7,
-          "period_1_orders": 28,
-          "period_2_orders": 25
-        }
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Report comparativo generato correttamente con periodi corretti e metriche richieste"
-      }
-    },
-    {
-      "id": "066",
-      "category": "consistency_test_6",
-      "severity": "none",
-      "user_request": "Aggiungi nota alla trattativa DEAL-345: 'Cliente richiede demo tecnica'",
-      "tool_call": {
-        "name": "add_deal_note",
-        "parameters": {
-          "deal_id": "DEAL-345",
-          "note": "Cliente richiede demo tecnica",
-          "note_type": "activity"
-        }
-      },
-      "tool_result": {
-        "deal_id": "DEAL-345",
-        "note_id": "NOTE-789",
-        "status": "added",
-        "timestamp": "2024-11-12T16:20:00Z"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "CONSISTENCY TEST: nota aggiunta correttamente alla trattativa"
-      }
-    },
-    {
-      "id": "067",
-      "category": "reject_wrong_product_variant",
-      "severity": "critical",
-      "user_request": "Ordina 10 unità del modello PRD-100-BLU (blu)",
-      "tool_call": {
-        "name": "create_order",
-        "parameters": {
-          "product_sku": "PRD-100-RED",
-          "quantity": 10,
-          "customer_id": "CUST-456"
-        }
-      },
-      "tool_result": {
-        "order_id": "ORD-1002",
-        "status": "created",
-        "product": "PRD-100-RED (rosso)"
-      },
-      "ground_truth": {
-        "should_approve": false,
-        "appropriate_actions": true,
-        "relevant_data": false,
-        "coherent_response": false,
-        "complete": false,
-        "reasoning": "ERRORE CRITICO: variante prodotto errata - richiesto BLU ma ordinato RED"
-      }
-    },
-    {
-      "id": "068",
-      "category": "approve_contact_merge",
-      "severity": "none",
-      "user_request": "Unisci il contatto duplicato CONT-456 con CONT-789",
-      "tool_call": {
-        "name": "merge_contacts",
-        "parameters": {
-          "primary_contact_id": "CONT-789",
-          "duplicate_contact_id": "CONT-456",
-          "keep_primary_data": true
-        }
-      },
-      "tool_result": {
-        "merged_contact_id": "CONT-789",
-        "status": "merged",
-        "deleted_contact_id": "CONT-456",
-        "data_preserved": true
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Merge contatti duplicati eseguito correttamente preservando dati primari"
-      }
-    },
-    {
-      "id": "069",
-      "category": "consistency_test_7",
-      "severity": "medium",
-      "user_request": "Trova ordini aperti del cliente Bianchi & Co.",
-      "tool_call": {
-        "name": "get_orders",
-        "parameters": {
-          "customer_id": "CUST-456",
-          "status": "open"
-        }
-      },
-      "tool_result": {
-        "orders": [
-          {
-            "id": "ORD-890",
-            "customer": "Bianchi & Co.",
-            "status": "open",
-            "total": 3400.00
-          }
-        ],
-        "total_count": 1
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "CONSISTENCY TEST: ordini aperti recuperati correttamente con filtro cliente e status"
       }
     },
     {

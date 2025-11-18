@@ -16,22 +16,21 @@ from src.logger import ResultLogger, WandBLogger
 from src.visualizer import BenchmarkVisualizer
 from tasks.judge.metrics import JudgeMetricsCalculator
 
-
-# Modelli da testare per questa task
 MODELS_TO_TEST = [
+    "llama3.1-8b",
+    "llama-3.3-70b",
+    "phi-4-mini", 
+    "phi-4-mini-flash-reasoning",
+    "qwen3-next-80b",
+    "gpt-oss-20b",
     "gpt-4o-mini",
     "gpt-4o",
-    "llama-3.3-70b",
-    "llama3.1-8b",
     "gemma-3-12b",
     "gemma-3-27b",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash"
 ]
 
 # Numero di run per consistency tests
 CONSISTENCY_RUNS = 5
-
 
 class JudgeBenchmarkRunner:
     """Esegue il benchmark per la task di Judge/Validator."""
@@ -141,6 +140,15 @@ Valuta se questo output è appropriato e può essere inoltrato all'utente."""
                         model_config['output_price_per_1m'],
                     )
                     
+                    # Print risposta modello (solo prima run per consistency tests)
+                    if run_idx == 0:
+                        expected_judgment = "APPROVE" if test_case['ground_truth']['should_approve'] else "REJECT"
+                        print(f"\n[{i}/{len(self.test_cases)}] Request: {test_case['user_request'][:60]}...")
+                        print(f"    Expected: {expected_judgment}")
+                        print(f"    Model Response:\n{predicted_response[:200]}{'...' if len(predicted_response) > 200 else ''}")
+                        if is_consistency_test:
+                            print(f"    (Consistency test - running {num_runs} times)")
+                    
                     metrics.add_prediction(
                         predicted_response=predicted_response,
                         ground_truth=test_case['ground_truth'],
@@ -156,9 +164,7 @@ Valuta se questo output è appropriato e può essere inoltrato all'utente."""
             # Progress update ogni 10 test cases
             if i % 10 == 0:
                 current_metrics = metrics.get_metrics()
-                print(f"Progresso: {i}/{len(self.test_cases)} test cases | "
-                      f"Accuracy: {current_metrics['judgment_accuracy']:.3f} | "
-                      f"Requests: {total_requests}")
+                print(f"  → Accuracy: {current_metrics['judgment_accuracy']:.3f} | Total requests: {total_requests}\n")
         
         # Metriche finali
         final_metrics = metrics.get_metrics()

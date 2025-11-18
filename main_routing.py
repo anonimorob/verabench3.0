@@ -16,8 +16,9 @@ from src.visualizer import BenchmarkVisualizer
 from tasks.routing.metrics import RoutingMetricsCalculator
 
 
-# Modelli da testare per questa task
 MODELS_TO_TEST = [
+    "mistral-nemo",
+    "llama3.1-8b",
     "deepseek-r1-distill-llama-8b",
     "gpt-oss-20b",
     "gpt-oss-120b",
@@ -26,7 +27,6 @@ MODELS_TO_TEST = [
     "mistral-nemo",
     "qwen3-next-80b"
 ]
-
 
 class RoutingBenchmarkRunner:
     """Esegue il benchmark per la task di Routing."""
@@ -99,6 +99,13 @@ class RoutingBenchmarkRunner:
                     model_config['output_price_per_1m'],
                 )
                 
+                # Print risposta modello
+                correct = predicted_agent == test_case['correct_agent']
+                status = "✓" if correct else "✗"
+                print(f"[{i}/{len(self.test_cases)}] {status} Query: {test_case['user_request'][:50]}...")
+                print(f"    Expected: {test_case['correct_agent']}")
+                print(f"    Predicted: {predicted_agent}")
+                
                 metrics.add_prediction(
                     predicted=predicted_agent,
                     expected=test_case['correct_agent'],
@@ -108,7 +115,7 @@ class RoutingBenchmarkRunner:
                 
                 if i % 10 == 0:
                     current_metrics = metrics.get_metrics()
-                    print(f"Progresso: {i}/{len(self.test_cases)} | Accuracy: {current_metrics['routing_accuracy']:.3f}")
+                    print(f"  → Accuracy: {current_metrics['routing_accuracy']:.3f}\n")
                 
             except Exception as e:
                 print(f"ERRORE test {test_case['id']}: {str(e)}")

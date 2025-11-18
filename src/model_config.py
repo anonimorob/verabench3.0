@@ -82,23 +82,23 @@ MODELS = {
     },
  
     # Modelli Google AI Studio
-    "gemini-2.5-flash-lite": {
-        "id": "gemini-2.5-flash-lite",
-        "name": "Gemini 2.5 Flash-Lite",
-        "params": "Unknown",
-        "provider": "google",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
+    #"gemini-2.5-flash-lite": {
+    #    "id": "gemini-2.5-flash-lite",
+    #    "name": "Gemini 2.5 Flash-Lite",
+    #    "params": "Unknown",
+    #    "provider": "google",
+    #    "input_price_per_1m": 0.0,
+    #    "output_price_per_1m": 0.0,
+   # },
 
-    "gemini-2.5-flash": {
-        "id": "gemini-2.5-flash",
-        "name": "Gemini 2.5 Flash",
-        "params": "Unknown",
-        "provider": "google",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
+   # "gemini-2.5-flash": {
+    #    "id": "gemini-2.5-flash",
+     #   "name": "Gemini 2.5 Flash",
+     #   "params": "Unknown",
+     #   "provider": "google",
+     #   "input_price_per_1m": 0.0,
+      #  "output_price_per_1m": 0.0,
+    #},
 
     # Modelli NVIDIA NIM
     "deepseek-r1-distill-llama-8b": {
