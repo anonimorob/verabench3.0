@@ -17,7 +17,7 @@ class JudgeMetricsCalculator:
         self.predictions = []  # Lista di dict con prediction e ground_truth
         self.latencies = []
         self.costs = []
-        self.consistency_results = {}  # {test_case_id: [approved_bool, approved_bool, ...]}
+        self.consistency_results = {}  
     
     def add_prediction(
         self,
@@ -32,7 +32,7 @@ class JudgeMetricsCalculator:
         
         Args:
             predicted_response: Risposta JSON del modello
-            ground_truth: Ground truth con should_approve e altri campi
+            ground_truth: Ground truth 
             latency: Latenza in secondi
             cost: Costo in USD
             test_case_id: ID del test case (per consistency tracking)

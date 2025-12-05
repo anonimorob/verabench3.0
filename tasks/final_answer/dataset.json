@@ -2,26 +2,24 @@
   "_dataset_metadata": {
     "name": "Vera AI - Response Generation Benchmark Dataset",
     "version": "1.0",
-    "created_date": "2025-11-13",
-    "description": "30 test cases per valutare response generation agent su faithfulness, answer relevancy e conciseness",
+    "created_date": "2024-12-05",
+    "description": "25 test cases per valutare response generation agent su faithfulness, answer relevancy e conciseness",
     "total_test_cases": 25,
     "test_distribution": {
       "by_category": {
-        "permission_responses": 8,
+        "permission_responses": 7,
         "data_retrieval_responses": 8,
         "preference_responses": 5,
-        "conversation_history_responses": 4,
+        "conversation_history_responses": 5,
         "error_responses": 5
       },
       "by_language": {
-        "english": 18,
-        "italian": 7,
-        "arabic": 5
+        "italian": 25
       },
       "by_complexity": {
-        "simple": 12,
-        "medium": 12,
-        "complex": 6
+        "simple": 10,
+        "medium": 10,
+        "complex": 5
       }
     },
     "evaluation_metrics": {
@@ -34,75 +32,79 @@
     {
       "id": "resp_001",
       "category": "permission_responses",
-      "user_query": "Can I write to the ERP sales module?",
+      "complexity": "simple",
+      "user_query": "Posso modificare i dati nel modulo vendite ERP?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "Asia/Dubai"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
           "can_read": true,
-          "can_write": false,
+          "can_write": true,
           "modules": [
-            "sales",
-            "inventory",
-            "orders"
+            "vendite",
+            "inventario",
+            "ordini"
           ]
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "read-only",
-          "cannot write",
-          "sales"
+          "sì",
+          "puoi modificare",
+          "vendite"
         ],
         "must_not_include": [
-          "you can modify",
-          "write access granted"
+          "solo lettura",
+          "non puoi"
         ],
-        "tone": "informative",
-        "max_characters": 500
+        "tone": "affirmative",
+        "max_characters": 300
       },
       "evaluation_config": {
-        "faithfulness_threshold": 0.85,
-        "answer_relevancy_threshold": 0.85,
-        "max_characters": 500,
-        "max_lines": 10
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 300,
+        "max_lines": 5
       }
     },
     {
       "id": "resp_002",
       "category": "permission_responses",
-      "user_query": "What systems can I access?",
+      "complexity": "medium",
+      "user_query": "A quali sistemi ho accesso?",
       "user_preferences": {
-        "language": "en",
-        "output_format": "list",
-        "timezone": "Asia/Dubai"
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
           "erp": {
             "read": true,
-            "write": false,
+            "write": true,
             "modules": [
-              "sales",
-              "inventory"
+              "vendite",
+              "inventario",
+              "ordini"
             ]
           },
           "crm": {
             "read": true,
             "write": true,
             "modules": [
-              "contacts",
-              "opportunities"
+              "contatti",
+              "opportunità",
+              "trattative"
             ]
           },
-          "hr": {
-            "read": false,
-            "write": false
+          "calendar": {
+            "read": true,
+            "write": true
           }
         }
       },
@@ -110,11 +112,9 @@
         "must_include_concepts": [
           "ERP",
           "CRM",
-          "read",
-          "write"
-        ],
-        "must_not_include": [
-          "HR access"
+          "Calendar",
+          "lettura",
+          "scrittura"
         ],
         "tone": "informative",
         "max_characters": 500
@@ -129,17 +129,18 @@
     {
       "id": "resp_003",
       "category": "permission_responses",
-      "user_query": "Do I have full admin access?",
+      "complexity": "simple",
+      "user_query": "Ho accesso completo al sistema?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "America/New_York"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
-          "role": "CEO",
-          "all_systems_access": true,
+          "role": "Direttore Commerciale",
+          "full_access": true,
           "erp": {
             "read": true,
             "write": true
@@ -147,18 +148,14 @@
           "crm": {
             "read": true,
             "write": true
-          },
-          "hr": {
-            "read": true,
-            "write": true
           }
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "full access",
-          "all systems",
-          "CEO"
+          "sì",
+          "accesso completo",
+          "tutti i sistemi"
         ],
         "tone": "affirmative",
         "max_characters": 300
@@ -173,7 +170,8 @@
     {
       "id": "resp_004",
       "category": "permission_responses",
-      "user_query": "Posso modificare i livelli di inventario?",
+      "complexity": "simple",
+      "user_query": "Posso vedere i dati dell'inventario?",
       "user_preferences": {
         "language": "it",
         "output_format": "concise",
@@ -182,22 +180,27 @@
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
-          "can_write": true,
+          "can_read": true,
+          "can_write": false,
           "system": "erp",
           "modules": [
-            "inventory",
-            "orders"
+            "vendite",
+            "inventario",
+            "ordini"
           ]
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
           "sì",
-          "puoi modificare",
-          "inventario"
+          "puoi vedere",
+          "inventario",
+          "solo lettura"
         ],
-        "language": "it",
-        "tone": "affirmative",
+        "must_not_include": [
+          "modificare"
+        ],
+        "tone": "informative",
         "max_characters": 300
       },
       "evaluation_config": {
@@ -210,23 +213,24 @@
     {
       "id": "resp_005",
       "category": "permission_responses",
-      "user_query": "What's my API rate limit?",
+      "complexity": "simple",
+      "user_query": "Qual è il mio limite di rate API?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "Asia/Dubai"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
-          "rate_limit": 100,
-          "period": "per hour"
+          "rate_limit": 200,
+          "period": "per ora"
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "100",
-          "per hour"
+          "200",
+          "ora"
         ],
         "tone": "informative",
         "max_characters": 200
@@ -241,47 +245,11 @@
     {
       "id": "resp_006",
       "category": "permission_responses",
-      "user_query": "هل يمكنني الوصول إلى بيانات CRM؟",
+      "complexity": "medium",
+      "user_query": "Quali moduli ERP posso gestire?",
       "user_preferences": {
-        "language": "ar",
-        "output_format": "concise",
-        "timezone": "Asia/Dubai"
-      },
-      "retrieved_context": {
-        "source": "retrieval_agent",
-        "data": {
-          "can_read": true,
-          "can_write": false,
-          "system": "crm",
-          "modules": [
-            "contacts"
-          ]
-        }
-      },
-      "expected_response_characteristics": {
-        "must_include_concepts": [
-          "نعم",
-          "قراءة فقط",
-          "CRM"
-        ],
-        "language": "ar",
-        "tone": "informative",
-        "max_characters": 300
-      },
-      "evaluation_config": {
-        "faithfulness_threshold": 0.85,
-        "answer_relevancy_threshold": 0.85,
-        "max_characters": 300,
-        "max_lines": 5
-      }
-    },
-    {
-      "id": "resp_007",
-      "category": "permission_responses",
-      "user_query": "Which ERP modules can I access?",
-      "user_preferences": {
-        "language": "en",
-        "output_format": "list",
+        "language": "it",
+        "output_format": "lista",
         "timezone": "Europe/Rome"
       },
       "retrieved_context": {
@@ -289,9 +257,9 @@
         "data": {
           "system": "erp",
           "modules": [
-            "inventory",
-            "orders",
-            "suppliers"
+            "inventario",
+            "ordini",
+            "fornitori"
           ],
           "read": true,
           "write": true
@@ -299,53 +267,95 @@
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "inventory",
-          "orders",
-          "suppliers",
-          "read",
-          "write"
+          "inventario",
+          "ordini",
+          "fornitori",
+          "lettura e scrittura"
         ],
         "tone": "informative",
         "max_characters": 400
       },
       "evaluation_config": {
-        "faithfulness_threshold": 0.9,
-        "answer_relevancy_threshold": 0.9,
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
         "max_characters": 400,
         "max_lines": 8
       }
     },
     {
-      "id": "resp_009",
-      "category": "data_retrieval_responses",
-      "user_query": "Mostrami le vendite di ottobre",
+      "id": "resp_007",
+      "category": "permission_responses",
+      "complexity": "medium",
+      "user_query": "Qual è il mio ruolo e dipartimento?",
       "user_preferences": {
         "language": "it",
-        "output_format": "table",
-        "timezone": "Europe/Rome",
-        "currency": "EUR"
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_sales_data",
-        "tool_result": {
-          "total_sales": 45000.0,
-          "currency": "EUR",
-          "period": "October 2024",
-          "transactions": 127,
-          "average_transaction": 354.33
+        "source": "retrieval_agent",
+        "data": {
+          "role": "Account Executive",
+          "department": "Vendite",
+          "company": "Alpha Trade S.r.l."
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "45000",
-          "EUR",
-          "127",
-          "ottobre"
+          "Account Executive",
+          "Vendite",
+          "Alpha Trade"
         ],
-        "language": "it",
         "tone": "informative",
-        "format": "structured",
+        "max_characters": 250
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 250,
+        "max_lines": 4
+      }
+    },
+    {
+      "id": "resp_008",
+      "category": "data_retrieval_responses",
+      "complexity": "simple",
+      "user_query": "Mostrami le fatture di ottobre 2024",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "tabella",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "erp_agent",
+        "data": {
+          "invoices": [
+            {
+              "id": "INV-2024-198",
+              "customer": "Officine Mazzini SpA",
+              "amount": 8500.0,
+              "date": "2024-10-12",
+              "status": "paid"
+            },
+            {
+              "id": "INV-2024-215",
+              "customer": "Industrie Galvani Srl",
+              "amount": 12300.0,
+              "date": "2024-10-25",
+              "status": "pending"
+            }
+          ],
+          "total_count": 2
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "2 fatture",
+          "ottobre",
+          "Officine Mazzini",
+          "Industrie Galvani"
+        ],
+        "tone": "informative",
         "max_characters": 500
       },
       "evaluation_config": {
@@ -356,94 +366,141 @@
       }
     },
     {
-      "id": "resp_010",
+      "id": "resp_009",
       "category": "data_retrieval_responses",
-      "user_query": "Show me today's attendance",
+      "complexity": "medium",
+      "user_query": "Qual è la disponibilità del prodotto SKU-VALV-345?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "Asia/Dubai"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_attendance",
-        "tool_result": {
-          "total_employees": 45,
-          "present": 42,
-          "absent": 3,
-          "date": "2025-11-13"
+        "source": "erp_agent",
+        "data": {
+          "product_sku": "SKU-VALV-345",
+          "available_quantity": 145,
+          "status": "in_stock",
+          "next_restock": "2024-12-15",
+          "reserved": 25
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "42 present",
-          "3 absent",
-          "45 total"
+          "145 unità",
+          "disponibili",
+          "25 riservate"
         ],
         "tone": "informative",
         "max_characters": 300
       },
       "evaluation_config": {
-        "faithfulness_threshold": 0.95,
+        "faithfulness_threshold": 0.9,
         "answer_relevancy_threshold": 0.9,
         "max_characters": 300,
         "max_lines": 5
       }
     },
     {
-      "id": "resp_011",
+      "id": "resp_010",
       "category": "data_retrieval_responses",
-      "user_query": "عرض مبيعات الأسبوع الماضي",
+      "complexity": "medium",
+      "user_query": "Mostrami storico ordini del cliente CLI-2024-445",
       "user_preferences": {
-        "language": "ar",
-        "output_format": "list",
-        "timezone": "Asia/Dubai",
-        "currency": "AED"
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_sales_data",
-        "tool_result": {
-          "total_sales": 125000.0,
-          "currency": "AED",
-          "period": "Week 45, 2024",
-          "daily_breakdown": [
+        "source": "erp_agent",
+        "data": {
+          "customer_id": "CLI-2024-445",
+          "customer_name": "Industrie Galvani Srl",
+          "orders": [
             {
-              "day": "Monday",
-              "amount": 25000
+              "id": "ORD-2024-7891",
+              "date": "2024-11-20",
+              "total": 6700.0,
+              "status": "shipped"
             },
             {
-              "day": "Tuesday",
-              "amount": 30000
-            },
-            {
-              "day": "Wednesday",
-              "amount": 20000
-            },
-            {
-              "day": "Thursday",
-              "amount": 28000
-            },
-            {
-              "day": "Friday",
-              "amount": 22000
+              "id": "ORD-2024-7234",
+              "date": "2024-10-15",
+              "total": 4200.0,
+              "status": "delivered"
             }
-          ]
+          ],
+          "total_orders": 2,
+          "total_value": 10900.0
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "125000",
-          "AED",
-          "أسبوع"
+          "Industrie Galvani",
+          "2 ordini",
+          "€10.900"
         ],
-        "language": "ar",
         "tone": "informative",
+        "max_characters": 450
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 450,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_011",
+      "category": "data_retrieval_responses",
+      "complexity": "complex",
+      "user_query": "Report vendite Q3 2024 per categoria prodotto",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "erp_agent",
+        "data": {
+          "period": "Q3 2024",
+          "report": [
+            {
+              "category": "Componenti Idraulici",
+              "revenue": 125600.0,
+              "units_sold": 487,
+              "margin": 28.5
+            },
+            {
+              "category": "Valvole Industriali",
+              "revenue": 98300.0,
+              "units_sold": 312,
+              "margin": 32.1
+            },
+            {
+              "category": "Motori Elettrici",
+              "revenue": 76400.0,
+              "units_sold": 156,
+              "margin": 25.8
+            }
+          ],
+          "total_revenue": 300300.0,
+          "total_units": 955
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "Q3 2024",
+          "€300.300",
+          "tre categorie",
+          "955 pezzi"
+        ],
+        "tone": "professional",
         "max_characters": 500
       },
       "evaluation_config": {
-        "faithfulness_threshold": 0.9,
-        "answer_relevancy_threshold": 0.9,
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
         "max_characters": 500,
         "max_lines": 12
       }
@@ -451,222 +508,206 @@
     {
       "id": "resp_012",
       "category": "data_retrieval_responses",
-      "user_query": "How many open opportunities do we have?",
+      "complexity": "medium",
+      "user_query": "Ci sono ordini in ritardo per clienti premium?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "America/New_York"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_crm_opportunities",
-        "tool_result": {
-          "total_open": 23,
-          "total_value": 450000.0,
-          "currency": "USD",
-          "by_stage": {
-            "prospecting": 8,
-            "qualification": 10,
-            "proposal": 5
-          }
+        "source": "erp_agent",
+        "data": {
+          "delayed_orders": [
+            {
+              "order_id": "ORD-2024-7123",
+              "customer": "Officine Mazzini SpA",
+              "customer_tier": "premium",
+              "delay_days": 5,
+              "value": 15800.0
+            }
+          ],
+          "total_delayed": 1
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "23 opportunities",
-          "450000",
-          "USD"
+          "1 ordine",
+          "ritardo",
+          "Officine Mazzini",
+          "5 giorni"
         ],
-        "tone": "informative",
-        "max_characters": 400
+        "tone": "alert",
+        "max_characters": 300
       },
       "evaluation_config": {
         "faithfulness_threshold": 0.9,
         "answer_relevancy_threshold": 0.9,
-        "max_characters": 400,
-        "max_lines": 8
+        "max_characters": 300,
+        "max_lines": 6
       }
     },
     {
       "id": "resp_013",
       "category": "data_retrieval_responses",
-      "user_query": "What's the current inventory level for SKU-12345?",
+      "complexity": "simple",
+      "user_query": "Qual è lo stato della trattativa DEAL-789?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
         "timezone": "Europe/Rome"
       },
       "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_inventory",
-        "tool_result": {
-          "sku": "SKU-12345",
-          "product_name": "Widget Pro",
-          "current_stock": 500,
-          "unit": "pieces",
-          "warehouse": "Dubai Main",
-          "last_updated": "2025-11-13T07:30:00Z"
+        "source": "crm_agent",
+        "data": {
+          "deal_id": "DEAL-789",
+          "customer": "Beta Tech Industries SpA",
+          "stage": "Negoziazione",
+          "value": 45000.0,
+          "probability": 70,
+          "expected_close": "2024-12-20"
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "500",
-          "SKU-12345",
-          "Widget Pro"
+          "Negoziazione",
+          "€45.000",
+          "70%",
+          "20 dicembre"
         ],
         "tone": "informative",
         "max_characters": 300
       },
       "evaluation_config": {
-        "faithfulness_threshold": 0.95,
-        "answer_relevancy_threshold": 0.95,
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
         "max_characters": 300,
-        "max_lines": 5
+        "max_lines": 6
       }
     },
     {
       "id": "resp_014",
       "category": "data_retrieval_responses",
-      "user_query": "Quanti clienti nuovi abbiamo questo mese?",
+      "complexity": "medium",
+      "user_query": "Quali account hanno margini sotto il 20%?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "database_agent",
+        "data": {
+          "low_margin_accounts": [
+            {
+              "customer_id": "CLI-567",
+              "customer_name": "Distributori Lombardi Srl",
+              "margin": 18.5,
+              "annual_revenue": 67000.0
+            },
+            {
+              "customer_id": "CLI-891",
+              "customer_name": "TechnoPlast SpA",
+              "margin": 15.2,
+              "annual_revenue": 89000.0
+            }
+          ],
+          "total_count": 2
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "2 account",
+          "margini bassi",
+          "Distributori Lombardi",
+          "TechnoPlast"
+        ],
+        "tone": "analytical",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_015",
+      "category": "data_retrieval_responses",
+      "complexity": "complex",
+      "user_query": "Confronta vendite ottobre vs novembre 2024",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "erp_agent",
+        "data": {
+          "comparison": {
+            "october_revenue": 87400.0,
+            "november_revenue": 92100.0,
+            "growth_percentage": 5.4,
+            "october_orders": 42,
+            "november_orders": 45,
+            "october_avg_order": 2081.0,
+            "november_avg_order": 2047.0
+          }
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "crescita",
+          "5,4%",
+          "novembre meglio",
+          "ottobre"
+        ],
+        "tone": "analytical",
+        "max_characters": 450
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 450,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_016",
+      "category": "preference_responses",
+      "complexity": "simple",
+      "user_query": "In che lingua ricevo le risposte?",
       "user_preferences": {
         "language": "it",
         "output_format": "concise",
         "timezone": "Europe/Rome"
       },
       "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_new_customers",
-        "tool_result": {
-          "new_customers": 12,
-          "period": "November 2024",
-          "total_value": 28000.0,
-          "currency": "EUR"
+        "source": "retrieval_agent",
+        "data": {
+          "language": "it"
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "12",
-          "novembre",
-          "clienti"
+          "italiano"
         ],
-        "language": "it",
         "tone": "informative",
-        "max_characters": 300
+        "max_characters": 150
       },
       "evaluation_config": {
         "faithfulness_threshold": 0.95,
         "answer_relevancy_threshold": 0.95,
-        "max_characters": 300,
-        "max_lines": 5
-      }
-    },
-    {
-      "id": "resp_015",
-      "category": "data_retrieval_responses",
-      "user_query": "Show me Q4 revenue comparison",
-      "user_preferences": {
-        "language": "en",
-        "output_format": "chart",
-        "timezone": "America/New_York",
-        "currency": "USD"
-      },
-      "retrieved_context": {
-        "source": "tool_calling_agent",
-        "tool_name": "get_revenue_comparison",
-        "tool_result": {
-          "q4_2024": 1250000.0,
-          "q4_2023": 980000.0,
-          "growth_percentage": 27.55,
-          "currency": "USD"
-        }
-      },
-      "expected_response_characteristics": {
-        "must_include_concepts": [
-          "1,250,000",
-          "980,000",
-          "27.55%",
-          "growth"
-        ],
-        "tone": "informative",
-        "max_characters": 400
-      },
-      "evaluation_config": {
-        "faithfulness_threshold": 0.95,
-        "answer_relevancy_threshold": 0.9,
-        "max_characters": 400,
-        "max_lines": 8
+        "max_characters": 150,
+        "max_lines": 2
       }
     },
     {
       "id": "resp_017",
       "category": "preference_responses",
-      "user_query": "What language should responses be in?",
-      "user_preferences": {
-        "language": "en",
-        "output_format": "concise",
-        "timezone": "Asia/Dubai"
-      },
-      "retrieved_context": {
-        "source": "retrieval_agent",
-        "data": {
-          "language": "en"
-        }
-      },
-      "expected_response_characteristics": {
-        "must_include_concepts": [
-          "English"
-        ],
-        "tone": "informative",
-        "max_characters": 200
-      },
-      "evaluation_config": {
-        "faithfulness_threshold": 0.95,
-        "answer_relevancy_threshold": 0.95,
-        "max_characters": 200,
-        "max_lines": 3
-      }
-    },
-    {
-      "id": "resp_018",
-      "category": "preference_responses",
-      "user_query": "Show me all my preferences",
-      "user_preferences": {
-        "language": "en",
-        "output_format": "list",
-        "timezone": "Asia/Dubai"
-      },
-      "retrieved_context": {
-        "source": "retrieval_agent",
-        "data": {
-          "language": "en",
-          "timezone": "Asia/Dubai",
-          "output_format": "table",
-          "notifications": true,
-          "currency": "AED"
-        }
-      },
-      "expected_response_characteristics": {
-        "must_include_concepts": [
-          "English",
-          "Asia/Dubai",
-          "table",
-          "AED",
-          "notifications on"
-        ],
-        "tone": "informative",
-        "max_characters": 500
-      },
-      "evaluation_config": {
-        "faithfulness_threshold": 0.9,
-        "answer_relevancy_threshold": 0.85,
-        "max_characters": 500,
-        "max_lines": 10
-      }
-    },
-    {
-      "id": "resp_019",
-      "category": "preference_responses",
-      "user_query": "In che fuso orario sono?",
+      "complexity": "simple",
+      "user_query": "Qual è il mio fuso orario?",
       "user_preferences": {
         "language": "it",
         "output_format": "concise",
@@ -683,7 +724,6 @@
           "Europe/Rome",
           "Roma"
         ],
-        "language": "it",
         "tone": "informative",
         "max_characters": 200
       },
@@ -695,77 +735,10 @@
       }
     },
     {
-      "id": "resp_020",
+      "id": "resp_018",
       "category": "preference_responses",
-      "user_query": "Am I receiving notifications?",
-      "user_preferences": {
-        "language": "en",
-        "output_format": "concise",
-        "timezone": "Asia/Dubai"
-      },
-      "retrieved_context": {
-        "source": "retrieval_agent",
-        "data": {
-          "notifications": false
-        }
-      },
-      "expected_response_characteristics": {
-        "must_include_concepts": [
-          "no",
-          "notifications off",
-          "disabled"
-        ],
-        "tone": "informative",
-        "max_characters": 200
-      },
-      "evaluation_config": {
-        "faithfulness_threshold": 0.95,
-        "answer_relevancy_threshold": 0.95,
-        "max_characters": 200,
-        "max_lines": 3
-      }
-    },
-    {
-      "id": "resp_022",
-      "category": "conversation_history_responses",
-      "user_query": "What did I ask about last time?",
-      "user_preferences": {
-        "language": "en",
-        "output_format": "concise",
-        "timezone": "Asia/Dubai"
-      },
-      "retrieved_context": {
-        "source": "retrieval_agent",
-        "data": {
-          "last_query": "Send report to my email",
-          "timestamp": "2025-11-12T15:10:00Z",
-          "entities": [
-            "report",
-            "email"
-          ],
-          "intent": "export_data"
-        }
-      },
-      "expected_response_characteristics": {
-        "must_include_concepts": [
-          "last time",
-          "report",
-          "email"
-        ],
-        "tone": "conversational",
-        "max_characters": 300
-      },
-      "evaluation_config": {
-        "faithfulness_threshold": 0.9,
-        "answer_relevancy_threshold": 0.9,
-        "max_characters": 300,
-        "max_lines": 5
-      }
-    },
-    {
-      "id": "resp_023",
-      "category": "conversation_history_responses",
-      "user_query": "Quando è stata la mia ultima conversazione?",
+      "complexity": "simple",
+      "user_query": "Ricevo notifiche?",
       "user_preferences": {
         "language": "it",
         "output_format": "concise",
@@ -774,17 +747,123 @@
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
-          "last_conversation_time": "2025-11-13T07:20:00Z",
-          "last_message": "Aggiorna quantità a 500"
+          "notifications": true,
+          "mobile_optimized": true
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "ultima",
-          "conversazione",
-          "oggi"
+          "sì",
+          "notifiche attive"
         ],
+        "tone": "informative",
+        "max_characters": 200
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 200,
+        "max_lines": 3
+      }
+    },
+    {
+      "id": "resp_019",
+      "category": "preference_responses",
+      "complexity": "simple",
+      "user_query": "Quale valuta utilizzo?",
+      "user_preferences": {
         "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "currency": "EUR"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "EUR",
+          "euro"
+        ],
+        "tone": "informative",
+        "max_characters": 150
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 150,
+        "max_lines": 2
+      }
+    },
+    {
+      "id": "resp_020",
+      "category": "preference_responses",
+      "complexity": "medium",
+      "user_query": "Mostrami tutte le mie preferenze",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "language": "it",
+          "timezone": "Europe/Rome",
+          "output_format": "dashboard",
+          "notifications": true,
+          "currency": "EUR",
+          "report_frequency": "daily"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "italiano",
+          "Europe/Rome",
+          "EUR",
+          "notifiche",
+          "dashboard"
+        ],
+        "tone": "informative",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 400,
+        "max_lines": 10
+      }
+    },
+    {
+      "id": "resp_021",
+      "category": "conversation_history_responses",
+      "complexity": "simple",
+      "user_query": "Cosa ho chiesto l'ultima volta?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "last_query": "Disponibilità prodotto SKU-VALV-345 per cliente Officine Mazzini?",
+          "timestamp": "2024-12-05T08:00:00Z",
+          "entities": [
+            "disponibilità",
+            "SKU-VALV-345",
+            "Officine Mazzini"
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "ultima volta",
+          "disponibilità",
+          "SKU-VALV-345"
+        ],
         "tone": "conversational",
         "max_characters": 300
       },
@@ -796,11 +875,63 @@
       }
     },
     {
-      "id": "resp_024",
+      "id": "resp_022",
       "category": "conversation_history_responses",
-      "user_query": "Have I ever asked about inventory before?",
+      "complexity": "medium",
+      "user_query": "Di quali argomenti abbiamo discusso oggi?",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "conversations_today": [
+            {
+              "timestamp": "2024-12-05T08:00:00Z",
+              "topic": "disponibilità prodotto"
+            },
+            {
+              "timestamp": "2024-12-05T08:15:00Z",
+              "topic": "storico ordini cliente"
+            },
+            {
+              "timestamp": "2024-12-05T08:30:00Z",
+              "topic": "preparazione preventivo"
+            }
+          ],
+          "main_topics": [
+            "inventario",
+            "clienti",
+            "preventivi"
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "oggi",
+          "3 conversazioni",
+          "inventario",
+          "clienti"
+        ],
+        "tone": "conversational",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_023",
+      "category": "conversation_history_responses",
+      "complexity": "medium",
+      "user_query": "Ho mai chiesto informazioni sui margini?",
+      "user_preferences": {
+        "language": "it",
         "output_format": "concise",
         "timezone": "Europe/Rome"
       },
@@ -810,17 +941,22 @@
           "has_asked": true,
           "related_conversations": [
             {
-              "timestamp": "2025-11-13T07:15:00Z",
-              "message": "Mostrami lo stock di prodotto SKU-12345"
+              "timestamp": "2024-12-04T09:45:00Z",
+              "message": "Quali account hanno margini sotto il 20%?",
+              "entities": [
+                "account",
+                "margini",
+                "20%"
+              ]
             }
           ]
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "yes",
-          "inventory",
-          "SKU-12345"
+          "sì",
+          "margini",
+          "ieri"
         ],
         "tone": "conversational",
         "max_characters": 300
@@ -833,31 +969,127 @@
       }
     },
     {
+      "id": "resp_024",
+      "category": "conversation_history_responses",
+      "complexity": "medium",
+      "user_query": "Quali clienti ho menzionato recentemente?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "mentioned_clients": [
+            "Officine Mazzini SpA",
+            "Industrie Galvani Srl",
+            "Beta Tech Industries SpA"
+          ],
+          "recent_conversations": 5
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "3 clienti",
+          "Officine Mazzini",
+          "Industrie Galvani",
+          "Beta Tech"
+        ],
+        "tone": "conversational",
+        "max_characters": 350
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 350,
+        "max_lines": 7
+      }
+    },
+    {
+      "id": "resp_025",
+      "category": "conversation_history_responses",
+      "complexity": "complex",
+      "user_query": "Riassumi le mie attività della settimana",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "week_summary": {
+            "total_conversations": 18,
+            "main_activities": [
+              {
+                "activity": "verifica disponibilità prodotti",
+                "count": 6
+              },
+              {
+                "activity": "analisi margini e report",
+                "count": 4
+              },
+              {
+                "activity": "gestione trattative",
+                "count": 5
+              },
+              {
+                "activity": "storico ordini clienti",
+                "count": 3
+              }
+            ],
+            "top_clients_discussed": [
+              "Officine Mazzini SpA",
+              "Industrie Galvani Srl"
+            ]
+          }
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "18 conversazioni",
+          "disponibilità prodotti",
+          "margini",
+          "trattative"
+        ],
+        "tone": "professional_summary",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.8,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 12
+      }
+    },
+    {
       "id": "resp_026",
       "category": "error_responses",
-      "user_query": "Show me HR payroll data",
+      "complexity": "simple",
+      "user_query": "Mostrami i dati buste paga",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "Asia/Dubai"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
         "data": {
           "access_granted": false,
           "error": "insufficient_permissions",
-          "missing_permission": "hr.read"
+          "missing_permission": "hr.payroll.read"
         }
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "don't have permission",
+          "non hai permesso",
           "HR",
-          "access"
+          "buste paga"
         ],
         "must_not_include": [
-          "payroll data",
-          "salary information"
+          "dati stipendi",
+          "informazioni buste paga"
         ],
         "tone": "polite_rejection",
         "max_characters": 300
@@ -872,11 +1104,12 @@
     {
       "id": "resp_027",
       "category": "error_responses",
-      "user_query": "Update my manager's permissions",
+      "complexity": "simple",
+      "user_query": "Modifica i permessi di Elena",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "Asia/Dubai"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
@@ -888,9 +1121,9 @@
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "cannot modify",
-          "other users",
-          "admin"
+          "non puoi modificare",
+          "altri utenti",
+          "amministratore"
         ],
         "tone": "polite_rejection",
         "max_characters": 300
@@ -905,10 +1138,11 @@
     {
       "id": "resp_028",
       "category": "error_responses",
-      "user_query": "Mostra tutti gli utenti del sistema",
+      "complexity": "medium",
+      "user_query": "Esporta tutti i contatti del sistema",
       "user_preferences": {
         "language": "it",
-        "output_format": "list",
+        "output_format": "lista",
         "timezone": "Europe/Rome"
       },
       "retrieved_context": {
@@ -922,10 +1156,9 @@
       "expected_response_characteristics": {
         "must_include_concepts": [
           "non hai permesso",
-          "admin",
-          "amministratore"
+          "amministratore",
+          "tutti i contatti"
         ],
-        "language": "it",
         "tone": "polite_rejection",
         "max_characters": 300
       },
@@ -939,11 +1172,12 @@
     {
       "id": "resp_029",
       "category": "error_responses",
-      "user_query": "Get user data for another employee",
+      "complexity": "simple",
+      "user_query": "Dammi i dati di Marco Bancati",
       "user_preferences": {
-        "language": "en",
+        "language": "it",
         "output_format": "concise",
-        "timezone": "Asia/Dubai"
+        "timezone": "Europe/Rome"
       },
       "retrieved_context": {
         "source": "retrieval_agent",
@@ -954,8 +1188,8 @@
       },
       "expected_response_characteristics": {
         "must_include_concepts": [
-          "cannot access",
-          "other user",
+          "non puoi accedere",
+          "altro utente",
           "privacy"
         ],
         "tone": "polite_rejection",
@@ -966,6 +1200,40 @@
         "answer_relevancy_threshold": 0.9,
         "max_characters": 300,
         "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_030",
+      "category": "error_responses",
+      "complexity": "medium",
+      "user_query": "Cancella tutte le email di spam",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "email_agent",
+        "data": {
+          "error": "operation_too_broad",
+          "reason": "requires_explicit_filters",
+          "suggestion": "specifica data o mittente"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "operazione troppo ampia",
+          "specifica",
+          "filtri"
+        ],
+        "tone": "helpful_rejection",
+        "max_characters": 350
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 350,
+        "max_lines": 6
       }
     }
   ]

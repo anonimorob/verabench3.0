@@ -3,7 +3,7 @@
     "name": "vera_agent_router_v0.1",
     "version": "0.1.0",
     "description": "Test dataset for Vera AI agent routing benchmark",
-    "created_date": "2025-11-06",
+    "created_date": "2025-12-05",
     "total_examples": 25,
     "agent_types": [
       "erp_agent",
@@ -21,140 +21,152 @@
   "test_cases": [
     {
       "id": "001",
-      "user_request": "Mostrami le fatture di ottobre",
+      "user_request": "Fammi vedere le fatture di novembre",
+      "correct_agent": "erp_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "002",
+      "user_request": "Quali ordini sono ancora aperti?",
       "correct_agent": "erp_agent",
       "complexity": "simple"
     },
     {
       "id": "003",
-      "user_request": "Quali sono gli ordini aperti?",
-      "correct_agent": "erp_agent",
-      "complexity": "simple"
-    },
-    {
-      "id": "010",
-      "user_request": "Aggiungi un nuovo contatto: Elena Verdi, email elena@example.com",
+      "user_request": "Aggiungi nuovo cliente: Paolo Martini, email p.martini@industria.it",
       "correct_agent": "crm_agent",
       "complexity": "simple"
     },
     {
-      "id": "017",
-      "user_request": "Ho un meeting domani?",
-      "correct_agent": "calendar_agent",
-      "complexity": "simple"
-    },
-    {
-      "id": "019",
-      "user_request": "Cancella l'appuntamento delle 10",
-      "correct_agent": "calendar_agent",
-      "complexity": "simple"
-    },
-    {
-      "id": "025",
-      "user_request": "Esegui una query per trovare tutti gli ordini superiori a 5000 euro",
-      "correct_agent": "database_agent",
-      "complexity": "simple"
-    },
-    {
-      "id": "031",
-      "user_request": "Ciao, come stai?",
-      "correct_agent": "general_assistant",
-      "complexity": "simple"
-    },
-    {
-      "id": "037",
-      "user_request": "Cosa ne pensi dell'intelligenza artificiale nel business?",
-      "correct_agent": "general_assistant",
-      "complexity": "simple"
-    },
-    {
-      "id": "041",
-      "user_request": "Trova tutti i record dove il campo status è 'pending'",
-      "correct_agent": "database_agent",
-      "complexity": "simple"
-    },
-    {
       "id": "004",
-      "user_request": "Verifica lo stato del pagamento della fattura 2024/156",
+      "user_request": "Ho appuntamenti domani pomeriggio?",
+      "correct_agent": "calendar_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "005",
+      "user_request": "Elimina il meeting delle 15:00",
+      "correct_agent": "calendar_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "006",
+      "user_request": "Query per trovare tutti gli ordini sopra i 10.000 euro",
+      "correct_agent": "database_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "007",
+      "user_request": "Buongiorno, tutto bene?",
+      "correct_agent": "general_assistant",
+      "complexity": "simple"
+    },
+    {
+      "id": "008",
+      "user_request": "Che ne pensi dell'automazione nel settore industriale?",
+      "correct_agent": "general_assistant",
+      "complexity": "simple"
+    },
+    {
+      "id": "009",
+      "user_request": "Cerca tutti i record con stato 'in attesa'",
+      "correct_agent": "database_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "010",
+      "user_request": "Controlla se il cliente ha saldato la fattura 2024/234",
       "correct_agent": "erp_agent",
       "complexity": "medium"
     },
     {
       "id": "011",
-      "user_request": "Quali clienti non hanno effettuato ordini negli ultimi 6 mesi?",
+      "user_request": "Quali clienti non hanno ordinato negli ultimi 3 mesi?",
       "correct_agent": "crm_agent",
       "complexity": "medium"
     },
     {
-      "id": "020",
-      "user_request": "Quando è libero Giovanni la prossima settimana?",
+      "id": "012",
+      "user_request": "Quando è disponibile la commerciale Elena questa settimana?",
       "correct_agent": "calendar_agent",
       "complexity": "medium"
     },
     {
-      "id": "028",
-      "user_request": "Estrai i dati aggregati delle transazioni per regione e mese",
+      "id": "013",
+      "user_request": "Estrai dati vendite aggregati per provincia e trimestre",
       "correct_agent": "database_agent",
       "complexity": "medium"
     },
     {
-      "id": "035",
-      "user_request": "Suggeriscimi delle strategie di pricing per prodotti B2B",
+      "id": "014",
+      "user_request": "Dammi consigli su come negoziare con clienti automotive",
       "correct_agent": "general_assistant",
       "complexity": "medium"
     },
     {
-      "id": "042",
-      "user_request": "Il cliente ha pagato la fattura di settembre?",
+      "id": "015",
+      "user_request": "Il fornitore Rossi ha pagato la fornitura di agosto?",
       "correct_agent": "erp_agent",
       "complexity": "medium"
     },
     {
-      "id": "045",
-      "user_request": "Esporta tutti i dati dei clienti acquisiti nel 2024",
+      "id": "016",
+      "user_request": "Esporta l'elenco completo dei prospect del 2024",
       "correct_agent": "database_agent",
       "complexity": "medium"
     },
     {
-      "id": "007",
-      "user_request": "Gestisci l'inventario e dimmi se ci sono articoli sotto scorta che hanno ordini pendenti",
+      "id": "017",
+      "user_request": "Verifica giacenza magazzino e segnala prodotti sotto scorta minima con ordini pendenti",
       "correct_agent": "erp_agent",
       "complexity": "complex"
     },
     {
-      "id": "015",
-      "user_request": "Analizza il customer lifetime value dei nostri top 20 clienti e suggerisci azioni di retention",
+      "id": "018",
+      "user_request": "Analizza il lifetime value dei primi 15 account strategici e proponi azioni di fidelizzazione",
       "correct_agent": "crm_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "019",
+      "user_request": "Trova uno slot di 90 minuti libero per tutto il sales team entro giovedì",
+      "correct_agent": "calendar_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "020",
+      "user_request": "Analizza la correlazione tra picchi di ordini e periodi dell'anno negli ultimi 2 anni",
+      "correct_agent": "database_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "021",
+      "user_request": "Come posso ottimizzare il processo di gestione pipeline commerciale?",
+      "correct_agent": "general_assistant",
       "complexity": "complex"
     },
     {
       "id": "022",
-      "user_request": "Trova uno slot di 2 ore per tutti i membri del team entro venerdì",
-      "correct_agent": "calendar_agent",
-      "complexity": "complex"
-    },
-    {
-      "id": "029",
-      "user_request": "Analizza la correlazione tra volume di ordini e stagionalità negli ultimi 3 anni",
-      "correct_agent": "database_agent",
-      "complexity": "complex"
-    },
-    {
-      "id": "036",
-      "user_request": "Come posso migliorare il processo di onboarding dei nuovi dipendenti?",
-      "correct_agent": "general_assistant",
-      "complexity": "complex"
-    },
-    {
-      "id": "048",
-      "user_request": "Crea un segmento di clienti VIP basato su fatturato annuale e frequenza d'acquisto",
+      "user_request": "Segmenta i clienti premium in base a fatturato annuo e ricorrenza degli ordini",
       "correct_agent": "crm_agent",
       "complexity": "complex"
     },
     {
-      "id": "050",
-      "user_request": "Genera un'analisi predittiva della domanda basata su dati storici multi-tabella",
+      "id": "023",
+      "user_request": "Genera previsione della domanda basata su storico vendite e stagionalità multi-anno",
       "correct_agent": "database_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "024",
+      "user_request": "Identifica opportunità di cross-selling analizzando pattern di acquisto dei top account",
+      "correct_agent": "crm_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "025",
+      "user_request": "Coordina disponibilità di 4 persone per demo prodotto e prenota sala riunioni",
+      "correct_agent": "calendar_agent",
       "complexity": "complex"
     }
   ]

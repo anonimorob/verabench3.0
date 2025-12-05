@@ -12,33 +12,36 @@ from src.model_config import get_model_config
 from src.inference_client import ModelInferenceClient
 from src.metrics import calculate_cost
 from src.logger import ResultLogger, WandBLogger
-from src.visualizer import BenchmarkVisualizer
+from src.result_aggregator import aggregate_task_results
+from src.bubble_visualizer import visualize_results
 from tasks.tool_calling.metrics import ToolCallingMetricsCalculator
 
-
-MODELS_TO_TEST = [
+# PHASE 1: Screening iniziale su dataset ridotto (dataset_short.json)
+MODELS_PHASE_1 = [
     "gpt-4o-mini",
     "gpt-4o",
-    "llama-3.3-70b",
-    "llama3.1-8b",
-    "gemma-3-12b",
-    "gemma-3-27b",
-    "mistral-nemo",
-    "gpt-oss-20b",
-    "phi-4-mini", 
+    "openai/gpt-oss-20b"
+    # Aggiungere qui tutti i modelli da testare in fase 1
+]
+
+# PHASE 2: Valutazione completa su dataset intero (dataset.json)
+MODELS_TO_TEST = [
+    "openai/gpt-oss-20b"
 ]
 
 
 class ToolCallingBenchmarkRunner:
     """Esegue il benchmark per la task di Tool Calling."""
-    
-    def __init__(self, seed: int = 42):
+
+    def __init__(self, seed: int = 42, use_short_dataset: bool = False):
         load_dotenv()
         random.seed(seed)
         self.seed = seed
-        
+        self.use_short_dataset = use_short_dataset
+
         # Carica dataset e prompt dalla cartella task
-        self.test_cases = load_dataset("tasks/tool_calling/dataset.json")
+        dataset_file = "tasks/tool_calling/dataset_short.json" if use_short_dataset else "tasks/tool_calling/dataset.json"
+        self.test_cases = load_dataset(dataset_file)
         self.system_prompt = load_prompt("tasks/tool_calling/prompt.json")
         
         # Setup logging
@@ -163,25 +166,59 @@ class ToolCallingBenchmarkRunner:
 
 def main():
     """Funzione principale."""
-    runner = ToolCallingBenchmarkRunner()
-    
-    print("="*60)
-    print("BENCHMARK: Tool Calling")
-    print("="*60 + "\n")
-    
-    all_results = runner.run_all_models()
-    
-    # Crea grafici
-    if all_results:
-        visualizer = BenchmarkVisualizer(runner.result_logger.results_dir)
-        visualizer.create_all_plots(all_results)
-    
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Benchmark Tool Calling")
+    parser.add_argument("--phase1", action="store_true", help="Esegui Phase 1: screening su dataset ridotto")
+    args = parser.parse_args()
+
+    if args.phase1:
+        models = MODELS_PHASE_1
+        use_short = True
+        phase_name = "PHASE 1 - SCREENING"
+        print("="*60)
+        print(f"{phase_name}")
+        print("Dataset: dataset_short.json (10 esempi)")
+        print(f"Modelli da testare: {len(models)}")
+        print("="*60 + "\n")
+    else:
+        models = MODELS_TO_TEST
+        use_short = False
+        phase_name = "PHASE 2 - VALUTAZIONE COMPLETA"
+        print("="*60)
+        print(f"{phase_name}")
+        print("Dataset: dataset.json (completo)")
+        print(f"Modelli da testare: {len(models)}")
+        print("="*60 + "\n")
+
+    runner = ToolCallingBenchmarkRunner(use_short_dataset=use_short)
+
+    # Esegui solo i modelli selezionati
+    def run_selected_models():
+        results = {}
+        for model_key in models:
+            try:
+                result = runner.run_single_model(model_key)
+                results[model_key] = result
+            except Exception as e:
+                print(f"ERRORE {model_key}: {str(e)}")
+                continue
+        return results
+
+    all_results = run_selected_models()
+
     print("\n" + "="*60)
-    print("BENCHMARK COMPLETATO")
+    print(f"{phase_name} COMPLETATO")
     print(f"Modelli testati: {len(all_results)}")
     print(f"Risultati: {runner.result_logger.results_dir}/")
     print("="*60)
 
+    # Aggrega e visualizza automaticamente
+    if all_results:
+        print("\n[*] Aggregando risultati e generando visualizzazioni...")
+        aggregated = aggregate_task_results(runner.result_logger.results_dir, "tool_calling")
+        if aggregated:
+            visualize_results(aggregated, "tool_calling", runner.result_logger.results_dir / "visualizations")
 
 if __name__ == "__main__":
     main()

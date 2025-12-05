@@ -1,0 +1,352 @@
+{
+  "dataset_info": {
+    "name": "vera_judge_validator_short_v0.1",
+    "version": "0.1.0",
+    "description": "Short dataset per testare il Judge/Validator agent di Vera AI - 10 casi rappresentativi",
+    "created_date": "2024-12-05",
+    "total_examples": 10,
+    "language": "italian",
+    "distribution": {
+      "should_approve": 4,
+      "should_reject": 4,
+      "consistency_tests": 2
+    },
+    "evaluation_metrics": [
+      "judgment_accuracy (target ≥85%)",
+      "false_positive_rate (target <10%)",
+      "consistency (target ≥90%)"
+    ],
+    "domains": [
+      "erp",
+      "crm",
+      "calendar",
+      "email",
+      "database"
+    ]
+  },
+  "test_cases": [
+    {
+      "id": "S01",
+      "category": "approve_simple",
+      "complexity": "simple",
+      "severity": "none",
+      "user_request": "Mostrami le fatture in sospeso",
+      "tool_call": {
+        "name": "get_invoices",
+        "parameters": {
+          "status": "pending"
+        }
+      },
+      "tool_result": {
+        "invoices": [
+          {
+            "id": "INV-2024-567",
+            "customer": "Alpha Trade S.r.l.",
+            "amount": 3400.0,
+            "status": "pending"
+          }
+        ],
+        "total_count": 1
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "Tool corretto con filtro status appropriato, risultati rilevanti"
+      }
+    },
+    {
+      "id": "S02",
+      "category": "consistency_test_simple",
+      "complexity": "simple",
+      "severity": "none",
+      "user_request": "Aggiungi 50 unità di SKU-SENS-770 al magazzino",
+      "tool_call": {
+        "name": "update_inventory",
+        "parameters": {
+          "product_sku": "SKU-SENS-770",
+          "quantity": 50,
+          "operation": "add"
+        }
+      },
+      "tool_result": {
+        "product_sku": "SKU-SENS-770",
+        "new_quantity": 150,
+        "operation": "completed"
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: inventario aggiornato correttamente con quantità e operazione giuste"
+      }
+    },
+    {
+      "id": "M01",
+      "category": "reject_date_mismatch",
+      "complexity": "medium",
+      "severity": "medium",
+      "user_request": "Report vendite del terzo trimestre 2024",
+      "tool_call": {
+        "name": "get_sales_report",
+        "parameters": {
+          "start_date": "2024-04-01",
+          "end_date": "2024-06-30",
+          "group_by": "month"
+        }
+      },
+      "tool_result": {
+        "report": [
+          {
+            "month": "2024-04",
+            "revenue": 67800.0
+          },
+          {
+            "month": "2024-05",
+            "revenue": 72100.0
+          },
+          {
+            "month": "2024-06",
+            "revenue": 69400.0
+          }
+        ]
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": true,
+        "complete": false,
+        "reasoning": "Periodo errato: richiesto Q3 (lug-set) ma recuperato Q2 (apr-giu)"
+      }
+    },
+    {
+      "id": "M02",
+      "category": "approve_crm_operation",
+      "complexity": "medium",
+      "severity": "none",
+      "user_request": "Aggiorna trattativa DEAL-991 con nota 'Cliente conferma budget 50K'",
+      "tool_call": {
+        "name": "update_deal_stage",
+        "parameters": {
+          "deal_id": "DEAL-991",
+          "new_stage": "Qualificato",
+          "notes": "Cliente conferma budget 50K"
+        }
+      },
+      "tool_result": {
+        "deal_id": "DEAL-991",
+        "new_stage": "Qualificato",
+        "notes": "Cliente conferma budget 50K",
+        "updated_at": "2024-12-05T11:20:00Z"
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "Trattativa aggiornata correttamente con stage e note come richiesto"
+      }
+    },
+    {
+      "id": "M03",
+      "category": "reject_parameter_error",
+      "complexity": "medium",
+      "severity": "critical",
+      "user_request": "Invia preventivo a acquisti@clienteXYZ.com",
+      "tool_call": {
+        "name": "send_email",
+        "parameters": {
+          "subject": "Preventivo richiesto",
+          "body": "In allegato il preventivo",
+          "attachments": ["preventivo.pdf"]
+        }
+      },
+      "tool_result": {
+        "error": "recipients field is required"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "Parametro critico 'recipients' mancante, email non può essere inviata"
+      }
+    },
+    {
+      "id": "C01",
+      "category": "reject_magnitude_error",
+      "complexity": "complex",
+      "severity": "critical",
+      "user_request": "Crea ordine: 200 sensori pressione SKU-SENS-P65 a €65 l'uno per cliente CLI-234",
+      "tool_call": {
+        "name": "create_order",
+        "parameters": {
+          "customer_id": "CLI-234",
+          "items": [
+            {
+              "sku": "SKU-SENS-P65",
+              "quantity": 20,
+              "unit_price": 65.0
+            }
+          ]
+        }
+      },
+      "tool_result": {
+        "order_id": "ORD-2024-9345",
+        "status": "created",
+        "total": 1300.0,
+        "items": [
+          {
+            "sku": "SKU-SENS-P65",
+            "quantity": 20
+          }
+        ]
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO: quantità 20 invece di 200 - ordine di grandezza errato, impatto finanziario"
+      }
+    },
+    {
+      "id": "C02",
+      "category": "approve_multi_parameter",
+      "complexity": "complex",
+      "severity": "none",
+      "user_request": "Crea fattura per CLI-777: 25 componenti a €120, 15 guarnizioni a €8, scadenza 31 gennaio, pagamento 60gg",
+      "tool_call": {
+        "name": "create_invoice",
+        "parameters": {
+          "customer_id": "CLI-777",
+          "items": [
+            {
+              "description": "componenti idraulici",
+              "quantity": 25,
+              "unit_price": 120.0
+            },
+            {
+              "description": "guarnizioni",
+              "quantity": 15,
+              "unit_price": 8.0
+            }
+          ],
+          "due_date": "2025-01-31",
+          "payment_terms": "60 giorni"
+        }
+      },
+      "tool_result": {
+        "invoice_id": "INV-2024-778",
+        "status": "created",
+        "total": 3120.0,
+        "items_count": 2
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "Fattura multi-item creata correttamente con tutti i parametri richiesti e calcolo totale corretto"
+      }
+    },
+    {
+      "id": "C03",
+      "category": "reject_operation_opposite",
+      "complexity": "complex",
+      "severity": "critical",
+      "user_request": "Applica sconto del 12% alla fattura INV-2024-445",
+      "tool_call": {
+        "name": "apply_discount",
+        "parameters": {
+          "invoice_id": "INV-2024-445",
+          "discount_percentage": 12
+        }
+      },
+      "tool_result": {
+        "invoice_id": "INV-2024-445",
+        "original_amount": 12500.0,
+        "adjustment": 1500.0,
+        "new_amount": 14000.0,
+        "operation": "markup_applied"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": false,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO: operazione opposta - richiesto sconto ma applicato markup, aumento prezzo invece di riduzione"
+      }
+    },
+    {
+      "id": "C04",
+      "category": "consistency_test_complex",
+      "complexity": "complex",
+      "severity": "critical",
+      "user_request": "Esporta contatti settore automotive della regione Emilia-Romagna in formato Excel",
+      "tool_call": {
+        "name": "export_contacts",
+        "parameters": {
+          "format": "excel",
+          "filters": {
+            "industry": "automotive",
+            "region": "Emilia-Romagna"
+          }
+        }
+      },
+      "tool_result": {
+        "export_id": "EXP-445",
+        "status": "completed",
+        "records_exported": 47,
+        "filters_applied": {
+          "industry": "automotive",
+          "region": "Emilia-Romagna"
+        }
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "CONSISTENCY TEST: export eseguito con filtri corretti, scope appropriato (47 record specifici)"
+      }
+    },
+    {
+      "id": "C05",
+      "category": "reject_critical_scope",
+      "complexity": "complex",
+      "severity": "critical",
+      "user_request": "Cancella le email di spam dalla cartella inbox ricevute oggi",
+      "tool_call": {
+        "name": "delete_emails",
+        "parameters": {
+          "folder": "inbox"
+        }
+      },
+      "tool_result": {
+        "status": "completed",
+        "emails_deleted": 347,
+        "folder": "inbox"
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO: filtri mancanti - richiesto solo spam di oggi ma cancellate TUTTE le email (347), operazione distruttiva"
+      }
+    }
+  ]
+}

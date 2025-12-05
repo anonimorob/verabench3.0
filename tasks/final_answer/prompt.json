@@ -49,7 +49,7 @@
           "transactions": 127
         }
       },
-      "good_response": "📊 Vendite Ottobre 2024:\n• Totale: €45.000\n• Transazioni: 127\n• Media: €354 per transazione",
+      "good_response": "Vendite Ottobre 2024:\n• Totale: €45.000\n• Transazioni: 127\n• Media: €354 per transazione",
       "bad_response": "I dati mostrano che nel periodo di ottobre 2024 le vendite totali ammontano a quarantacinquemila euro, con un numero di transazioni pari a centoventisette..."
     },
     {

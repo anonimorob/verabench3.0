@@ -1,0 +1,523 @@
+{
+  "_dataset_metadata": {
+    "name": "Vera AI - Response Generation Benchmark Dataset Short",
+    "version": "1.0",
+    "created_date": "2024-12-05",
+    "description": "10 test cases per valutare response generation agent - versione ridotta",
+    "total_test_cases": 10,
+    "test_distribution": {
+      "by_category": {
+        "permission_responses": 2,
+        "data_retrieval_responses": 3,
+        "preference_responses": 1,
+        "conversation_history_responses": 2,
+        "error_responses": 2
+      },
+      "by_complexity": {
+        "simple": 2,
+        "medium": 3,
+        "complex": 5
+      }
+    },
+    "evaluation_metrics": {
+      "faithfulness": "DeepEval - verifica fedeltà ai fatti",
+      "answer_relevancy": "DeepEval - verifica pertinenza risposta",
+      "conciseness": "Rule-based - max 500 chars, 10 lines"
+    }
+  },
+  "test_cases": [
+    {
+      "id": "resp_S01",
+      "category": "permission_responses",
+      "complexity": "simple",
+      "user_query": "Posso modificare i livelli di stock?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "can_read": true,
+          "can_write": false,
+          "system": "erp",
+          "modules": [
+            "vendite",
+            "inventario"
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "no",
+          "solo lettura",
+          "inventario"
+        ],
+        "must_not_include": [
+          "puoi modificare"
+        ],
+        "tone": "informative",
+        "max_characters": 250
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 250,
+        "max_lines": 4
+      }
+    },
+    {
+      "id": "resp_S02",
+      "category": "preference_responses",
+      "complexity": "simple",
+      "user_query": "Quale formato output preferisco?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "output_format": "dashboard",
+          "mobile_optimized": false
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "dashboard"
+        ],
+        "tone": "informative",
+        "max_characters": 150
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.95,
+        "answer_relevancy_threshold": 0.95,
+        "max_characters": 150,
+        "max_lines": 2
+      }
+    },
+    {
+      "id": "resp_M01",
+      "category": "data_retrieval_responses",
+      "complexity": "medium",
+      "user_query": "Mostrami i dettagli dell'ordine ORD-2024-7891",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "erp_agent",
+        "data": {
+          "order_id": "ORD-2024-7891",
+          "customer": "Industrie Galvani Srl",
+          "date": "2024-11-20",
+          "total": 6700.0,
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-VALV-345",
+              "quantity": 10,
+              "price": 285.0
+            },
+            {
+              "sku": "SKU-PUMP-A45",
+              "quantity": 15,
+              "price": 250.0
+            }
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "Industrie Galvani",
+          "€6.700",
+          "spedito",
+          "20 novembre"
+        ],
+        "tone": "informative",
+        "max_characters": 400
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 400,
+        "max_lines": 8
+      }
+    },
+    {
+      "id": "resp_M02",
+      "category": "conversation_history_responses",
+      "complexity": "medium",
+      "user_query": "Ho già parlato del cliente Officine Mazzini?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "has_mentioned": true,
+          "conversations": [
+            {
+              "timestamp": "2024-12-05T08:00:00Z",
+              "message": "Disponibilità prodotto SKU-VALV-345 per cliente Officine Mazzini?"
+            },
+            {
+              "timestamp": "2024-12-04T16:00:00Z",
+              "message": "Ci sono ordini in ritardo per Officine Mazzini?"
+            }
+          ],
+          "mention_count": 2
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "sì",
+          "2 volte",
+          "Officine Mazzini",
+          "oggi e ieri"
+        ],
+        "tone": "conversational",
+        "max_characters": 300
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 300,
+        "max_lines": 5
+      }
+    },
+    {
+      "id": "resp_M03",
+      "category": "error_responses",
+      "complexity": "medium",
+      "user_query": "Voglio vedere i dati finanziari completi dell'azienda",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "access_granted": false,
+          "error": "insufficient_permissions",
+          "missing_permission": "finance.full_access",
+          "current_role": "Account Executive"
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "non hai accesso",
+          "dati finanziari completi",
+          "ruolo"
+        ],
+        "tone": "polite_rejection",
+        "max_characters": 350
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.9,
+        "answer_relevancy_threshold": 0.9,
+        "max_characters": 350,
+        "max_lines": 6
+      }
+    },
+    {
+      "id": "resp_C01",
+      "category": "data_retrieval_responses",
+      "complexity": "complex",
+      "user_query": "Analisi performance vendite per venditore ultimo trimestre",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "erp_agent",
+        "data": {
+          "period": "Q4 2024",
+          "salespeople_performance": [
+            {
+              "name": "Elena Riggioni",
+              "revenue": 245600.0,
+              "orders": 67,
+              "avg_deal_size": 3665.0,
+              "margin": 29.8,
+              "target_achievement": 112
+            },
+            {
+              "name": "Luca Montanari",
+              "revenue": 89200.0,
+              "orders": 34,
+              "avg_deal_size": 2624.0,
+              "margin": 26.1,
+              "target_achievement": 78
+            }
+          ],
+          "team_total": 334800.0,
+          "team_target": 300000.0
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "Q4",
+          "Elena top performer",
+          "112% target",
+          "€334.800 totale"
+        ],
+        "tone": "analytical",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.8,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 12
+      }
+    },
+    {
+      "id": "resp_C02",
+      "category": "data_retrieval_responses",
+      "complexity": "complex",
+      "user_query": "Dashboard completa: ordini, margini e trattative oggi",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "multi_agent",
+        "data": {
+          "orders": {
+            "new_today": 3,
+            "value": 18900.0,
+            "pending": 8
+          },
+          "margins": {
+            "average": 27.5,
+            "lowest": "CLI-567 (18.5%)",
+            "highest": "CLI-123 (34.2%)"
+          },
+          "deals": {
+            "active": 12,
+            "stage_distribution": {
+              "qualificato": 4,
+              "negoziazione": 5,
+              "proposta": 3
+            },
+            "total_pipeline": 287000.0
+          }
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "3 nuovi ordini",
+          "€18.900",
+          "margine medio 27,5%",
+          "12 trattative attive"
+        ],
+        "tone": "executive_summary",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.8,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 12
+      }
+    },
+    {
+      "id": "resp_C03",
+      "category": "conversation_history_responses",
+      "complexity": "complex",
+      "user_query": "Quali sono stati i miei temi principali questa settimana e su quali clienti mi sono concentrato?",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "dashboard",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "week_analysis": {
+            "total_interactions": 23,
+            "main_themes": [
+              {
+                "theme": "disponibilità prodotti",
+                "percentage": 35,
+                "count": 8
+              },
+              {
+                "theme": "gestione trattative",
+                "percentage": 30,
+                "count": 7
+              },
+              {
+                "theme": "analisi margini",
+                "percentage": 22,
+                "count": 5
+              },
+              {
+                "theme": "preparazione preventivi",
+                "percentage": 13,
+                "count": 3
+              }
+            ],
+            "top_clients": [
+              {
+                "name": "Officine Mazzini SpA",
+                "interactions": 6
+              },
+              {
+                "name": "Industrie Galvani Srl",
+                "interactions": 4
+              },
+              {
+                "name": "Beta Tech Industries SpA",
+                "interactions": 3
+              }
+            ]
+          }
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "23 interazioni",
+          "disponibilità prodotti",
+          "Officine Mazzini",
+          "35%"
+        ],
+        "tone": "analytical_summary",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.8,
+        "answer_relevancy_threshold": 0.8,
+        "max_characters": 500,
+        "max_lines": 12
+      }
+    },
+    {
+      "id": "resp_C04",
+      "category": "permission_responses",
+      "complexity": "complex",
+      "user_query": "Dammi un riepilogo completo dei miei permessi e limitazioni su tutti i sistemi",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "lista",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "retrieval_agent",
+        "data": {
+          "user_role": "Account Executive",
+          "permissions_summary": {
+            "erp": {
+              "read": true,
+              "write": false,
+              "modules": [
+                "vendite",
+                "inventario",
+                "ordini"
+              ],
+              "limitations": "solo consultazione, no modifiche"
+            },
+            "crm": {
+              "read": true,
+              "write": true,
+              "modules": [
+                "contatti",
+                "opportunità",
+                "trattative"
+              ],
+              "limitations": "nessuna"
+            },
+            "calendar": {
+              "read": true,
+              "write": true,
+              "limitations": "solo propri appuntamenti"
+            },
+            "email": {
+              "read": true,
+              "write": true,
+              "limitations": "nessuna"
+            }
+          },
+          "blocked_systems": [
+            "HR",
+            "Finance (full)",
+            "Admin Panel"
+          ],
+          "rate_limit": 200
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "Account Executive",
+          "ERP solo lettura",
+          "CRM completo",
+          "no HR"
+        ],
+        "tone": "comprehensive_informative",
+        "max_characters": 500
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 500,
+        "max_lines": 15
+      }
+    },
+    {
+      "id": "resp_C05",
+      "category": "error_responses",
+      "complexity": "complex",
+      "user_query": "Esporta tutti i dati CRM in formato Excel e mandameli via email",
+      "user_preferences": {
+        "language": "it",
+        "output_format": "concise",
+        "timezone": "Europe/Rome"
+      },
+      "retrieved_context": {
+        "source": "multi_agent",
+        "data": {
+          "errors": [
+            {
+              "operation": "export_all_crm",
+              "error": "scope_too_broad",
+              "reason": "export completo richiede approvazione manager"
+            },
+            {
+              "operation": "auto_email_attachment",
+              "error": "requires_explicit_approval",
+              "reason": "dati sensibili richiedono conferma esplicita"
+            }
+          ],
+          "suggestions": [
+            "specifica quali contatti esportare (es. tuoi account)",
+            "conferma esplicitamente invio email con dati sensibili"
+          ]
+        }
+      },
+      "expected_response_characteristics": {
+        "must_include_concepts": [
+          "operazione troppo ampia",
+          "approvazione",
+          "specifica"
+        ],
+        "tone": "helpful_guidance",
+        "max_characters": 450
+      },
+      "evaluation_config": {
+        "faithfulness_threshold": 0.85,
+        "answer_relevancy_threshold": 0.85,
+        "max_characters": 450,
+        "max_lines": 10
+      }
+    }
+  ]
+}

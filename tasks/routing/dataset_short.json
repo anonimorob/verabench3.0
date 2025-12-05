@@ -1,0 +1,83 @@
+{
+  "dataset_info": {
+    "name": "vera_agent_router_short_v0.1",
+    "version": "0.1.0",
+    "description": "Short test dataset for Vera AI agent routing benchmark - 10 representative examples",
+    "created_date": "2025-12-05",
+    "total_examples": 10,
+    "agent_types": [
+      "erp_agent",
+      "crm_agent",
+      "calendar_agent",
+      "database_agent",
+      "general_assistant"
+    ],
+    "complexity_levels": [
+      "simple",
+      "medium",
+      "complex"
+    ]
+  },
+  "test_cases": [
+    {
+      "id": "S01",
+      "user_request": "Mostrami lo stato dell'inventario",
+      "correct_agent": "erp_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "S02",
+      "user_request": "Cerca il contatto Giorgio Alberti nel CRM",
+      "correct_agent": "crm_agent",
+      "complexity": "simple"
+    },
+    {
+      "id": "M01",
+      "user_request": "Il cliente TechnoPlast ha saldato le fatture del trimestre?",
+      "correct_agent": "erp_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "M02",
+      "user_request": "Quali account hanno margini superiori al 25%?",
+      "correct_agent": "database_agent",
+      "complexity": "medium"
+    },
+    {
+      "id": "M03",
+      "user_request": "Come posso migliorare il tasso di conversione delle trattative?",
+      "correct_agent": "general_assistant",
+      "complexity": "medium"
+    },
+    {
+      "id": "C01",
+      "user_request": "Analizza i ritardi di consegna per fornitore e impatto su ordini cliente negli ultimi 6 mesi",
+      "correct_agent": "erp_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "C02",
+      "user_request": "Identifica clienti a rischio churn basandoti su calo ordini e sentiment delle interazioni",
+      "correct_agent": "crm_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "C03",
+      "user_request": "Sincronizza calendari di 3 manager e prenota slot per review mensile con sala virtuale",
+      "correct_agent": "calendar_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "C04",
+      "user_request": "Modella la profittabilità per linea prodotto considerando costi diretti e allocazione overhead",
+      "correct_agent": "database_agent",
+      "complexity": "complex"
+    },
+    {
+      "id": "C05",
+      "user_request": "Crea scoring predittivo per opportunità in pipeline basato su dati storici di conversione",
+      "correct_agent": "crm_agent",
+      "complexity": "complex"
+    }
+  ]
+}

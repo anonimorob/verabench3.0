@@ -1,8 +1,8 @@
 """
-Metriche specifiche per la task di Final Answer (Response Generation).
+Metriche specifiche per la task di Final Answer.
 
 Valuta:
-- Faithfulness: Fedeltà ai fatti tramite DeepEval (no allucinazioni)
+- Faithfulness: Fedeltà ai fatti tramite DeepEval 
 - Answer Relevancy: Pertinenza della risposta tramite DeepEval
 - Conciseness: Concisione per WhatsApp (rule-based: max caratteri e linee)
 """
@@ -10,6 +10,7 @@ import os
 from typing import Dict, Any
 from deepeval.metrics import FaithfulnessMetric, AnswerRelevancyMetric
 from deepeval.test_case import LLMTestCase
+import json
 
 
 class FinalAnswerMetricsCalculator:
@@ -18,7 +19,6 @@ class FinalAnswerMetricsCalculator:
     def __init__(self, llm_judge_model: str = "gpt-4o-mini"):
         """
         Inizializza il calculator con modello LLM judge.
-        
         Args:
             llm_judge_model: Modello da usare per DeepEval metrics (default: gpt-4o-mini)
         """
@@ -46,7 +46,6 @@ class FinalAnswerMetricsCalculator:
     ):
         """
         Aggiunge una singola predizione e valuta correttezza.
-        
         Args:
             predicted_response: Risposta generata dal modello
             test_case: Test case completo con user_query, retrieved_context, evaluation_config
@@ -95,24 +94,19 @@ class FinalAnswerMetricsCalculator:
     def _format_context(self, retrieved_context: Dict[str, Any]) -> str:
         """
         Formatta il context per DeepEval in stringa leggibile.
-        
         Args:
             retrieved_context: Context da agenti upstream
-        
         Returns:
             Stringa formattata del context
         """
         if 'data' in retrieved_context:
             # Context da retrieval_agent
-            import json
             return json.dumps(retrieved_context['data'], indent=2, ensure_ascii=False)
         elif 'tool_result' in retrieved_context:
             # Context da tool_calling_agent
-            import json
             return json.dumps(retrieved_context['tool_result'], indent=2, ensure_ascii=False)
         else:
             # Fallback: converti tutto a stringa
-            import json
             return json.dumps(retrieved_context, indent=2, ensure_ascii=False)
     
     def _evaluate_faithfulness(
@@ -123,7 +117,6 @@ class FinalAnswerMetricsCalculator:
     ) -> float:
         """
         Valuta faithfulness usando DeepEval FaithfulnessMetric.
-        
         Returns:
             Score 0.0-1.0 (1.0 = completamente fedele ai fatti)
         """
@@ -161,7 +154,6 @@ class FinalAnswerMetricsCalculator:
     ) -> float:
         """
         Valuta answer relevancy usando DeepEval AnswerRelevancyMetric.
-        
         Returns:
             Score 0.0-1.0 (1.0 = completamente rilevante)
         """
@@ -172,17 +164,14 @@ class FinalAnswerMetricsCalculator:
                 actual_output=actual_output,
                 retrieval_context=retrieval_context,
             )
-            
             # Crea metrica con threshold
             metric = AnswerRelevancyMetric(
                 threshold=threshold,
                 model=self.llm_judge_model,
                 include_reason=False,
             )
-            
-            # Misura (sincrono)
+            # Misura
             metric.measure(test_case)
-            
             # Ritorna score normalizzato 0-1
             return metric.score if metric.score is not None else 0.0
             
@@ -198,7 +187,6 @@ class FinalAnswerMetricsCalculator:
     ) -> float:
         """
         Valuta conciseness con regole per WhatsApp (rule-based).
-        
         Returns:
             Score 0.0-1.0 (1.0 = perfettamente conciso)
         """
@@ -209,8 +197,7 @@ class FinalAnswerMetricsCalculator:
         # Conta linee
         line_count = len(response.split('\n'))
         line_score = 1.0 if line_count <= max_lines else max(0.0, 1.0 - (line_count - max_lines) / max_lines)
-        
-        # Score combinato (media pesata: caratteri più importante)
+        # Pondera 70% caratteri, 30% linee
         conciseness_score = (char_score * 0.7) + (line_score * 0.3)
         
         return conciseness_score

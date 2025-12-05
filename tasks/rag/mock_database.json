@@ -1,259 +1,304 @@
 {
   "users": [
     {
-      "phone_number": "+971501234567",
+      "phone_number": "+39 335 1234567",
       "user_id": "user_001",
-      "name": "Ahmed Al-Mansoori",
-      "company_id": "company_alpha",
-      "role": "Sales Manager",
-      "department": "Sales",
-      "permissions": {
-        "erp": {
-          "read": true,
-          "write": false,
-          "modules": ["sales", "inventory", "orders"]
-        },
-        "crm": {
-          "read": true,
-          "write": true,
-          "modules": ["contacts", "opportunities", "deals"]
-        },
-        "hr": {
-          "read": false,
-          "write": false,
-          "modules": []
-        }
-      },
-      "preferences": {
-        "language": "en",
-        "timezone": "Asia/Dubai",
-        "output_format": "table",
-        "notifications": true,
-        "currency": "AED"
-      },
-      "rate_limit": 100,
-      "last_login": "2025-11-13T08:30:00Z",
-      "conversation_history": [
-        {
-          "timestamp": "2025-11-12T14:20:00Z",
-          "message": "Show me sales for October",
-          "entities": ["sales", "october"],
-          "intent": "query_sales_data"
-        },
-        {
-          "timestamp": "2025-11-12T14:22:00Z",
-          "message": "What about September?",
-          "entities": ["september"],
-          "intent": "query_sales_data",
-          "context_reference": "sales"
-        },
-        {
-          "timestamp": "2025-11-12T15:10:00Z",
-          "message": "Send report to my email",
-          "entities": ["report", "email"],
-          "intent": "export_data"
-        }
-      ]
-    },
-    {
-      "phone_number": "+971509876543",
-      "user_id": "user_002",
-      "name": "Fatima Hassan",
-      "company_id": "company_alpha",
-      "role": "HR Director",
-      "department": "Human Resources",
-      "permissions": {
-        "erp": {
-          "read": true,
-          "write": false,
-          "modules": ["purchases"]
-        },
-        "crm": {
-          "read": true,
-          "write": false,
-          "modules": ["contacts"]
-        },
-        "hr": {
-          "read": true,
-          "write": true,
-          "modules": ["employees", "payroll", "attendance"]
-        }
-      },
-      "preferences": {
-        "language": "ar",
-        "timezone": "Asia/Dubai",
-        "output_format": "list",
-        "notifications": false,
-        "currency": "AED"
-      },
-      "rate_limit": 150,
-      "last_login": "2025-11-13T09:15:00Z",
-      "conversation_history": [
-        {
-          "timestamp": "2025-11-11T10:00:00Z",
-          "message": "عرض حضور الموظفين",
-          "entities": ["attendance", "employees"],
-          "intent": "query_hr_data"
-        },
-        {
-          "timestamp": "2025-11-11T10:05:00Z",
-          "message": "كم موظف غائب اليوم؟",
-          "entities": ["absent", "today"],
-          "intent": "query_hr_data"
-        }
-      ]
-    },
-    {
-      "phone_number": "+971502345678",
-      "user_id": "user_003",
-      "name": "Marco Rossi",
-      "company_id": "company_alpha",
-      "role": "Inventory Analyst",
-      "department": "Operations",
+      "name": "Marco Bancati",
+      "company_id": "company_alphatrade",
+      "role": "Direttore Commerciale",
+      "department": "Vendite",
       "permissions": {
         "erp": {
           "read": true,
           "write": true,
-          "modules": ["inventory", "orders", "suppliers"]
+          "modules": ["vendite", "inventario", "ordini", "acquisti", "finanza"]
         },
         "crm": {
-          "read": false,
-          "write": false,
-          "modules": []
+          "read": true,
+          "write": true,
+          "modules": ["contatti", "opportunità", "trattative", "report"]
         },
-        "hr": {
-          "read": false,
-          "write": false,
-          "modules": []
+        "calendar": {
+          "read": true,
+          "write": true,
+          "modules": ["appuntamenti", "disponibilità_team"]
+        },
+        "email": {
+          "read": true,
+          "write": true,
+          "modules": ["inbox", "sent", "draft"]
         }
       },
       "preferences": {
         "language": "it",
         "timezone": "Europe/Rome",
-        "output_format": "table",
+        "output_format": "dashboard",
         "notifications": true,
-        "currency": "EUR"
+        "currency": "EUR",
+        "report_frequency": "daily"
       },
-      "rate_limit": 200,
-      "last_login": "2025-11-13T07:00:00Z",
+      "rate_limit": 500,
+      "last_login": "2024-12-05T08:15:00Z",
       "conversation_history": [
         {
-          "timestamp": "2025-11-13T07:15:00Z",
-          "message": "Mostrami lo stock di prodotto SKU-12345",
-          "entities": ["stock", "SKU-12345"],
-          "intent": "query_inventory"
+          "timestamp": "2024-12-04T09:30:00Z",
+          "message": "Mostrami il report vendite Q4",
+          "entities": ["report", "vendite", "Q4"],
+          "intent": "query_sales_report"
         },
         {
-          "timestamp": "2025-11-13T07:20:00Z",
-          "message": "Aggiorna quantità a 500",
-          "entities": ["update", "quantity", "500"],
+          "timestamp": "2024-12-04T09:45:00Z",
+          "message": "Quali account hanno margini sotto il 20%?",
+          "entities": ["account", "margini", "20%"],
+          "intent": "query_margin_analysis"
+        },
+        {
+          "timestamp": "2024-12-04T14:20:00Z",
+          "message": "Programma review pipeline con il team vendite",
+          "entities": ["meeting", "pipeline", "team vendite"],
+          "intent": "schedule_meeting"
+        },
+        {
+          "timestamp": "2024-12-04T16:00:00Z",
+          "message": "Ci sono ordini in ritardo per clienti premium?",
+          "entities": ["ordini", "ritardo", "clienti premium"],
+          "intent": "query_order_status"
+        }
+      ]
+    },
+    {
+      "phone_number": "+39 328 9876543",
+      "user_id": "user_002",
+      "name": "Elena Riggioni",
+      "company_id": "company_alphatrade",
+      "role": "Account Executive",
+      "department": "Vendite",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": false,
+          "modules": ["vendite", "inventario", "ordini"]
+        },
+        "crm": {
+          "read": true,
+          "write": true,
+          "modules": ["contatti", "opportunità", "trattative"]
+        },
+        "calendar": {
+          "read": true,
+          "write": true,
+          "modules": ["appuntamenti"]
+        },
+        "email": {
+          "read": true,
+          "write": true,
+          "modules": ["inbox", "sent"]
+        }
+      },
+      "preferences": {
+        "language": "it",
+        "timezone": "Europe/Rome",
+        "output_format": "lista",
+        "notifications": true,
+        "currency": "EUR",
+        "mobile_optimized": true
+      },
+      "rate_limit": 200,
+      "last_login": "2024-12-05T07:45:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2024-12-05T08:00:00Z",
+          "message": "Disponibilità prodotto SKU-VALV-345 per cliente Officine Mazzini?",
+          "entities": ["disponibilità", "SKU-VALV-345", "Officine Mazzini"],
+          "intent": "check_inventory"
+        },
+        {
+          "timestamp": "2024-12-05T08:15:00Z",
+          "message": "Mostrami storico ordini cliente CLI-2024-445",
+          "entities": ["storico", "ordini", "CLI-2024-445"],
+          "intent": "query_customer_history"
+        },
+        {
+          "timestamp": "2024-12-05T08:30:00Z",
+          "message": "Prepara preventivo per 25 pompe idrauliche",
+          "entities": ["preventivo", "25", "pompe idrauliche"],
+          "intent": "create_quote"
+        }
+      ]
+    },
+    {
+      "phone_number": "+39 340 5551234",
+      "user_id": "user_003",
+      "name": "Giulia Ferretti",
+      "company_id": "company_alphatrade",
+      "role": "Responsabile Magazzino",
+      "department": "Operations",
+      "permissions": {
+        "erp": {
+          "read": true,
+          "write": true,
+          "modules": ["inventario", "ordini", "fornitori"]
+        },
+        "crm": {
+          "read": false,
+          "write": false,
+          "modules": []
+        },
+        "calendar": {
+          "read": true,
+          "write": false,
+          "modules": ["appuntamenti"]
+        },
+        "email": {
+          "read": true,
+          "write": true,
+          "modules": ["inbox", "sent"]
+        }
+      },
+      "preferences": {
+        "language": "it",
+        "timezone": "Europe/Rome",
+        "output_format": "tabella",
+        "notifications": true,
+        "currency": "EUR",
+        "alert_stockouts": true
+      },
+      "rate_limit": 300,
+      "last_login": "2024-12-05T06:30:00Z",
+      "conversation_history": [
+        {
+          "timestamp": "2024-12-04T14:00:00Z",
+          "message": "Prodotti sotto scorta minima?",
+          "entities": ["prodotti", "scorta minima"],
+          "intent": "check_low_stock"
+        },
+        {
+          "timestamp": "2024-12-04T14:30:00Z",
+          "message": "Aggiorna stock SKU-MOTOR-B77 a 350 unità",
+          "entities": ["aggiorna", "SKU-MOTOR-B77", "350"],
           "intent": "update_inventory"
         }
       ]
     },
     {
-      "phone_number": "+971507654321",
+      "phone_number": "+39 349 7778888",
       "user_id": "user_004",
-      "name": "Sarah Johnson",
-      "company_id": "company_beta",
+      "name": "Andrea Pellegrini",
+      "company_id": "company_betatech",
       "role": "CEO",
-      "department": "Executive",
+      "department": "Direzione",
       "permissions": {
         "erp": {
           "read": true,
           "write": true,
-          "modules": ["sales", "inventory", "orders", "purchases", "finance"]
+          "modules": ["vendite", "inventario", "ordini", "acquisti", "finanza", "contabilità"]
         },
         "crm": {
           "read": true,
           "write": true,
-          "modules": ["contacts", "opportunities", "deals", "reports"]
+          "modules": ["contatti", "opportunità", "trattative", "report", "analytics"]
         },
-        "hr": {
+        "calendar": {
           "read": true,
           "write": true,
-          "modules": ["employees", "payroll", "attendance", "recruitment"]
+          "modules": ["appuntamenti", "disponibilità_team", "sale_riunioni"]
+        },
+        "email": {
+          "read": true,
+          "write": true,
+          "modules": ["inbox", "sent", "draft", "archive"]
         }
       },
       "preferences": {
-        "language": "en",
-        "timezone": "America/New_York",
-        "output_format": "chart",
+        "language": "it",
+        "timezone": "Europe/Rome",
+        "output_format": "executive_dashboard",
         "notifications": true,
-        "currency": "USD"
+        "currency": "EUR",
+        "executive_summaries": true
       },
-      "rate_limit": 500,
-      "last_login": "2025-11-13T06:00:00Z",
+      "rate_limit": 1000,
+      "last_login": "2024-12-05T07:00:00Z",
       "conversation_history": [
         {
-          "timestamp": "2025-11-12T16:00:00Z",
-          "message": "Dashboard overview",
-          "entities": ["dashboard", "overview"],
-          "intent": "executive_summary"
+          "timestamp": "2024-12-04T17:00:00Z",
+          "message": "Dashboard panoramica aziendale",
+          "entities": ["dashboard", "panoramica"],
+          "intent": "executive_overview"
         },
         {
-          "timestamp": "2025-11-12T16:10:00Z",
-          "message": "Q4 revenue comparison",
-          "entities": ["Q4", "revenue", "comparison"],
-          "intent": "financial_analysis"
+          "timestamp": "2024-12-04T17:15:00Z",
+          "message": "Confronto performance Q3 vs Q4",
+          "entities": ["confronto", "Q3", "Q4", "performance"],
+          "intent": "quarterly_comparison"
         }
       ]
     },
     {
-      "phone_number": "+971503456789",
+      "phone_number": "+39 333 4445566",
       "user_id": "user_005",
-      "name": "Ali Bin Khalid",
-      "company_id": "company_alpha",
-      "role": "Junior Sales Rep",
-      "department": "Sales",
+      "name": "Luca Montanari",
+      "company_id": "company_alphatrade",
+      "role": "Junior Sales Representative",
+      "department": "Vendite",
       "permissions": {
         "erp": {
           "read": true,
           "write": false,
-          "modules": ["sales"]
+          "modules": ["vendite", "ordini"]
         },
         "crm": {
           "read": true,
           "write": false,
-          "modules": ["contacts"]
+          "modules": ["contatti"]
         },
-        "hr": {
-          "read": false,
+        "calendar": {
+          "read": true,
           "write": false,
-          "modules": []
+          "modules": ["appuntamenti"]
+        },
+        "email": {
+          "read": true,
+          "write": true,
+          "modules": ["inbox", "sent"]
         }
       },
       "preferences": {
-        "language": "ar",
-        "timezone": "Asia/Dubai",
-        "output_format": "list",
+        "language": "it",
+        "timezone": "Europe/Rome",
+        "output_format": "lista",
         "notifications": true,
-        "currency": "AED"
+        "currency": "EUR",
+        "training_mode": true
       },
-      "rate_limit": 50,
-      "last_login": "2025-11-13T09:00:00Z",
+      "rate_limit": 100,
+      "last_login": "2024-12-05T08:30:00Z",
       "conversation_history": [
         {
-          "timestamp": "2025-11-13T09:05:00Z",
-          "message": "عملاء جدد هذا الأسبوع",
-          "entities": ["new", "customers", "this week"],
-          "intent": "query_crm_data"
+          "timestamp": "2024-12-05T08:35:00Z",
+          "message": "Nuovi lead questa settimana",
+          "entities": ["lead", "questa settimana"],
+          "intent": "query_new_leads"
         }
       ]
     }
   ],
   "companies": [
     {
-      "company_id": "company_alpha",
-      "name": "Alpha Trading LLC",
-      "industry": "Retail",
-      "location": "Dubai, UAE"
+      "company_id": "company_alphatrade",
+      "name": "Alpha Trade S.r.l.",
+      "industry": "Distribuzione Industriale",
+      "location": "Milano, Italia",
+      "employees": 85,
+      "founded": "1998"
     },
     {
-      "company_id": "company_beta",
-      "name": "Beta Enterprises Inc",
-      "industry": "Technology",
-      "location": "New York, USA"
+      "company_id": "company_betatech",
+      "name": "Beta Tech Industries SpA",
+      "industry": "Export Componenti Meccanici",
+      "location": "Bologna, Italia",
+      "employees": 42,
+      "founded": "2005"
     }
   ]
 }

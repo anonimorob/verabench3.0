@@ -10,6 +10,9 @@ dependencies = [
     "matplotlib>=3.7.0",
     "deepeval>=0.21.0",
     "google-generativeai>=0.8.5",
+    "dotenv>=0.9.9",
+    "seaborn>=0.13.2",
+    "pandas>=2.3.3",
 ]
 
 [dependency-groups]

@@ -3,9 +3,8 @@ Metriche specifiche per la task di Routing.
 """
 from typing import Dict, Any
 
-
 class RoutingMetricsCalculator:
-    """Calcola le metriche per la task di Agent Routing."""
+    """Calcola le metriche per la task di Routing."""
     
     def __init__(self):
         self.reset()

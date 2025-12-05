@@ -1,0 +1,319 @@
+{
+  "dataset_info": {
+    "name": "vera_tool_calling_benchmark_short_v0.1",
+    "version": "0.1.0",
+    "description": "Short benchmark dataset for evaluating Vera AI tool calling agent - 10 representative examples",
+    "created_date": "2025-12-05",
+    "total_examples": 10,
+    "domains": [
+      "erp",
+      "crm",
+      "calendar",
+      "email"
+    ],
+    "complexity_levels": [
+      "simple",
+      "medium",
+      "complex"
+    ],
+    "evaluation_metrics": [
+      "tool_selection_accuracy",
+      "parameter_correctness",
+      "parameter_completeness"
+    ]
+  },
+  "available_tools": [
+    {
+      "tool_name": "create_invoice",
+      "domain": "erp",
+      "parameters": [
+        "customer_id",
+        "items",
+        "due_date",
+        "payment_terms"
+      ]
+    },
+    {
+      "tool_name": "get_invoices",
+      "domain": "erp",
+      "parameters": [
+        "start_date",
+        "end_date",
+        "status",
+        "customer_id"
+      ]
+    },
+    {
+      "tool_name": "update_inventory",
+      "domain": "erp",
+      "parameters": [
+        "product_sku",
+        "quantity",
+        "operation"
+      ]
+    },
+    {
+      "tool_name": "get_sales_report",
+      "domain": "erp",
+      "parameters": [
+        "start_date",
+        "end_date",
+        "group_by",
+        "metrics"
+      ]
+    },
+    {
+      "tool_name": "create_customer",
+      "domain": "crm",
+      "parameters": [
+        "name",
+        "email",
+        "phone",
+        "company",
+        "tags"
+      ]
+    },
+    {
+      "tool_name": "get_customer_info",
+      "domain": "crm",
+      "parameters": [
+        "customer_id",
+        "include_history"
+      ]
+    },
+    {
+      "tool_name": "update_deal_stage",
+      "domain": "crm",
+      "parameters": [
+        "deal_id",
+        "new_stage",
+        "notes"
+      ]
+    },
+    {
+      "tool_name": "search_contacts",
+      "domain": "crm",
+      "parameters": [
+        "query",
+        "filters",
+        "limit"
+      ]
+    },
+    {
+      "tool_name": "create_calendar_event",
+      "domain": "calendar",
+      "parameters": [
+        "title",
+        "start_time",
+        "end_time",
+        "attendees",
+        "description"
+      ]
+    },
+    {
+      "tool_name": "get_calendar_events",
+      "domain": "calendar",
+      "parameters": [
+        "start_date",
+        "end_date",
+        "attendee_filter"
+      ]
+    },
+    {
+      "tool_name": "update_event",
+      "domain": "calendar",
+      "parameters": [
+        "event_id",
+        "updates"
+      ]
+    },
+    {
+      "tool_name": "send_email",
+      "domain": "email",
+      "parameters": [
+        "recipients",
+        "subject",
+        "body",
+        "attachments"
+      ]
+    },
+    {
+      "tool_name": "search_emails",
+      "domain": "email",
+      "parameters": [
+        "query",
+        "date_range",
+        "sender",
+        "has_attachment"
+      ]
+    },
+    {
+      "tool_name": "get_order_details",
+      "domain": "erp",
+      "parameters": [
+        "order_id"
+      ]
+    },
+    {
+      "tool_name": "create_lead",
+      "domain": "crm",
+      "parameters": [
+        "name",
+        "email",
+        "source",
+        "status",
+        "assigned_to"
+      ]
+    }
+  ],
+  "test_cases": [
+    {
+      "id": "S01",
+      "user_request": "Riduci lo stock di SKU-MOTOR-B77 di 45 unità",
+      "complexity": "simple",
+      "expected_tool": "update_inventory",
+      "expected_parameters": {
+        "product_sku": "SKU-MOTOR-B77",
+        "quantity": 45,
+        "operation": "subtract"
+      }
+    },
+    {
+      "id": "S02",
+      "user_request": "Fammi vedere le fatture in sospeso del cliente CLI-445",
+      "complexity": "simple",
+      "expected_tool": "get_invoices",
+      "expected_parameters": {
+        "start_date": null,
+        "end_date": null,
+        "status": "pending",
+        "customer_id": "CLI-445"
+      }
+    },
+    {
+      "id": "M01",
+      "user_request": "Prenota riunione martedì prossimo ore 11:00 con il team supply chain per allineamento stock",
+      "complexity": "medium",
+      "expected_tool": "create_calendar_event",
+      "expected_parameters": {
+        "title": "Allineamento stock team supply chain",
+        "start_time": "2024-12-10T11:00:00",
+        "end_time": null,
+        "attendees": [
+          "team supply chain"
+        ],
+        "description": "Allineamento stock"
+      }
+    },
+    {
+      "id": "M02",
+      "user_request": "Cerca email con allegati da amministrazione@clienteB.it",
+      "complexity": "medium",
+      "expected_tool": "search_emails",
+      "expected_parameters": {
+        "query": null,
+        "date_range": null,
+        "sender": "amministrazione@clienteB.it",
+        "has_attachment": true
+      }
+    },
+    {
+      "id": "M03",
+      "user_request": "Mostra report vendite di settembre 2024 per venditore",
+      "complexity": "medium",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2024-09-01",
+        "end_date": "2024-09-30",
+        "group_by": "salesperson",
+        "metrics": null
+      }
+    },
+    {
+      "id": "C01",
+      "user_request": "Genera report Q3 2024 con fatturato, margine e pezzi venduti diviso per area geografica",
+      "complexity": "complex",
+      "expected_tool": "get_sales_report",
+      "expected_parameters": {
+        "start_date": "2024-07-01",
+        "end_date": "2024-09-30",
+        "group_by": "geographic_area",
+        "metrics": [
+          "revenue",
+          "margin",
+          "units_sold"
+        ]
+      }
+    },
+    {
+      "id": "C02",
+      "user_request": "Registra nuovo cliente: Industrie Galvani Srl, contatto Dott. Michele Volta, email m.volta@galvani.it, telefono +39 051 9876543, tag 'settore automotive'",
+      "complexity": "complex",
+      "expected_tool": "create_customer",
+      "expected_parameters": {
+        "name": "Dott. Michele Volta",
+        "email": "m.volta@galvani.it",
+        "phone": "+39 051 9876543",
+        "company": "Industrie Galvani Srl",
+        "tags": [
+          "settore automotive"
+        ]
+      }
+    },
+    {
+      "id": "C03",
+      "user_request": "Prepara fattura cliente ID-234 con 50 sensori pressione a 65€ e 8 centraline controllo a 340€, pagamento 90gg, scadenza 31 gennaio 2025",
+      "complexity": "complex",
+      "expected_tool": "create_invoice",
+      "expected_parameters": {
+        "customer_id": "ID-234",
+        "items": [
+          {
+            "description": "sensori pressione",
+            "quantity": 50,
+            "unit_price": 65
+          },
+          {
+            "description": "centraline controllo",
+            "quantity": 8,
+            "unit_price": 340
+          }
+        ],
+        "due_date": "2025-01-31",
+        "payment_terms": "90 giorni"
+      }
+    },
+    {
+      "id": "C04",
+      "user_request": "Crea lead da fiera Parma: Andrea Pellegrini, a.pellegrini@deltatech.com, fonte 'MECSPE 2024', stato 'da contattare', assegna a marco.bancati@vera.ai",
+      "complexity": "complex",
+      "expected_tool": "create_lead",
+      "expected_parameters": {
+        "name": "Andrea Pellegrini",
+        "email": "a.pellegrini@deltatech.com",
+        "source": "MECSPE 2024",
+        "status": "da contattare",
+        "assigned_to": "marco.bancati@vera.ai"
+      }
+    },
+    {
+      "id": "C05",
+      "user_request": "Manda mail a ordini@distributore.com e logistica@distributore.com, oggetto 'Follow-up spedizione urgente', allega DDT_1234.pdf, tracking.pdf e nota_spedizione.docx",
+      "complexity": "complex",
+      "expected_tool": "send_email",
+      "expected_parameters": {
+        "recipients": [
+          "ordini@distributore.com",
+          "logistica@distributore.com"
+        ],
+        "subject": "Follow-up spedizione urgente",
+        "body": null,
+        "attachments": [
+          "DDT_1234.pdf",
+          "tracking.pdf",
+          "nota_spedizione.docx"
+        ]
+      }
+    }
+  ]
+}

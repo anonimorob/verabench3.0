@@ -1,5 +1,5 @@
 """
-Metriche specifiche per la task di RAG (Retrieval Augmented Generation).
+Metriche specifiche per la task di RAG .
 
 Valuta:
 - Retrieval Accuracy: Correttezza dei dati recuperati
@@ -133,7 +133,6 @@ class RAGMetricsCalculator:
                         if set(pred_value) == set(exp_value):
                             fields_correct += 1
                 else:
-                    # Valori primitivi
                     if pred_value == exp_value:
                         fields_correct += 1
             
@@ -151,7 +150,6 @@ class RAGMetricsCalculator:
     ) -> float:
         """
         Valuta la completeness: % di campi expected presenti nella risposta.
-        
         Diverso da accuracy: qui verifichiamo che ci siano tutti i campi,
         non che i valori siano corretti (quello è accuracy).
         """

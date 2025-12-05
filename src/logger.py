@@ -8,18 +8,10 @@ from pathlib import Path
 from typing import Dict, Any
 import wandb
 
-
 class ResultLogger:
     """Gestisce il salvataggio dei risultati in locale."""
     
     def __init__(self, results_dir: str = "results", run_timestamp: str = None):
-        """
-        Inizializza il logger.
-        
-        Args:
-            results_dir: Directory base dove salvare i risultati locali
-            run_timestamp: Timestamp del run (opzionale, generato automaticamente se non fornito)
-        """
         if run_timestamp is None:
             run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
@@ -31,11 +23,13 @@ class ResultLogger:
     
     def save_results(self, results: Dict[str, Any], model_name: str):
         """Salva i risultati in un file JSON locale."""
-        filename = self.results_dir / f"{model_name}_results.json"
-        
+        # Sostituisce / con _ per evitare sottodirectory
+        safe_model_name = model_name.replace('/', '_')
+        filename = self.results_dir / f"{safe_model_name}_results.json"
+
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
-        
+
         print(f"Risultati salvati in: {filename}")
 
 

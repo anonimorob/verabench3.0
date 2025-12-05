@@ -4,7 +4,6 @@ Metriche specifiche per la task di Tool Calling.
 import json
 from typing import Dict, Any
 
-
 class ToolCallingMetricsCalculator:
     """Calcola le metriche per la task di Tool Calling."""
     

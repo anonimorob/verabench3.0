@@ -1,5 +1,5 @@
 """
-Client per l'inferenza dei modelli (Cerebras, OpenAI, OpenRouter, Google AI Studio, NVIDIA NIM).
+Client per l'inferenza dei modelli (OpenAI, TogetherAI, Google AI Studio, Anthropic ).
 """
 import os
 import time
@@ -19,35 +19,25 @@ class ModelInferenceClient:
         self.model_id = model_id
         self.provider = provider
         
-        if provider == "cerebras":
-            api_key = os.getenv('CEREBRAS_API_KEY')
+        if provider == "togetherai":
+            api_key = os.getenv('TOGETHERAI_API_KEY')
             if not api_key:
-                raise ValueError("CEREBRAS_API_KEY non trovato nel file .env")
+                raise ValueError("TOGETHERAI_API_KEY non trovato nel file .env")
             self.client = OpenAI(
                 api_key=api_key,
-                base_url="https://api.cerebras.ai/v1"
+                base_url="https://api.together.xyz/v1"
             )
         elif provider == "openai":
             api_key = os.getenv('OPENAI_API_KEY')
             if not api_key:
                 raise ValueError("OPENAI_API_KEY non trovato nel file .env")
             self.client = OpenAI(api_key=api_key)
-        elif provider == "openrouter":
-            api_key = os.getenv('OPENROUTER_API_KEY')
+        elif provider == "anthropic":
+            api_key = os.getenv('ANTHROPIC_API_KEY')
             if not api_key:
-                raise ValueError("OPENROUTER_API_KEY non trovato nel file .env")
-            self.client = OpenAI(
-                api_key=api_key,
-                base_url="https://openrouter.ai/api/v1"
-            )
-        elif provider == "nvidia":
-            api_key = os.getenv('NVIDIA_API_KEY')
-            if not api_key:
-                raise ValueError("NVIDIA_API_KEY non trovato nel file .env")
-            self.client = OpenAI(
-                api_key=api_key,
-                base_url="https://integrate.api.nvidia.com/v1"
-            )
+                raise ValueError("ANTHROPIC_API_KEY non trovato nel file .env")
+            from anthropic import Anthropic
+            self.client = Anthropic(api_key=api_key)
         elif provider == "google":
             api_key = os.getenv('GOOGLE_API_KEY')
             if not api_key:
@@ -55,7 +45,7 @@ class ModelInferenceClient:
             genai.configure(api_key=api_key)
             self.client = None  # Google usa API diversa
         else:
-            raise ValueError(f"Provider '{provider}' non supportato. Usa 'cerebras', 'openai', 'openrouter', 'nvidia', o 'google'.")
+            raise ValueError(f"Provider '{provider}' non supportato. Usa 'togetherai', 'openai', 'anthropic', o 'google'.")
     
     def generate(
         self,
@@ -67,7 +57,6 @@ class ModelInferenceClient:
     ) -> Tuple[str, float, Dict[str, int]]:
         """
         Genera una risposta dal modello.
-        
         Args:
             system_prompt: Prompt di sistema
             user_prompt: Prompt dell'utente
@@ -116,7 +105,7 @@ class ModelInferenceClient:
             except Exception as e:
                 raise RuntimeError(f"Errore durante la generazione con Google AI Studio: {str(e)}")
         
-        # OpenAI-compatible providers (Cerebras, OpenAI, OpenRouter, NVIDIA)
+        # OpenAI-compatible providers (Cerebras, OpenAI, TogetherAI, Anthropic)
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},

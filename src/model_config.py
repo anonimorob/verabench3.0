@@ -23,26 +23,80 @@ NVIDIA NIM:
 """
 
 MODELS = {
-    # Modelli Cerebras
+    # Modelli TogetherAI
 
-    "llama3.1-8b": {
-        "id": "llama3.1-8b",
-        "name": "Llama 3.1 8B Instruct",
-        "params": "8B",
-        "provider": "cerebras",
-        "input_price_per_1m": 0.10,
-        "output_price_per_1m": 0.10,
+    "mistralai/Mistral-7B-Instruct-v0.1": {
+        "id": "mistralai/Mistral-7B-Instruct-v0.1",
+        "name": "Mistral 7B Instruct v0.1",
+        "params": "7B",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.20,
+        "output_price_per_1m": 0.20,
     },
-    
-    "llama-3.3-70b": {
-        "id": "llama-3.3-70b",
-        "name": "Llama 3.3 70B Instruct",
-        "params": "70B",
-        "provider": "cerebras",
-        "input_price_per_1m": 0.85,
-        "output_price_per_1m": 1.20,
+
+    "mistralai/Mistral-7B-Instruct-v0.3": {
+        "id": "mistralai/Mistral-7B-Instruct-v0.3",
+        "name": "Mistral 7B Instruct v0.3",
+        "params": "7B",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.20,
+        "output_price_per_1m": 0.20,
     },
-  
+
+    "mistralai/Mistral-Small-24B-Instruct-2501": {
+        "id": "mistralai/Mistral-Small-24B-Instruct-2501",
+        "name": "Mistral Small 24B Instruct 2501",
+        "params": "24B",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.80,
+        "output_price_per_1m": 0.80,
+    },
+
+    "pangram/mistral-small-2501": {
+        "id": "pangram/mistral-small-2501",
+        "name": "Pangram Mistral Small 2501",
+        "params": "Unknown",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.80,
+        "output_price_per_1m": 0.80,
+    },
+
+    "Qwen/Qwen3-Next-80B-A3B-Instruct": {
+        "id": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+        "name": "Qwen3 Next 80B A3B Instruct",
+        "params": "80B",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.15,
+        "output_price_per_1m": 1.50,
+    },
+
+    "Qwen/Qwen2.5-7B-Instruct-Turbo": {
+        "id": "Qwen/Qwen2.5-7B-Instruct-Turbo",
+        "name": "Qwen2.5 7B Instruct Turbo",
+        "params": "7B",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.30,
+        "output_price_per_1m": 0.30,
+    },
+
+    "deepseek-ai/DeepSeek-V3": {
+        "id": "deepseek-ai/DeepSeek-V3",
+        "name": "DeepSeek V3",
+        "params": "Unknown",
+        "provider": "togetherai",
+        "input_price_per_1m": 1.25,
+        "output_price_per_1m": 1.25,
+    },
+
+    "openai/gpt-oss-20b": {
+        "id": "openai/gpt-oss-20b",
+        "name": "GPT-OSS 20B",
+        "params": "20B",
+        "provider": "togetherai",
+        "input_price_per_1m": 0.05,
+        "output_price_per_1m": 0.20,
+    },
+
     # Modelli OpenAI
     "gpt-4o-mini": {
         "id": "gpt-4o-mini",
@@ -62,107 +116,27 @@ MODELS = {
         "output_price_per_1m": 10.00,
     },
          
-    # Modelli OpenRouter
-    "gemma-3-12b": {
-        "id": "google/gemma-3-12b-it",
-        "name": "Gemma 3 12B Instruct",
-        "params": "12B",
-        "provider": "openrouter",
-        "input_price_per_1m": 0.03,
-        "output_price_per_1m": 0.10,
-    },
-
-    "gemma-3-27b": {
-        "id": "google/gemma-3-27b-it",
-        "name": "Gemma 3 27B Instruct",
-        "params": "27B",
-        "provider": "openrouter",
-        "input_price_per_1m": 0.09,
-        "output_price_per_1m": 0.16,
-    },
  
     # Modelli Google AI Studio
-    #"gemini-2.5-flash-lite": {
-    #    "id": "gemini-2.5-flash-lite",
-    #    "name": "Gemini 2.5 Flash-Lite",
-    #    "params": "Unknown",
-    #    "provider": "google",
-    #    "input_price_per_1m": 0.0,
-    #    "output_price_per_1m": 0.0,
-   # },
+    "gemini-2.5-flash-lite": {
+        "id": "gemini-2.5-flash-lite",
+        "name": "Gemini 2.5 Flash-Lite",
+        "params": "Unknown",
+        "provider": "google",
+        "input_price_per_1m": 0.0,
+        "output_price_per_1m": 0.0,
+   },
 
-   # "gemini-2.5-flash": {
-    #    "id": "gemini-2.5-flash",
-     #   "name": "Gemini 2.5 Flash",
-     #   "params": "Unknown",
-     #   "provider": "google",
-     #   "input_price_per_1m": 0.0,
-      #  "output_price_per_1m": 0.0,
-    #},
-
-    # Modelli NVIDIA NIM
-    "deepseek-r1-distill-llama-8b": {
-        "id": "deepseek-ai/deepseek-r1-distill-llama-8b",
-        "name": "DeepSeek R1 Distill Llama 8B",
-        "params": "8B",
-        "provider": "nvidia",
+    "gemini-2.5-flash": {
+        "id": "gemini-2.5-flash",
+        "name": "Gemini 2.5 Flash",
+        "params": "Unknown",
+        "provider": "google",
         "input_price_per_1m": 0.0,
         "output_price_per_1m": 0.0,
     },
 
-    "gpt-oss-20b": {
-        "id": "openai/gpt-oss-20b",
-        "name": "OpenAI GPT-OSS 20B",
-        "params": "20B (MoE)",
-        "provider": "nvidia",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
-
-    "gpt-oss-120b": {
-        "id": "openai/gpt-oss-120b",
-        "name": "OpenAI GPT-OSS 120B",
-        "params": "120B (MoE)",
-        "provider": "nvidia",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
-
-    "phi-4-mini": {
-        "id": "microsoft/phi-4-mini-instruct",
-        "name": "Phi-4 Mini Instruct",
-        "params": "14B",
-        "provider": "nvidia",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
-
-    "phi-4-mini-flash-reasoning": {
-        "id": "microsoft/phi-4-mini-flash-reasoning",
-        "name": "Phi-4 Mini Flash Reasoning",
-        "params": "14B",
-        "provider": "nvidia",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
-
-    "mistral-nemo": {
-        "id": "mistralai/mistral-nemotron",
-        "name": "Mistral Nemotron",
-        "params": "12B",
-        "provider": "nvidia",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
-
-    "qwen3-next-80b": {
-        "id": "qwen/qwen3-next-80b-a3b-instruct",
-        "name": "Qwen3 Next 80B A3B Instruct",
-        "params": "80B (MoE)",
-        "provider": "nvidia",
-        "input_price_per_1m": 0.0,
-        "output_price_per_1m": 0.0,
-    },
+    
 
  
 }

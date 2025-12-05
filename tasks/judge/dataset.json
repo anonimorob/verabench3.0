@@ -3,7 +3,7 @@
     "name": "vera_judge_validator_v0.1",
     "version": "0.1.0",
     "description": "Dataset completo per testare il Judge/Validator agent di Vera AI - valutazione finale prima della risposta all'utente",
-    "created_date": "2025-11-12",
+    "created_date": "2024-12-05",
     "total_examples": 25,
     "language": "italian",
     "distribution": {
@@ -29,22 +29,22 @@
       "id": "033",
       "category": "consistency_test_1",
       "severity": "none",
-      "user_request": "Mostrami le fatture di settembre 2024",
+      "user_request": "Mostrami le fatture di novembre 2024",
       "tool_call": {
         "name": "get_invoices",
         "parameters": {
-          "start_date": "2024-09-01",
-          "end_date": "2024-09-30",
+          "start_date": "2024-11-01",
+          "end_date": "2024-11-30",
           "status": null
         }
       },
       "tool_result": {
         "invoices": [
           {
-            "id": "INV-2024-140",
-            "customer": "Gamma Inc.",
-            "amount": 3200.0,
-            "date": "2024-09-12"
+            "id": "INV-2024-234",
+            "customer": "Officine Mazzini SpA",
+            "amount": 8500.0,
+            "date": "2024-11-15"
           }
         ],
         "total_count": 1
@@ -55,26 +55,26 @@
         "relevant_data": true,
         "coherent_response": true,
         "complete": true,
-        "reasoning": "CONSISTENCY TEST: fatture settembre recuperate correttamente"
+        "reasoning": "CONSISTENCY TEST: fatture novembre recuperate correttamente"
       }
     },
     {
       "id": "040",
       "category": "consistency_test_2",
       "severity": "none",
-      "user_request": "Crea fattura per Bianchi & Co. per €1500",
+      "user_request": "Crea fattura per Industrie Galvani per €12.500",
       "tool_call": {
         "name": "create_invoice",
         "parameters": {
-          "customer_id": "CUST-456",
-          "amount": 1500.0,
-          "due_date": "2024-12-12"
+          "customer_id": "CLI-2024-567",
+          "amount": 12500.0,
+          "due_date": "2024-12-31"
         }
       },
       "tool_result": {
-        "invoice_id": "INV-2024-220",
+        "invoice_id": "INV-2024-445",
         "status": "created",
-        "amount": 1500.0
+        "amount": 12500.0
       },
       "ground_truth": {
         "should_approve": true,
@@ -89,17 +89,17 @@
       "id": "047",
       "category": "consistency_test_3",
       "severity": "critical",
-      "user_request": "Aggiorna prezzo prodotto SKU-999 a €49.99",
+      "user_request": "Aggiorna prezzo prodotto SKU-VALV-345 a €285.00",
       "tool_call": {
         "name": "update_product",
         "parameters": {
-          "product_sku": "SKU-999",
-          "price": 4.99
+          "product_sku": "SKU-VALV-345",
+          "price": 28.50
         }
       },
       "tool_result": {
-        "product_sku": "SKU-999",
-        "new_price": 4.99,
+        "product_sku": "SKU-VALV-345",
+        "new_price": 28.50,
         "status": "updated"
       },
       "ground_truth": {
@@ -108,20 +108,20 @@
         "relevant_data": false,
         "coherent_response": false,
         "complete": false,
-        "reasoning": "CONSISTENCY TEST: prezzo errato €4.99 invece di €49.99 richiesto"
+        "reasoning": "CONSISTENCY TEST: prezzo errato €28.50 invece di €285.00 richiesto - errore ordine di grandezza"
       }
     },
     {
       "id": "054",
       "category": "consistency_test_4",
       "severity": "none",
-      "user_request": "Trova il cliente con email info@verdi.it",
+      "user_request": "Trova il cliente con email p.grandi@mazzini.it",
       "tool_call": {
         "name": "search_contacts",
         "parameters": {
           "query": "",
           "filters": {
-            "email": "info@verdi.it"
+            "email": "p.grandi@mazzini.it"
           },
           "limit": 10
         }
@@ -129,9 +129,10 @@
       "tool_result": {
         "contacts": [
           {
-            "id": "CUST-555",
-            "name": "Verdi S.p.A.",
-            "email": "info@verdi.it"
+            "id": "CLI-2024-123",
+            "name": "Ing. Paolo Grandi",
+            "company": "Officine Mazzini SpA",
+            "email": "p.grandi@mazzini.it"
           }
         ],
         "total_found": 1
@@ -149,19 +150,19 @@
       "id": "061",
       "category": "consistency_test_5",
       "severity": "critical",
-      "user_request": "Crea ordine per 5 unità prodotto PRD-789",
+      "user_request": "Crea ordine per 15 pompe idrauliche PRD-PUMP-A45",
       "tool_call": {
         "name": "create_order",
         "parameters": {
-          "product_sku": "PRD-789",
-          "quantity": 50,
-          "customer_id": "CUST-234"
+          "product_sku": "PRD-PUMP-A45",
+          "quantity": 150,
+          "customer_id": "CLI-2024-445"
         }
       },
       "tool_result": {
-        "order_id": "ORD-1001",
+        "order_id": "ORD-2024-8891",
         "status": "created",
-        "quantity": 50
+        "quantity": 150
       },
       "ground_truth": {
         "should_approve": false,
@@ -169,27 +170,27 @@
         "relevant_data": false,
         "coherent_response": false,
         "complete": false,
-        "reasoning": "CONSISTENCY TEST: quantità errata 50 invece di 5 richieste - errore critico ordine"
+        "reasoning": "CONSISTENCY TEST: quantità errata 150 invece di 15 richieste - errore critico ordine"
       }
     },
     {
       "id": "066",
       "category": "consistency_test_6",
       "severity": "none",
-      "user_request": "Aggiungi nota alla trattativa DEAL-345: 'Cliente richiede demo tecnica'",
+      "user_request": "Aggiungi nota alla trattativa DEAL-789: 'Cliente interessato a volume discount'",
       "tool_call": {
         "name": "add_deal_note",
         "parameters": {
-          "deal_id": "DEAL-345",
-          "note": "Cliente richiede demo tecnica",
+          "deal_id": "DEAL-789",
+          "note": "Cliente interessato a volume discount",
           "note_type": "activity"
         }
       },
       "tool_result": {
-        "deal_id": "DEAL-345",
-        "note_id": "NOTE-789",
+        "deal_id": "DEAL-789",
+        "note_id": "NOTE-1123",
         "status": "added",
-        "timestamp": "2024-11-12T16:20:00Z"
+        "timestamp": "2024-12-05T14:30:00Z"
       },
       "ground_truth": {
         "should_approve": true,
@@ -204,21 +205,21 @@
       "id": "069",
       "category": "consistency_test_7",
       "severity": "medium",
-      "user_request": "Trova ordini aperti del cliente Bianchi & Co.",
+      "user_request": "Trova ordini aperti del cliente Officine Mazzini",
       "tool_call": {
         "name": "get_orders",
         "parameters": {
-          "customer_id": "CUST-456",
+          "customer_id": "CLI-2024-123",
           "status": "open"
         }
       },
       "tool_result": {
         "orders": [
           {
-            "id": "ORD-890",
-            "customer": "Bianchi & Co.",
+            "id": "ORD-2024-7734",
+            "customer": "Officine Mazzini SpA",
             "status": "open",
-            "total": 3400.0
+            "total": 15800.0
           }
         ],
         "total_count": 1
@@ -248,17 +249,17 @@
       "tool_result": {
         "invoices": [
           {
-            "id": "INV-2024-156",
-            "customer": "Rossi S.r.l.",
-            "amount": 1500.0,
-            "date": "2024-10-15",
+            "id": "INV-2024-198",
+            "customer": "Beta Tech Industries SpA",
+            "amount": 6750.0,
+            "date": "2024-10-12",
             "status": "paid"
           },
           {
-            "id": "INV-2024-167",
-            "customer": "Bianchi & Co.",
-            "amount": 2300.0,
-            "date": "2024-10-22",
+            "id": "INV-2024-215",
+            "customer": "Industrie Galvani Srl",
+            "amount": 9200.0,
+            "date": "2024-10-25",
             "status": "pending"
           }
         ],
@@ -270,41 +271,37 @@
         "relevant_data": true,
         "coherent_response": true,
         "complete": true,
-        "reasoning": "Tool corretto, parametri temporali esatti, risultati pertinenti al periodo richiesto"
+        "reasoning": "Tool corretto con parametri giusti, risultati rilevanti per la richiesta"
       }
     },
     {
-      "id": "012",
-      "category": "approve_multi_customer_search",
+      "id": "008",
+      "category": "approve_complex",
       "severity": "none",
-      "user_request": "Trova tutti i clienti con 'Rossi' nel nome",
+      "user_request": "Dammi report vendite Q3 2024 raggruppato per categoria prodotto",
       "tool_call": {
-        "name": "search_contacts",
+        "name": "get_sales_report",
         "parameters": {
-          "query": "Rossi",
-          "filters": {},
-          "limit": 50
+          "start_date": "2024-07-01",
+          "end_date": "2024-09-30",
+          "group_by": "product_category",
+          "metrics": ["revenue", "units_sold"]
         }
       },
       "tool_result": {
-        "contacts": [
+        "report": [
           {
-            "id": "CONT-101",
-            "name": "Mario Rossi",
-            "email": "mario@rossi.com"
+            "category": "Componenti Idraulici",
+            "revenue": 125600.0,
+            "units_sold": 487
           },
           {
-            "id": "CONT-234",
-            "name": "Rossi S.r.l.",
-            "email": "info@rossisrl.it"
-          },
-          {
-            "id": "CONT-567",
-            "name": "Laura Rossi",
-            "email": "l.rossi@example.com"
+            "category": "Valvole Industriali",
+            "revenue": 98300.0,
+            "units_sold": 312
           }
         ],
-        "total_found": 3
+        "total_revenue": 223900.0
       },
       "ground_truth": {
         "should_approve": true,
@@ -312,48 +309,27 @@
         "relevant_data": true,
         "coherent_response": true,
         "complete": true,
-        "reasoning": "Search corretto, tutti i risultati contengono 'Rossi' come richiesto"
+        "reasoning": "Report complesso generato correttamente con periodo Q3 e raggruppamento richiesto"
       }
     },
     {
-      "id": "020",
-      "category": "approve_multi_filter_query",
+      "id": "016",
+      "category": "approve_crm_update",
       "severity": "none",
-      "user_request": "Trova tutti i contatti della città di Milano con tag 'VIP'",
+      "user_request": "Sposta la trattativa DEAL-334 in fase 'Contratto firmato'",
       "tool_call": {
-        "name": "search_contacts",
+        "name": "update_deal_stage",
         "parameters": {
-          "query": "",
-          "filters": {
-            "city": "Milano",
-            "tags": [
-              "VIP"
-            ]
-          },
-          "limit": 20
+          "deal_id": "DEAL-334",
+          "new_stage": "Contratto firmato",
+          "notes": null
         }
       },
       "tool_result": {
-        "contacts": [
-          {
-            "id": "CONT-890",
-            "name": "Giuseppe Verdi",
-            "city": "Milano",
-            "tags": [
-              "VIP",
-              "Premium"
-            ]
-          },
-          {
-            "id": "CONT-891",
-            "name": "Anna Ferrari",
-            "city": "Milano",
-            "tags": [
-              "VIP"
-            ]
-          }
-        ],
-        "total_found": 2
+        "deal_id": "DEAL-334",
+        "previous_stage": "Negoziazione",
+        "new_stage": "Contratto firmato",
+        "updated_at": "2024-12-05T10:15:00Z"
       },
       "ground_truth": {
         "should_approve": true,
@@ -361,153 +337,31 @@
         "relevant_data": true,
         "coherent_response": true,
         "complete": true,
-        "reasoning": "Filtri multipli applicati correttamente, risultati pertinenti (Milano + tag VIP)"
+        "reasoning": "Aggiornamento CRM eseguito correttamente con stage richiesto"
       }
     },
     {
-      "id": "028",
-      "category": "approve_get_customer_history",
+      "id": "025",
+      "category": "approve_comparison",
       "severity": "none",
-      "user_request": "Mostrami lo storico completo del cliente CUST-123",
+      "user_request": "Confronta vendite ottobre vs novembre 2024",
       "tool_call": {
-        "name": "get_customer_info",
+        "name": "compare_sales_periods",
         "parameters": {
-          "customer_id": "CUST-123",
-          "include_history": true
-        }
-      },
-      "tool_result": {
-        "customer": {
-          "id": "CUST-123",
-          "name": "Rossi S.r.l.",
-          "history": {
-            "total_orders": 15,
-            "total_revenue": 23400.0,
-            "last_order_date": "2024-11-01"
-          }
-        }
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Storico cliente recuperato correttamente con flag include_history=true"
-      }
-    },
-    {
-      "id": "037",
-      "category": "approve_event_rescheduling",
-      "severity": "none",
-      "user_request": "Sposta l'evento CAL-8899 a giovedì 14 novembre alle 11:00",
-      "tool_call": {
-        "name": "update_event",
-        "parameters": {
-          "event_id": "CAL-8899",
-          "updates": {
-            "start_time": "2024-11-14T11:00:00Z",
-            "end_time": "2024-11-14T12:00:00Z"
-          }
-        }
-      },
-      "tool_result": {
-        "event_id": "CAL-8899",
-        "status": "updated",
-        "new_start": "2024-11-14T11:00:00Z"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Evento spostato correttamente alla nuova data e ora richiesta"
-      }
-    },
-    {
-      "id": "046",
-      "category": "approve_event_cancellation",
-      "severity": "none",
-      "user_request": "Cancella l'evento CAL-9901",
-      "tool_call": {
-        "name": "delete_event",
-        "parameters": {
-          "event_id": "CAL-9901",
-          "send_notification": true
-        }
-      },
-      "tool_result": {
-        "event_id": "CAL-9901",
-        "status": "cancelled",
-        "notifications_sent": 3
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Evento cancellato correttamente con notifiche inviate ai partecipanti"
-      }
-    },
-    {
-      "id": "056",
-      "category": "approve_product_stock_check",
-      "severity": "none",
-      "user_request": "Controlla giacenza prodotto SKU-445",
-      "tool_call": {
-        "name": "get_product_stock",
-        "parameters": {
-          "product_sku": "SKU-445"
-        }
-      },
-      "tool_result": {
-        "product_sku": "SKU-445",
-        "current_stock": 87,
-        "reserved": 12,
-        "available": 75,
-        "warehouse": "Milano-Central"
-      },
-      "ground_truth": {
-        "should_approve": true,
-        "appropriate_actions": true,
-        "relevant_data": true,
-        "coherent_response": true,
-        "complete": true,
-        "reasoning": "Stock check eseguito correttamente con dettagli completi di giacenza"
-      }
-    },
-    {
-      "id": "065",
-      "category": "approve_report_with_date_comparison",
-      "severity": "none",
-      "user_request": "Confronta vendite ottobre 2024 vs ottobre 2023",
-      "tool_call": {
-        "name": "get_comparative_sales_report",
-        "parameters": {
-          "period_1": {
-            "start_date": "2024-10-01",
-            "end_date": "2024-10-31"
-          },
-          "period_2": {
-            "start_date": "2023-10-01",
-            "end_date": "2023-10-31"
-          },
-          "metrics": [
-            "revenue",
-            "orders_count",
-            "growth_percentage"
-          ]
+          "period_1_start": "2024-10-01",
+          "period_1_end": "2024-10-31",
+          "period_2_start": "2024-11-01",
+          "period_2_end": "2024-11-30",
+          "metrics": ["revenue", "orders"]
         }
       },
       "tool_result": {
         "comparison": {
-          "period_1_revenue": 52300.0,
-          "period_2_revenue": 48100.0,
-          "growth": 8.7,
-          "period_1_orders": 28,
-          "period_2_orders": 25
+          "period_1_revenue": 87400.0,
+          "period_2_revenue": 92100.0,
+          "growth": 5.4,
+          "period_1_orders": 42,
+          "period_2_orders": 45
         }
       },
       "ground_truth": {
@@ -523,22 +377,22 @@
       "id": "002",
       "category": "reject_wrong_date_range",
       "severity": "medium",
-      "user_request": "Mostrami le fatture di ottobre 2024",
+      "user_request": "Mostrami le fatture di novembre 2024",
       "tool_call": {
         "name": "get_invoices",
         "parameters": {
-          "start_date": "2024-09-01",
-          "end_date": "2024-09-30",
+          "start_date": "2024-10-01",
+          "end_date": "2024-10-31",
           "status": null
         }
       },
       "tool_result": {
         "invoices": [
           {
-            "id": "INV-2024-145",
-            "customer": "Verdi S.p.A.",
-            "amount": 890.0,
-            "date": "2024-09-10",
+            "id": "INV-2024-215",
+            "customer": "Alpha Trade S.r.l.",
+            "amount": 4300.0,
+            "date": "2024-10-18",
             "status": "paid"
           }
         ],
@@ -550,28 +404,28 @@
         "relevant_data": false,
         "coherent_response": true,
         "complete": false,
-        "reasoning": "Tool corretto ma date range errato: richiesto ottobre (10) ma recuperato settembre (09)"
+        "reasoning": "Tool corretto ma date range errato: richiesto novembre (11) ma recuperato ottobre (10)"
       }
     },
     {
       "id": "007",
       "category": "reject_wrong_tool",
       "severity": "critical",
-      "user_request": "Crea un evento in calendario per domani alle 14:00 con il cliente Rossi",
+      "user_request": "Prenota meeting domani alle 10:00 con il cliente Officine Mazzini",
       "tool_call": {
         "name": "send_email",
         "parameters": {
           "recipients": [
-            "rossi@example.com"
+            "p.grandi@mazzini.it"
           ],
-          "subject": "Riunione domani",
-          "body": "Ci vediamo domani alle 14:00"
+          "subject": "Meeting domani",
+          "body": "Ci vediamo domani alle 10:00"
         }
       },
       "tool_result": {
-        "email_id": "EMAIL-999",
+        "email_id": "EMAIL-1234",
         "status": "sent",
-        "timestamp": "2024-11-12T10:30:00Z"
+        "timestamp": "2024-12-05T09:30:00Z"
       },
       "ground_truth": {
         "should_approve": false,
@@ -586,18 +440,18 @@
       "id": "015",
       "category": "reject_subtle_quantity_mismatch",
       "severity": "critical",
-      "user_request": "Aggiorna l'inventario: aggiungi 100 unità del prodotto SKU-445",
+      "user_request": "Aggiorna l'inventario: aggiungi 250 unità del prodotto SKU-PUMP-A45",
       "tool_call": {
         "name": "update_inventory",
         "parameters": {
-          "product_sku": "SKU-445",
-          "quantity": 10,
+          "product_sku": "SKU-PUMP-A45",
+          "quantity": 25,
           "operation": "add"
         }
       },
       "tool_result": {
-        "product_sku": "SKU-445",
-        "new_quantity": 110,
+        "product_sku": "SKU-PUMP-A45",
+        "new_quantity": 125,
         "operation": "completed"
       },
       "ground_truth": {
@@ -606,25 +460,25 @@
         "relevant_data": false,
         "coherent_response": true,
         "complete": false,
-        "reasoning": "ERRORE CRITICO SUBTLE: quantità errata 10 invece di 100 - errore di un ordine di grandezza"
+        "reasoning": "ERRORE CRITICO SUBTLE: quantità errata 25 invece di 250 - errore di un ordine di grandezza"
       }
     },
     {
       "id": "023",
       "category": "reject_critical_inventory_operation",
       "severity": "critical",
-      "user_request": "Rimuovi 50 unità del prodotto SKU-789 dall'inventario",
+      "user_request": "Rimuovi 80 unità del prodotto SKU-MOTOR-B77 dall'inventario",
       "tool_call": {
         "name": "update_inventory",
         "parameters": {
-          "product_sku": "SKU-789",
-          "quantity": 50,
+          "product_sku": "SKU-MOTOR-B77",
+          "quantity": 80,
           "operation": "add"
         }
       },
       "tool_result": {
-        "product_sku": "SKU-789",
-        "new_quantity": 150,
+        "product_sku": "SKU-MOTOR-B77",
+        "new_quantity": 280,
         "operation": "completed"
       },
       "ground_truth": {
@@ -640,12 +494,12 @@
       "id": "031",
       "category": "reject_missing_mandatory_parameter",
       "severity": "critical",
-      "user_request": "Invia email di follow-up al cliente con oggetto 'Proposta commerciale'",
+      "user_request": "Invia email di conferma ordine al cliente con oggetto 'Conferma ordine ORD-2024-445'",
       "tool_call": {
         "name": "send_email",
         "parameters": {
-          "subject": "Proposta commerciale",
-          "body": "Gentile cliente, in allegato la nostra proposta..."
+          "subject": "Conferma ordine ORD-2024-445",
+          "body": "Gentile cliente, confermiamo il suo ordine..."
         }
       },
       "tool_result": {
@@ -668,15 +522,15 @@
       "tool_call": {
         "name": "create_invoice",
         "parameters": {
-          "customer_id": "CUST-234",
-          "amount": 2400.0,
-          "due_date": "2024-10-15"
+          "customer_id": "CLI-2024-567",
+          "amount": 8900.0,
+          "due_date": "2024-11-05"
         }
       },
       "tool_result": {
-        "invoice_id": "INV-2024-221",
+        "invoice_id": "INV-2024-556",
         "status": "created",
-        "due_date": "2024-10-15"
+        "due_date": "2024-11-05"
       },
       "ground_truth": {
         "should_approve": false,
@@ -684,26 +538,26 @@
         "relevant_data": false,
         "coherent_response": false,
         "complete": false,
-        "reasoning": "Due date nel passato: oggi è 2024-11-12 ma due_date impostato a 2024-10-15"
+        "reasoning": "Due date nel passato: oggi è 2024-12-05 ma due_date impostato a 2024-11-05"
       }
     },
     {
       "id": "050",
       "category": "reject_subtle_unit_mismatch",
       "severity": "medium",
-      "user_request": "L'ordine è per 2 tonnellate di materiale",
+      "user_request": "L'ordine è per 3 tonnellate di materiale acciaio",
       "tool_call": {
         "name": "create_order",
         "parameters": {
-          "product_sku": "MAT-500",
-          "quantity": 2,
+          "product_sku": "ACC-LAMIERE-500",
+          "quantity": 3,
           "unit": "kg"
         }
       },
       "tool_result": {
-        "order_id": "ORD-999",
+        "order_id": "ORD-2024-9012",
         "status": "created",
-        "quantity": "2 kg"
+        "quantity": "3 kg"
       },
       "ground_truth": {
         "should_approve": false,
@@ -718,19 +572,19 @@
       "id": "059",
       "category": "reject_critical_discount_error",
       "severity": "critical",
-      "user_request": "Applica sconto del 10% alla fattura",
+      "user_request": "Applica sconto del 5% alla fattura",
       "tool_call": {
         "name": "apply_discount",
         "parameters": {
-          "invoice_id": "INV-2024-200",
-          "discount_percentage": 50
+          "invoice_id": "INV-2024-445",
+          "discount_percentage": 25
         }
       },
       "tool_result": {
-        "invoice_id": "INV-2024-200",
-        "original_amount": 2500.0,
-        "discount_applied": 1250.0,
-        "new_amount": 1250.0
+        "invoice_id": "INV-2024-445",
+        "original_amount": 12500.0,
+        "discount_applied": 3125.0,
+        "new_amount": 9375.0
       },
       "ground_truth": {
         "should_approve": false,
@@ -738,14 +592,14 @@
         "relevant_data": false,
         "coherent_response": false,
         "complete": false,
-        "reasoning": "ERRORE CRITICO: sconto errato 50% invece del 10% richiesto - perdita finanziaria significativa"
+        "reasoning": "ERRORE CRITICO: sconto errato 25% invece del 5% richiesto - perdita finanziaria significativa"
       }
     },
     {
       "id": "070",
       "category": "reject_critical_data_export_scope",
       "severity": "critical",
-      "user_request": "Esporta solo i contatti di Milano in CSV",
+      "user_request": "Esporta solo i contatti della Lombardia in CSV",
       "tool_call": {
         "name": "export_contacts_csv",
         "parameters": {
@@ -754,9 +608,9 @@
         }
       },
       "tool_result": {
-        "export_id": "EXP-555",
+        "export_id": "EXP-789",
         "status": "completed",
-        "records_exported": 1250,
+        "records_exported": 2340,
         "scope": "all_contacts"
       },
       "ground_truth": {
@@ -765,7 +619,135 @@
         "relevant_data": false,
         "coherent_response": false,
         "complete": false,
-        "reasoning": "ERRORE CRITICO: filtro mancante - richiesto solo Milano ma esportati TUTTI i contatti (1250)"
+        "reasoning": "ERRORE CRITICO: filtro mancante - richiesto solo Lombardia ma esportati TUTTI i contatti (2340)"
+      }
+    },
+    {
+      "id": "074",
+      "category": "approve_inventory_check",
+      "severity": "none",
+      "user_request": "Disponibilità prodotto SKU-VALV-345?",
+      "tool_call": {
+        "name": "check_inventory",
+        "parameters": {
+          "product_sku": "SKU-VALV-345"
+        }
+      },
+      "tool_result": {
+        "product_sku": "SKU-VALV-345",
+        "available_quantity": 145,
+        "status": "in_stock",
+        "next_restock": "2024-12-15"
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "Check inventario eseguito correttamente con SKU giusto e dati completi"
+      }
+    },
+    {
+      "id": "081",
+      "category": "approve_customer_history",
+      "severity": "none",
+      "user_request": "Mostrami storico ordini cliente CLI-2024-445",
+      "tool_call": {
+        "name": "get_customer_orders",
+        "parameters": {
+          "customer_id": "CLI-2024-445",
+          "include_history": true,
+          "limit": 20
+        }
+      },
+      "tool_result": {
+        "customer_id": "CLI-2024-445",
+        "customer_name": "Industrie Galvani Srl",
+        "orders": [
+          {
+            "id": "ORD-2024-7891",
+            "date": "2024-11-20",
+            "total": 6700.0
+          },
+          {
+            "id": "ORD-2024-7234",
+            "date": "2024-10-15",
+            "total": 4200.0
+          }
+        ],
+        "total_orders": 2
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "Storico ordini recuperato correttamente per il cliente specificato"
+      }
+    },
+    {
+      "id": "088",
+      "category": "reject_wrong_customer",
+      "severity": "critical",
+      "user_request": "Crea preventivo per Officine Mazzini",
+      "tool_call": {
+        "name": "create_quote",
+        "parameters": {
+          "customer_id": "CLI-2024-567",
+          "items": [
+            {
+              "sku": "SKU-VALV-345",
+              "quantity": 20,
+              "price": 285.0
+            }
+          ]
+        }
+      },
+      "tool_result": {
+        "quote_id": "QUO-2024-334",
+        "customer_id": "CLI-2024-567",
+        "customer_name": "Industrie Galvani Srl",
+        "total": 5700.0
+      },
+      "ground_truth": {
+        "should_approve": false,
+        "appropriate_actions": true,
+        "relevant_data": false,
+        "coherent_response": false,
+        "complete": false,
+        "reasoning": "ERRORE CRITICO: cliente sbagliato - richiesto Officine Mazzini ma preventivo per Industrie Galvani"
+      }
+    },
+    {
+      "id": "094",
+      "category": "approve_lead_creation",
+      "severity": "none",
+      "user_request": "Crea lead: Andrea Pellegrini, email a.pellegrini@deltatech.com, fonte fiera MECSPE",
+      "tool_call": {
+        "name": "create_lead",
+        "parameters": {
+          "name": "Andrea Pellegrini",
+          "email": "a.pellegrini@deltatech.com",
+          "source": "MECSPE 2024",
+          "status": "new",
+          "assigned_to": "elena.riggioni@alphatrade.it"
+        }
+      },
+      "tool_result": {
+        "lead_id": "LEAD-2024-889",
+        "name": "Andrea Pellegrini",
+        "status": "created",
+        "assigned_to": "elena.riggioni@alphatrade.it"
+      },
+      "ground_truth": {
+        "should_approve": true,
+        "appropriate_actions": true,
+        "relevant_data": true,
+        "coherent_response": true,
+        "complete": true,
+        "reasoning": "Lead creato correttamente con tutti i dati richiesti"
       }
     }
   ]
